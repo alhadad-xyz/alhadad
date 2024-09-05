@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { Waypoint } from "react-waypoint";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
+import Image from "next/image";
 
 const OwlCarousel = dynamic(() => import("react-owl-carousel"), {
   ssr: false,
@@ -55,14 +56,14 @@ export default function About () {
               >
                 <OwlCarousel className="owl-carousel3" {...carouselOptions3}>
                   <div className="item">
-                    <img
+                    <Image
                       className="img-responsive about-img"
                       src="images/about.jpg"
                       alt="html5 bootstrap template by colorlib.com"
                     />
                   </div>
                   <div className="item">
-                    <img
+                    <Image
                       className="img-responsive about-img"
                       src="images/about-2.jpg"
                       alt="html5 bootstrap template by colorlib.com"
@@ -90,7 +91,7 @@ export default function About () {
                     </div>
                     <div className="item">
                       <h2>
-                        <span>I'm</span>
+                        <span>I&apos;m</span>
                         <span>A Web Developer</span>
                       </h2>
                     </div>

@@ -9,8 +9,8 @@ const Footer = () => {
             <div className="col-md-4 col-pb-sm">
               <div className="row">
                 <div className="col-md-10">
-                  <h2>Let's Talk</h2>
-                  <p>Let's stay connected—feel free to reach out anytime!</p>
+                  <h2>Let&apos;s Talk</h2>
+                  <p>Let&apos;s stay connected—feel free to reach out anytime!</p>
                   <p>
                     <a href="mailto:alhadad.xyz@gmail.com">alhadad.xyz@gmail.com</a>
                   </p>
@@ -98,14 +98,14 @@ const Footer = () => {
           <div className="row">
             <div className="col-md-12 text-center">
               <p>
-                &copy; Link back to Colorlib can't be removed. Template is
+                &copy; Link back to Colorlib can&apos;t be removed. Template is
                 licensed under CC BY 3.0. Copyright &copy;All rights reserved |
                 This template is made with{" "}
                 <i className="icon-heart4" aria-hidden="true"></i> by{" "}
                 <a href="https://colorlib.com" target="_blank">
                   Colorlib
                 </a>
-                Link back to Colorlib can't be removed. Template is licensed
+                Link back to Colorlib can&apos;t be removed. Template is licensed
                 under CC BY 3.0.
               </p>
             </div>

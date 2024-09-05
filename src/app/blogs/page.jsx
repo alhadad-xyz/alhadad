@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import React, { useState } from "react";
 import { Waypoint } from "react-waypoint";
 
@@ -54,7 +55,7 @@ const Blogs = () => {
                   }`}
                 >
                   <a href="blog.html" className="blog-img">
-                    <img
+                    <Image
                       className="img-responsive"
                       src="images/img-1.jpg"
                       alt="html5 bootstrap by colorlib.com"
@@ -88,7 +89,7 @@ const Blogs = () => {
                   }`}
                 >
                   <a href="blog.html" className="blog-img">
-                    <img
+                    <Image
                       className="img-responsive"
                       src="images/img-4.jpg"
                       alt="html5 bootstrap by colorlib.com"
@@ -122,7 +123,7 @@ const Blogs = () => {
                   }`}
                 >
                   <a href="blog.html" className="blog-img">
-                    <img
+                    <Image
                       className="img-responsive"
                       src="images/img-7.jpg"
                       alt="html5 bootstrap by colorlib.com"
@@ -158,7 +159,7 @@ const Blogs = () => {
                   }`}
                 >
                   <a href="blog.html" className="blog-img">
-                    <img
+                    <Image
                       className="img-responsive"
                       src="images/img-2.jpg"
                       alt="html5 bootstrap by colorlib.com"
@@ -192,7 +193,7 @@ const Blogs = () => {
                   }`}
                 >
                   <a href="blog.html" className="blog-img">
-                    <img
+                    <Image
                       className="img-responsive"
                       src="images/img-5.jpg"
                       alt="html5 bootstrap by colorlib.com"
@@ -226,7 +227,7 @@ const Blogs = () => {
                   }`}
                 >
                   <a href="blog.html" className="blog-img">
-                    <img
+                    <Image
                       className="img-responsive"
                       src="images/img-6.jpg"
                       alt="html5 bootstrap by colorlib.com"
@@ -262,7 +263,7 @@ const Blogs = () => {
                   }`}
                 >
                   <a href="blog.html" className="blog-img">
-                    <img
+                    <Image
                       className="img-responsive"
                       src="images/img-3.jpg"
                       alt="html5 bootstrap by colorlib.com"
@@ -296,7 +297,7 @@ const Blogs = () => {
                   }`}
                 >
                   <a href="blog.html" className="blog-img">
-                    <img
+                    <Image
                       className="img-responsive"
                       src="images/img-8.jpg"
                       alt="html5 bootstrap by colorlib.com"
@@ -330,7 +331,7 @@ const Blogs = () => {
                   }`}
                 >
                   <a href="blog.html" className="blog-img">
-                    <img
+                    <Image
                       className="img-responsive"
                       src="images/img-9.jpg"
                       alt="html5 bootstrap by colorlib.com"

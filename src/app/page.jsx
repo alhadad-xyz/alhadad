@@ -5,6 +5,7 @@ import { Waypoint } from "react-waypoint";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
 import Link from "next/link";
+import Image from "next/image";
 
 const OwlCarousel = dynamic(() => import("react-owl-carousel"), {
   ssr: false,
@@ -105,14 +106,14 @@ export default function Home() {
               >
                 <OwlCarousel className="owl-carousel3" {...carouselOptions3}>
                   <div className="item">
-                    <img
+                    <Image
                       className="img-responsive about-img"
                       src="images/about.jpg"
                       alt="html5 bootstrap template by colorlib.com"
                     />
                   </div>
                   <div className="item">
-                    <img
+                    <Image
                       className="img-responsive about-img"
                       src="images/about-2.jpg"
                       alt="html5 bootstrap template by colorlib.com"
@@ -140,7 +141,7 @@ export default function Home() {
                     </div>
                     <div className="item">
                       <h2>
-                        <span>I'm</span>
+                        <span>I&apos;m</span>
                         <span>A Web Developer</span>
                       </h2>
                     </div>
@@ -434,7 +435,7 @@ export default function Home() {
                   <div className="col-md-12">
                     <div className="article">
                       <a href="/blogs/blog" className="blog-img">
-                        <img
+                        <Image
                           className="img-responsive"
                           src="images/img-1.jpg"
                           alt="html5 bootstrap by colorlib.com"
@@ -462,7 +463,7 @@ export default function Home() {
                   <div className="col-md-12">
                     <div className="article">
                       <a href="/blogs/blog" className="blog-img">
-                        <img
+                        <Image
                           className="img-responsive"
                           src="images/img-2.jpg"
                           alt="html5 bootstrap by colorlib.com"
@@ -490,7 +491,7 @@ export default function Home() {
                   <div className="col-md-12">
                     <div className="article">
                       <a href="/blogs/blog" className="blog-img">
-                        <img
+                        <Image
                           className="img-responsive"
                           src="images/img-3.jpg"
                           alt="html5 bootstrap by colorlib.com"
