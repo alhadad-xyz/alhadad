@@ -1,0 +1,184 @@
+.aboutPage {
+  width: 100%;
+}
+
+.aboutMarquee {
+  position: relative;
+  width: 100%;
+  margin-top: 10em;
+  z-index: 0;
+}
+
+.aboutMarquee h1 {
+  font-family: var(--font-rosseta), serif;
+  font-size: 150px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: #fff;
+  line-height: 100%;
+}
+
+.aboutRow {
+  width: 100%;
+  display: flex;
+}
+
+.aboutCol:nth-child(1) {
+  flex: 2;
+}
+
+.aboutCol:nth-child(2) {
+  flex: 3;
+}
+
+.aboutIntro h2 {
+  text-indent: 500px;
+  margin: 2em 0;
+  font-family: var(--font-wremena), serif;
+}
+
+.aboutIntroCopy,
+.aboutPortrait,
+.aboutAwards {
+  width: 80%;
+  margin: 2em auto;
+}
+
+.aboutIntroCopy h3 {
+  font-family: "Inter";
+  font-weight: 200 !important;
+  font-size: 24px;
+}
+
+.aboutPortrait .aboutCol p {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.aboutPortrait .aboutCol p span:nth-child(1) {
+  flex: 1;
+  font-family: "Inter";
+}
+
+.aboutPortrait .aboutCol p span:nth-child(2) {
+  flex: 3;
+  font-family: var(--font-wremena), serif;
+  text-transform: none;
+  font-size: 1em;
+}
+
+.aboutPortraitImg {
+  width: 100%;
+  margin-bottom: 2em;
+}
+
+.aboutPortraitImg img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.faqs {
+  margin: 1em 0;
+}
+
+.faqItem {
+  border-bottom: 1px solid var(--color-text-secondary);
+  padding: 20px 0;
+}
+
+.faqQuestion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  color: var(--color-text-primary);
+  font-size: 24px;
+  font-family: var(--font-wremena), serif;
+}
+
+.faqIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  min-height: 20px;
+}
+
+.faqAnswer {
+  padding-top: 0.75em;
+  font-size: 20px;
+  line-height: 125%;
+  color: rgba(255, 255, 255, 0.35);
+  font-family: var(--font-wremena), serif;
+}
+
+.awardHeader {
+  margin: 1em 0;
+}
+
+.aboutRow.awardRow {
+  padding: 15px 0;
+  border-bottom: 1px solid var(--color-text-secondary);
+}
+
+.aboutRow.awardRow .aboutCol {
+  display: flex;
+}
+
+.aboutAwards.inPress {
+  margin-top: 4em;
+}
+
+.aboutRow.awardRow .aboutCol .awardYear,
+.aboutRow.awardRow .aboutCol .awardView,
+.aboutRow.awardRow .aboutCol .awardInfo,
+.aboutRow.awardRow .aboutCol .awardProject {
+  flex: 1;
+}
+
+.aboutRow.awardRow .aboutCol p {
+  font-family: var(--font-wremena), serif;
+}
+
+.aboutContact {
+  width: 100%;
+  margin: 16em 0 4em 0;
+}
+
+.aboutContactCopy {
+  width: 60%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.aboutContactCopy h2 {
+  font-family: var(--font-rosseta), serif;
+  margin-bottom: 0.25em;
+}
+
+.aboutContactCopy p span {
+  text-transform: none;
+  font-weight: 300;
+  font-size: 20px;
+  font-family: var(--font-wremena), serif;
+}
+
+@media (max-width: 900px) {
+  .aboutRow {
+    flex-direction: column;
+  }
+  .aboutIntro h2 {
+    text-indent: 100px;
+  }
+
+  .aboutIntroCopy,
+  .aboutPortrait,
+  .aboutAwards {
+    width: 100%;
+  }
+
+  .aboutContactCopy {
+    width: 100%;
+  }
+}

@@ -1,0 +1,153 @@
+/* MediaDisplay Component Styles */
+.mediaContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mediaContainer:hover {
+  border-color: rgba(148, 163, 184, 0.4);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mediaContainer:hover .image {
+  transform: scale(1.02);
+}
+
+.caption {
+  padding: 0.75rem 1rem;
+  background: rgba(30, 41, 59, 0.8);
+  color: #cbd5e1;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.filename {
+  padding: 0.5rem 1rem;
+  background: rgba(15, 23, 42, 0.8);
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.displayName {
+  color: #f8fafc;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.technicalName {
+  color: #64748b;
+  font-size: 0.75rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+/* Placeholder styles */
+.placeholder {
+  aspect-ratio: 16/9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(30, 41, 59, 0.4);
+  border: 2px dashed rgba(148, 163, 184, 0.3);
+  border-radius: 8px;
+  color: #64748b;
+}
+
+.placeholderContent {
+  text-align: center;
+  padding: 2rem;
+}
+
+.placeholderContent span {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Gallery styles */
+.gallery {
+  display: grid;
+  gap: 1rem;
+  width: 100%;
+}
+
+.columns2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.columns3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.columns4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.galleryItem {
+  width: 100%;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  .columns4 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .columns3,
+  .columns4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .gallery {
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .columns2,
+  .columns3,
+  .columns4 {
+    grid-template-columns: 1fr;
+  }
+  
+  .gallery {
+    gap: 0.5rem;
+  }
+  
+  .caption,
+  .filename {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .displayName {
+    font-size: 0.8rem;
+  }
+  
+  .technicalName {
+    font-size: 0.7rem;
+  }
+} 

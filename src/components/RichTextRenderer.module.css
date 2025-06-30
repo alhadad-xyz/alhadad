@@ -1,0 +1,563 @@
+/* Rich Text Container */
+.richText {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  max-width: none;
+  word-wrap: break-word;
+}
+
+.richText.animated {
+  animation: fadeInContent 0.6s ease-out;
+}
+
+@keyframes fadeInContent {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Paragraph Styles */
+.paragraph {
+  margin: 0 0 1.5em 0;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.paragraph:last-child {
+  margin-bottom: 0;
+}
+
+/* Text Alignment */
+.align-left,
+.align-start {
+  text-align: left;
+}
+
+.align-center {
+  text-align: center;
+}
+
+.align-right,
+.align-end {
+  text-align: right;
+}
+
+.align-justify {
+  text-align: justify;
+}
+
+/* Heading Styles */
+.heading {
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 2em 0 1em 0;
+  color: #222;
+}
+
+.heading:first-child {
+  margin-top: 0;
+}
+
+.h1 {
+  font-size: 2.5em;
+  margin: 1.5em 0 0.8em 0;
+}
+
+.h2 {
+  font-size: 2em;
+  margin: 1.8em 0 0.8em 0;
+}
+
+.h3 {
+  font-size: 1.5em;
+  margin: 1.6em 0 0.8em 0;
+}
+
+.h4 {
+  font-size: 1.25em;
+  margin: 1.4em 0 0.8em 0;
+}
+
+.h5 {
+  font-size: 1.1em;
+  margin: 1.2em 0 0.8em 0;
+}
+
+.h6 {
+  font-size: 1em;
+  margin: 1em 0 0.8em 0;
+  font-weight: 700;
+}
+
+/* Text Formatting */
+.bold {
+  font-weight: 700;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.strikethrough {
+  text-decoration: line-through;
+}
+
+.code {
+  font-family: 'SF Mono', Consolas, Monaco, 'Roboto Mono', monospace;
+  font-size: 0.9em;
+  background: #f8f9fa;
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid #e9ecef;
+}
+
+.subscript {
+  vertical-align: sub;
+  font-size: 0.8em;
+}
+
+.superscript {
+  vertical-align: super;
+  font-size: 0.8em;
+}
+
+.highlight {
+  background: #fff3cd;
+  padding: 2px 4px;
+  border-radius: 2px;
+}
+
+/* Links */
+.link {
+  color: #0066cc;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.link:hover {
+  color: #0052a3;
+  text-decoration: underline;
+}
+
+.link:visited {
+  color: #551a8b;
+}
+
+.link.external::after {
+  content: ' ↗';
+  font-size: 0.8em;
+  opacity: 0.7;
+}
+
+.link.internal {
+  color: #0066cc;
+}
+
+/* Lists */
+.list {
+  margin: 1.5em 0;
+  padding-left: 0;
+}
+
+.list.unordered {
+  list-style: none;
+  padding-left: 1.5em;
+}
+
+.list.ordered {
+  list-style: decimal;
+  padding-left: 1.5em;
+}
+
+.listItem {
+  margin: 0.5em 0;
+  position: relative;
+}
+
+.list.unordered .listItem::before {
+  content: '•';
+  color: #666;
+  position: absolute;
+  left: -1.2em;
+  top: 0;
+}
+
+.list.ordered .listItem {
+  list-style: decimal;
+}
+
+/* Nested lists */
+.list .list {
+  margin: 0.5em 0;
+}
+
+.list .list.unordered .listItem::before {
+  content: '◦';
+}
+
+.list .list .list.unordered .listItem::before {
+  content: '▪';
+}
+
+/* Blockquotes */
+.quote {
+  margin: 2em 0;
+  padding: 1.5em 2em;
+  border-left: 4px solid #0066cc;
+  background: #f8f9fa;
+  font-style: italic;
+  position: relative;
+}
+
+.quote::before {
+  content: '"';
+  font-size: 4em;
+  color: #0066cc;
+  position: absolute;
+  top: -0.5em;
+  left: 0.5em;
+  opacity: 0.3;
+  font-family: Georgia, serif;
+}
+
+.quote p {
+  margin: 0;
+  font-size: 1.1em;
+  line-height: 1.6;
+}
+
+.quote p:last-child {
+  margin-bottom: 0;
+}
+
+/* Code Blocks */
+.codeBlock {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5em;
+  margin: 2em 0;
+  overflow-x: auto;
+  font-family: 'SF Mono', Consolas, Monaco, 'Roboto Mono', monospace;
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+
+.codeBlock code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  color: #333;
+}
+
+/* Images and Figures */
+.figure {
+  margin: 2em 0;
+  text-align: center;
+}
+
+.image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.image:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.caption {
+  margin-top: 1em;
+  font-size: 0.9em;
+  color: #666;
+  font-style: italic;
+  text-align: center;
+}
+
+/* Unknown/Fallback Styles */
+.unknown {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 4px;
+  padding: 1em;
+  margin: 1em 0;
+  font-style: italic;
+  color: #856404;
+}
+
+.unknown::before {
+  content: 'Unknown content type: ';
+  font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .richText {
+    font-size: 15px;
+  }
+  
+  .paragraph {
+    font-size: 15px;
+  }
+  
+  .h1 {
+    font-size: 2em;
+  }
+  
+  .h2 {
+    font-size: 1.6em;
+  }
+  
+  .h3 {
+    font-size: 1.3em;
+  }
+  
+  .h4 {
+    font-size: 1.15em;
+  }
+  
+  .h5 {
+    font-size: 1.05em;
+  }
+  
+  .quote {
+    padding: 1em 1.5em;
+    margin: 1.5em 0;
+  }
+  
+  .quote::before {
+    font-size: 3em;
+    top: -0.3em;
+    left: 0.3em;
+  }
+  
+  .codeBlock {
+    padding: 1em;
+    font-size: 0.85em;
+  }
+  
+  .list {
+    padding-left: 1.2em;
+  }
+  
+  .list.unordered {
+    padding-left: 1.2em;
+  }
+  
+  .list.ordered {
+    padding-left: 1.2em;
+  }
+}
+
+@media (max-width: 480px) {
+  .richText {
+    font-size: 14px;
+  }
+  
+  .paragraph {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  
+  .h1 {
+    font-size: 1.8em;
+  }
+  
+  .h2 {
+    font-size: 1.5em;
+  }
+  
+  .h3 {
+    font-size: 1.25em;
+  }
+  
+  .quote {
+    padding: 0.8em 1em;
+    border-left-width: 3px;
+  }
+  
+  .quote::before {
+    display: none;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .richText {
+    font-size: 12pt;
+    line-height: 1.4;
+    color: #000;
+  }
+  
+  .heading {
+    color: #000;
+    page-break-after: avoid;
+  }
+  
+  .quote {
+    background: transparent;
+    border-left: 2pt solid #000;
+    page-break-inside: avoid;
+  }
+  
+  .quote::before {
+    display: none;
+  }
+  
+  .codeBlock {
+    background: transparent;
+    border: 1pt solid #000;
+    page-break-inside: avoid;
+  }
+  
+  .link {
+    color: #000;
+    text-decoration: underline;
+  }
+  
+  .link.external::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.8em;
+  }
+  
+  .image {
+    box-shadow: none;
+    max-width: 100%;
+    page-break-inside: avoid;
+  }
+  
+  .figure {
+    page-break-inside: avoid;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .richText {
+    color: #000;
+  }
+  
+  .heading {
+    color: #000;
+  }
+  
+  .link {
+    color: #0000EE;
+    text-decoration: underline;
+  }
+  
+  .code {
+    background: #FFFFFF;
+    border: 2px solid #000000;
+  }
+  
+  .codeBlock {
+    background: #FFFFFF;
+    border: 2px solid #000000;
+  }
+  
+  .quote {
+    background: #FFFFFF;
+    border-left: 4px solid #000000;
+  }
+  
+  .highlight {
+    background: #FFFF00;
+    color: #000000;
+  }
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .richText {
+    color: #e0e0e0;
+  }
+  
+  .heading {
+    color: #ffffff;
+  }
+  
+  .link {
+    color: #4da6ff;
+  }
+  
+  .link:hover {
+    color: #80bfff;
+  }
+  
+  .link:visited {
+    color: #cc99ff;
+  }
+  
+  .code {
+    background: #2d2d2d;
+    border: 1px solid #444;
+    color: #e0e0e0;
+  }
+  
+  .codeBlock {
+    background: #2d2d2d;
+    border: 1px solid #444;
+  }
+  
+  .codeBlock code {
+    color: #e0e0e0;
+  }
+  
+  .quote {
+    background: #2d2d2d;
+    border-left: 4px solid #4da6ff;
+  }
+  
+  .quote::before {
+    color: #4da6ff;
+  }
+  
+  .caption {
+    color: #aaa;
+  }
+  
+  .highlight {
+    background: #4a4a00;
+    color: #ffff99;
+  }
+  
+  .unknown {
+    background: #4a4a00;
+    border: 1px solid #666600;
+    color: #ffff99;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .richText.animated {
+    animation: none;
+  }
+  
+  .image {
+    transition: none;
+  }
+  
+  .image:hover {
+    transform: none;
+  }
+  
+  .link {
+    transition: none;
+  }
+} 

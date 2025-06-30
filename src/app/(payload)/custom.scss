@@ -1,0 +1,51 @@
+/* THIS FILE WAS GENERATED AUTOMATICALLY BY PAYLOAD. */
+/* DO NOT MODIFY IT BECAUSE IT COULD BE REWRITTEN AT ANY TIME. */
+
+// Custom styles for Payload CMS admin interface - Dark Theme
+
+:root {
+  --theme-bg: #0f172a;
+  --theme-text: #f1f5f9;
+  --theme-elevation-1: #1e293b;
+  --theme-elevation-2: #334155;
+  --theme-elevation-3: #475569;
+  --theme-elevation-4: #64748b;
+  --theme-elevation-5: #94a3b8;
+}
+
+[data-theme="dark"] {
+  --theme-bg: #0f172a;
+  --theme-text: #f1f5f9;
+  --theme-elevation-1: #1e293b;
+  --theme-elevation-2: #334155;
+  --theme-elevation-3: #475569;
+  --theme-elevation-4: #64748b;
+  --theme-elevation-5: #94a3b8;
+}
+
+[data-theme="light"] {
+  --theme-bg: #fafafa;
+  --theme-text: #333;
+  --theme-elevation-1: #fff;
+  --theme-elevation-2: #f3f3f3;
+  --theme-elevation-3: #e7e7e7;
+  --theme-elevation-4: #dbdbdb;
+  --theme-elevation-5: #cfcfcf;
+}
+
+// Payload layout container
+.payload-admin-layout {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  width: 100%;
+  background: var(--theme-bg);
+  color: var(--theme-text);
+}
+
+// Dark theme enhancements
+[data-theme="dark"] {
+  .payload-admin-layout {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  }
+} 

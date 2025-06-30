@@ -1,0 +1,534 @@
+/* Enhanced Payload CMS Admin Interface - Portfolio Theme */
+
+/* CSS Variables for consistent theming */
+:root {
+  --portfolio-primary: #2563eb;
+  --portfolio-primary-dark: #1d4ed8;
+  --portfolio-secondary: #64748b;
+  --portfolio-accent: #f59e0b;
+  --portfolio-success: #10b981;
+  --portfolio-error: #ef4444;
+  --portfolio-warning: #f59e0b;
+  
+  --portfolio-bg-primary: #ffffff;
+  --portfolio-bg-secondary: #f8fafc;
+  --portfolio-bg-tertiary: #e2e8f0;
+  
+  --portfolio-text-primary: #0f172a;
+  --portfolio-text-secondary: #475569;
+  --portfolio-text-muted: #94a3b8;
+  
+  --portfolio-border: #e2e8f0;
+  --portfolio-border-hover: #cbd5e1;
+  
+  --portfolio-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --portfolio-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+/* Enhanced Dashboard Header */
+.payload-admin .dashboard-header {
+  background: linear-gradient(135deg, var(--portfolio-primary) 0%, var(--portfolio-primary-dark) 100%);
+  color: white;
+  padding: 2rem;
+  border-radius: 0 0 1rem 1rem;
+  margin-bottom: 2rem;
+}
+
+.payload-admin .dashboard-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.payload-admin .dashboard-header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin: 0;
+}
+
+/* Quick Actions Bar */
+.payload-admin .quick-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.payload-admin .quick-actions .action-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.payload-admin .quick-actions .action-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.payload-admin .quick-actions .action-button.primary {
+  background: var(--portfolio-accent);
+  border-color: var(--portfolio-accent);
+}
+
+/* Enhanced Collection List Views */
+.payload-admin .collection-list .list-header {
+  background: var(--portfolio-bg-secondary);
+  padding: 1.5rem;
+  border-radius: 0.75rem 0.75rem 0 0;
+  border-bottom: 1px solid var(--portfolio-border);
+}
+
+.payload-admin .collection-list .list-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.payload-admin .collection-list .search-input {
+  flex: 1;
+  max-width: 400px;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--portfolio-border);
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.payload-admin .collection-list .search-input:focus {
+  outline: none;
+  border-color: var(--portfolio-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Enhanced Table Styling */
+.payload-admin .table-wrapper {
+  background: white;
+  border-radius: 0 0 0.75rem 0.75rem;
+  overflow: hidden;
+  box-shadow: var(--portfolio-shadow);
+}
+
+.payload-admin table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.payload-admin table th {
+  background: var(--portfolio-bg-tertiary);
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--portfolio-text-primary);
+  border-bottom: 1px solid var(--portfolio-border);
+}
+
+.payload-admin table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--portfolio-border);
+  vertical-align: middle;
+}
+
+.payload-admin table tr:hover {
+  background: var(--portfolio-bg-secondary);
+}
+
+/* Image Cell Enhancements */
+.payload-admin .image-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.payload-admin .image-cell img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  border: 1px solid var(--portfolio-border);
+}
+
+.payload-admin .image-cell .image-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.payload-admin .image-cell .filename {
+  font-weight: 500;
+  color: var(--portfolio-text-primary);
+  font-size: 0.9rem;
+}
+
+.payload-admin .image-cell .dimensions {
+  font-size: 0.8rem;
+  color: var(--portfolio-text-muted);
+}
+
+/* Enhanced Form Styling */
+.payload-admin .field-group {
+  background: white;
+  border: 1px solid var(--portfolio-border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.payload-admin .field-group .group-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--portfolio-border);
+}
+
+.payload-admin .field-group .group-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--portfolio-text-primary);
+}
+
+.payload-admin .field-group .group-description {
+  font-size: 0.9rem;
+  color: var(--portfolio-text-secondary);
+  margin-top: 0.25rem;
+}
+
+/* Collapsible Field Groups */
+.payload-admin .collapsible-field {
+  border: 1px solid var(--portfolio-border);
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.payload-admin .collapsible-field .collapsible-header {
+  background: var(--portfolio-bg-secondary);
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--portfolio-border);
+}
+
+.payload-admin .collapsible-field .collapsible-header:hover {
+  background: var(--portfolio-bg-tertiary);
+}
+
+.payload-admin .collapsible-field .collapsible-content {
+  padding: 1.5rem;
+  background: white;
+}
+
+.payload-admin .collapsible-field.collapsed .collapsible-content {
+  display: none;
+}
+
+/* Enhanced Media Library */
+.payload-admin .media-library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.payload-admin .media-item {
+  background: white;
+  border: 1px solid var(--portfolio-border);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.payload-admin .media-item:hover {
+  border-color: var(--portfolio-primary);
+  box-shadow: var(--portfolio-shadow-lg);
+  transform: translateY(-2px);
+}
+
+.payload-admin .media-item .media-preview {
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  background: var(--portfolio-bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.payload-admin .media-item .media-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.payload-admin .media-item .media-info {
+  padding: 1rem;
+}
+
+.payload-admin .media-item .media-filename {
+  font-weight: 500;
+  color: var(--portfolio-text-primary);
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.payload-admin .media-item .media-meta {
+  font-size: 0.8rem;
+  color: var(--portfolio-text-muted);
+}
+
+/* Enhanced Buttons */
+.payload-admin .btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.payload-admin .btn-primary {
+  background: var(--portfolio-primary);
+  color: white;
+  border-color: var(--portfolio-primary);
+}
+
+.payload-admin .btn-primary:hover {
+  background: var(--portfolio-primary-dark);
+  border-color: var(--portfolio-primary-dark);
+  transform: translateY(-1px);
+}
+
+.payload-admin .btn-secondary {
+  background: white;
+  color: var(--portfolio-text-primary);
+  border-color: var(--portfolio-border);
+}
+
+.payload-admin .btn-secondary:hover {
+  background: var(--portfolio-bg-secondary);
+  border-color: var(--portfolio-border-hover);
+}
+
+.payload-admin .btn-success {
+  background: var(--portfolio-success);
+  color: white;
+  border-color: var(--portfolio-success);
+}
+
+.payload-admin .btn-warning {
+  background: var(--portfolio-warning);
+  color: white;
+  border-color: var(--portfolio-warning);
+}
+
+.payload-admin .btn-error {
+  background: var(--portfolio-error);
+  color: white;
+  border-color: var(--portfolio-error);
+}
+
+/* Status Badges */
+.payload-admin .status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.payload-admin .status-badge.draft {
+  background: rgba(148, 163, 184, 0.1);
+  color: var(--portfolio-text-secondary);
+}
+
+.payload-admin .status-badge.published {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--portfolio-success);
+}
+
+.payload-admin .status-badge.archived {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--portfolio-error);
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+  .payload-admin .dashboard-header {
+    padding: 1.5rem;
+    text-align: center;
+  }
+  
+  .payload-admin .dashboard-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .payload-admin .quick-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .payload-admin .collection-list .list-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .payload-admin .collection-list .search-input {
+    max-width: none;
+    margin-bottom: 1rem;
+  }
+  
+  .payload-admin .media-library-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+  }
+  
+  .payload-admin .field-group {
+    padding: 1rem;
+  }
+  
+  .payload-admin .collapsible-field .collapsible-header {
+    padding: 0.75rem 1rem;
+  }
+  
+  .payload-admin .collapsible-field .collapsible-content {
+    padding: 1rem;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --portfolio-bg-primary: #0f172a;
+    --portfolio-bg-secondary: #1e293b;
+    --portfolio-bg-tertiary: #334155;
+    
+    --portfolio-text-primary: #f8fafc;
+    --portfolio-text-secondary: #cbd5e1;
+    --portfolio-text-muted: #64748b;
+    
+    --portfolio-border: #334155;
+    --portfolio-border-hover: #475569;
+  }
+  
+  .payload-admin .table-wrapper,
+  .payload-admin .field-group,
+  .payload-admin .media-item {
+    background: var(--portfolio-bg-secondary);
+  }
+  
+  .payload-admin .btn-secondary {
+    background: var(--portfolio-bg-tertiary);
+    color: var(--portfolio-text-primary);
+  }
+}
+
+/* Loading States */
+.payload-admin .loading-skeleton {
+  background: linear-gradient(90deg, var(--portfolio-bg-secondary) 25%, var(--portfolio-bg-tertiary) 50%, var(--portfolio-bg-secondary) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 0.5rem;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.payload-admin .skeleton-text {
+  height: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.payload-admin .skeleton-title {
+  height: 1.5rem;
+  width: 60%;
+  margin-bottom: 1rem;
+}
+
+.payload-admin .skeleton-image {
+  height: 200px;
+  margin-bottom: 1rem;
+}
+
+/* Rich Text Editor Enhancements */
+.payload-admin .rich-text-editor {
+  border: 1px solid var(--portfolio-border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.payload-admin .rich-text-editor .editor-toolbar {
+  background: var(--portfolio-bg-secondary);
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--portfolio-border);
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.payload-admin .rich-text-editor .editor-content {
+  padding: 1rem;
+  min-height: 200px;
+  background: white;
+}
+
+.payload-admin .rich-text-editor .editor-content:focus {
+  outline: none;
+}
+
+/* Upload Field Enhancements */
+.payload-admin .upload-field {
+  border: 2px dashed var(--portfolio-border);
+  border-radius: 0.75rem;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.2s ease;
+  background: var(--portfolio-bg-secondary);
+}
+
+.payload-admin .upload-field:hover,
+.payload-admin .upload-field.drag-over {
+  border-color: var(--portfolio-primary);
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.payload-admin .upload-field .upload-icon {
+  font-size: 3rem;
+  color: var(--portfolio-text-muted);
+  margin-bottom: 1rem;
+}
+
+.payload-admin .upload-field .upload-text {
+  color: var(--portfolio-text-secondary);
+  margin-bottom: 1rem;
+}
+
+.payload-admin .upload-field .upload-button {
+  background: var(--portfolio-primary);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.payload-admin .upload-field .upload-button:hover {
+  background: var(--portfolio-primary-dark);
+  transform: translateY(-1px);
+} 

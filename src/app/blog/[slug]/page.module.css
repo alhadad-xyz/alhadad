@@ -1,0 +1,281 @@
+.page {
+  width: 100%;
+}
+
+.blogPost {
+  min-height: 100vh;
+  padding: 0;
+}
+
+/* Loading and Error States */
+.loadingContainer,
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+}
+
+.errorContainer h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.errorContainer p {
+  font-size: 1.125rem;
+  margin-bottom: 2rem;
+  opacity: 0.8;
+}
+
+.backLink {
+  color: #fff;
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.backLink:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Hero Section */
+.blogHero {
+  width: 80%;
+  margin: 0 auto;
+  padding: 12em 0 4em 0;
+}
+
+.blogHero h2 {
+  font-size: 60px;
+  line-height: 1.1;
+  margin: 0;
+}
+
+/* Blog Content Layout */
+.blogContent {
+  width: 80%;
+  margin: 0 auto;
+  display: flex;
+  gap: 2em;
+  position: relative;
+}
+
+.blogContent p {
+  font-size: 1.125em;
+  line-height: 1.6;
+  margin: 0 0 1.5em 0;
+}
+
+.blogContent h3 {
+  line-height: 110%;
+  margin-bottom: 1em;
+  font-size: 1.5em;
+}
+
+.blogContent h4 {
+  line-height: 1.3;
+  margin-bottom: 1em;
+  font-size: 1.25em;
+  font-weight: 500;
+}
+
+/* Column Layout */
+.blogCol {
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 1em 0;
+}
+
+.scroll {
+  flex: 1;
+  padding-top: 1.5em;
+}
+
+.sticky {
+  flex: 1;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 12em;
+  align-self: flex-start;
+}
+
+/* Rich Content Styling */
+.richContent {
+  margin-top: 2em;
+}
+
+.richContent p {
+  margin-bottom: 1.5em;
+}
+
+.richContent h1,
+.richContent h2,
+.richContent h3,
+.richContent h4,
+.richContent h5,
+.richContent h6 {
+  margin: 2em 0 1em 0;
+  line-height: 1.2;
+}
+
+.richContent ul,
+.richContent ol {
+  margin: 1.5em 0;
+  padding-left: 2em;
+}
+
+.richContent li {
+  margin-bottom: 0.5em;
+}
+
+.richContent blockquote {
+  border-left: 3px solid rgba(255, 255, 255, 0.3);
+  padding-left: 1.5em;
+  margin: 2em 0;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+.richContent code {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+}
+
+.richContent pre {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1.5em;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 2em 0;
+}
+
+.richContent pre code {
+  background: none;
+  padding: 0;
+}
+
+/* Share Section */
+.blogShare {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  margin-bottom: 2em;
+}
+
+.blogShare span {
+  margin-right: 0.75em;
+  font-size: 0.9em;
+  opacity: 0.8;
+}
+
+.shareIcon {
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.shareIcon:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Featured Image */
+.blogContentImg {
+  margin: 4em 0;
+}
+
+.blogContentImg img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* Tags */
+.blogTags {
+  margin-top: 2em;
+}
+
+.blogTags span {
+  display: block;
+  font-size: 0.9em;
+  opacity: 0.8;
+  margin-bottom: 0.5em;
+}
+
+.tagsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+}
+
+.tag {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.25em 0.75em;
+  border-radius: 20px;
+  font-size: 0.85em;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.tag:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+  .blogContent {
+    flex-direction: column-reverse;
+  }
+
+  .blogHero,
+  .blogContent {
+    width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .blogHero h2 {
+    font-size: 2.5rem;
+  }
+
+  .sticky {
+    position: relative;
+    top: auto;
+  }
+
+  .blogShare {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .blogHero {
+    padding: 8em 0 2em 0;
+  }
+
+  .blogHero h2 {
+    font-size: 2rem;
+  }
+
+  .blogContent {
+    gap: 1em;
+  }
+
+  .blogContent p {
+    font-size: 1em;
+  }
+} 

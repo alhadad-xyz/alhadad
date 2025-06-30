@@ -1,0 +1,201 @@
+.heroSection {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* GSAP Reset utility - ensures proper layout on resize */
+.heroSection * {
+  transition: none !important; /* Disable CSS transitions during GSAP animations */
+}
+
+/* Force layout recalculation on resize */
+@media (orientation: landscape) and (max-width: 900px) {
+  .heroSection {
+    height: 100vh;
+  }
+}
+
+@media (orientation: portrait) and (max-width: 900px) {
+  .heroSection {
+    height: 100vh;
+    min-height: 100dvh;
+  }
+}
+
+.heroCopy {
+  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 0;
+}
+
+.heroCopyWrapper {
+  margin: 0.5em 0;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+.heroCopyWrapper:nth-child(1) h1 {
+  position: relative;
+  top: 100px;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  font-size: 60px;
+  color: white;
+  margin: 0;
+}
+
+.heroCopyWrapper:nth-child(2) h1 {
+  position: relative;
+  top: 300px;
+  font-size: 300px;
+  font-family: var(--font-rosseta), serif;
+  color: white;
+  margin: 0;
+}
+
+.heroImg {
+  position: absolute;
+  top: calc(50% - 250px);
+  left: calc(75% - 175px);
+  width: 350px;
+  height: 500px;
+  z-index: 0;
+}
+
+.heroImg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.heroTagline {
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translate(-50%, 0%);
+}
+
+.heroTagline p {
+  font-family: var(--font-wremena), serif;
+  font-size: 1em;
+  font-weight: 400;
+  color: #fff;
+  margin: 0;
+  line-height: 150%;
+}
+
+@media (max-width: 900px) {
+  .heroSection {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2em 1em;
+  }
+
+  .heroCopy {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    text-align: center;
+    order: 2;
+    margin-top: 2em;
+  }
+
+  .heroCopyWrapper:nth-child(1) h1 {
+    font-size: 32px !important;
+    top: 0 !important;
+    position: relative !important;
+  }
+  
+  .heroCopyWrapper:nth-child(2) h1 {
+    font-size: 120px !important;
+    top: 0 !important;
+    position: relative !important;
+  }
+
+  .heroImg {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    width: 280px;
+    height: 400px;
+    order: 1;
+    margin: 0 auto;
+    transform: none !important;
+  }
+
+  .heroTagline {
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    transform: none !important;
+    order: 3;
+    margin-top: 2em;
+    padding: 0 2em;
+  }
+
+  .heroTagline p {
+    font-size: 0.9em;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroSection {
+    padding: 1em 0.5em;
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
+  }
+
+  .heroCopy {
+    margin-top: 1.5em;
+  }
+
+  .heroCopyWrapper:nth-child(1) h1 {
+    font-size: 24px;
+  }
+  
+  .heroCopyWrapper:nth-child(2) h1 {
+    font-size: 80px;
+    line-height: 0.9;
+  }
+
+  .heroImg {
+    width: 240px;
+    height: 340px;
+  }
+
+  .heroTagline {
+    margin-top: 1.5em;
+    padding: 0 1em;
+  }
+
+  .heroTagline p {
+    font-size: 0.85em;
+    line-height: 1.4;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 320px) {
+  .heroCopyWrapper:nth-child(1) h1 {
+    font-size: 20px;
+  }
+  
+  .heroCopyWrapper:nth-child(2) h1 {
+    font-size: 60px;
+  }
+
+  .heroImg {
+    width: 200px;
+    height: 280px;
+  }
+}
