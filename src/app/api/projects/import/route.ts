@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
                 createData.description += ' (Please update featured image)'
               }
             }
-          } catch (mediaError) {
+          } catch {
             results.failed++
             results.errors.push(`Project ${i + 1}: No media available for placeholder image. Please add media first or include featuredImage in JSON.`)
             continue

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { HeroLoadingState } from '@/components/LoadingStates'
 import DynamicHomepage from './DynamicHomepage'
 

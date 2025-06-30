@@ -57,12 +57,13 @@ export default function Blog() {
     })
   }
 
-  const getImageUrl = (featuredImage?: BlogPost['featuredImage']) => {
-    if (featuredImage && typeof featuredImage === 'object') {
-      return featuredImage.url
-    }
-    return '/images/projects/project-1.jpg' // Fallback image
-  }
+  // Image URL helper (currently unused but available for future implementation)
+  // const getImageUrl = (featuredImage?: BlogPost['featuredImage']) => {
+  //   if (featuredImage && typeof featuredImage === 'object') {
+  //     return featuredImage.url
+  //   }
+  //   return '/images/projects/project-1.jpg' // Fallback image
+  // }
 
   if (loading) {
     return (
@@ -119,7 +120,7 @@ export default function Blog() {
               </div>
             ) : (
               <div className={styles.blogGrid}>
-                {blogPosts.map((post, index) => (
+                {blogPosts.map((post) => (
                   <div key={post.id} className={styles.blogCol}>
                     <div className={styles.blogItem}>
                       <div className={styles.blogDivider}>

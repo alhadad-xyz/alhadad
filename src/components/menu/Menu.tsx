@@ -6,12 +6,7 @@ import Link from "next/link"
 import { gsap } from "gsap"
 import { useDynamicColor } from "@/components/DynamicColorProvider"
 
-// Import images using Next.js public folder structure
-const DefaultPreviewImg = "/images/menu/default.jpg"
-const LinkPreviewImg1 = "/images/home/portrait.jpg"
-const LinkPreviewImg2 = "/images/menu/link-2.jpg"
-const LinkPreviewImg3 = "/images/menu/link-3.jpg"
-const LinkPreviewImg4 = "/images/menu/link-4.jpg"
+// Note: Image constants removed as they are loaded dynamically from CMS settings
 
 export default function Menu() {
   const { isLightBackground, hoveredProject, isWorksPage } = useDynamicColor()

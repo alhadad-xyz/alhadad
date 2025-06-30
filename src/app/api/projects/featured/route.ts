@@ -8,7 +8,7 @@ export async function GET() {
   } catch (error) {
     console.error('Error fetching featured projects:', error)
     
-    // Return empty array on error
-    return NextResponse.json([])
+    // Return empty array on error with 200 status
+    return NextResponse.json([], { status: 200 })
   }
 } 

@@ -3,17 +3,30 @@ import config from '../../payload.config'
 
 // Initialize Payload client for server-side data fetching
 let cachedPayload: any = null
+let connectionError: boolean = false
 
 export async function getPayloadClient() {
+  if (connectionError) {
+    throw new Error('Database connection failed')
+  }
+  
   if (cachedPayload) {
     return cachedPayload
   }
 
   try {
+    // Check if required environment variables are present
+    if (!process.env.SUPABASE_DATABASE_URL) {
+      console.error('SUPABASE_DATABASE_URL environment variable is not set')
+      connectionError = true
+      throw new Error('Database configuration missing')
+    }
+
     cachedPayload = await getPayload({ config })
     return cachedPayload
   } catch (error) {
     console.error('Failed to initialize Payload client:', error)
+    connectionError = true
     throw error
   }
 }

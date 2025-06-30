@@ -34,7 +34,8 @@ interface DynamicHomepageProps {
   featuredProjects: Project[]
 }
 
-export default function DynamicHomepage({ homepageData, featuredProjects }: DynamicHomepageProps) {
+export default function DynamicHomepage({ homepageData }: DynamicHomepageProps) {
+  // Note: featuredProjects parameter available but not used in current implementation
   const heroCopyReveal = useRef<gsap.core.Timeline | null>(null)
   const heroImageReveal = useRef<gsap.core.Timeline | null>(null)
   const heroTaglineReveal = useRef<gsap.core.Timeline | null>(null)

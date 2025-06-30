@@ -172,8 +172,8 @@ export default function CMSDashboard() {
   const [mediaPage, setMediaPage] = useState(1)
   const [mediaLimit] = useState(20)
   const [mediaSearch, setMediaSearch] = useState('')
-  const [mediaFilter, setMediaFilter] = useState('')
-  const [selectedMedia, setSelectedMedia] = useState<MediaItem[]>([])
+  const [mediaFilter] = useState('') // setMediaFilter removed as it's not currently used
+  // const [selectedMedia, setSelectedMedia] = useState<MediaItem[]>([])
   const [mediaUploading, setMediaUploading] = useState(false)
   const [showMediaUpload, setShowMediaUpload] = useState(false)
   const [editingMedia, setEditingMedia] = useState<MediaItem | null>(null)
@@ -1017,11 +1017,12 @@ export default function CMSDashboard() {
     await fetchMediaData()
   }
 
-  const handleMediaFilter = async (tag: string) => {
-    setMediaFilter(tag)
-    setMediaPage(1) // Reset to first page
-    await fetchMediaData()
-  }
+  // Filter function (available for future implementation)
+  // const handleMediaFilter = async (tag: string) => {
+  //   setMediaFilter(tag)
+  //   setMediaPage(1) // Reset to first page
+  //   await fetchMediaData()
+  // }
 
   const handleMediaPageChange = async (page: number) => {
     setMediaPage(page)

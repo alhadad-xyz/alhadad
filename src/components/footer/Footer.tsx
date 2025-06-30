@@ -1,4 +1,5 @@
 import React from "react"
+import Link from "next/link"
 import styles from "./Footer.module.css"
 
 export default function Footer() {
@@ -7,30 +8,30 @@ export default function Footer() {
       <div className={styles.container}>
         <div className={styles.footerCol}>
           <div className={styles.footerItem}>
-            <a href="#">Home</a>
+            <Link href="/">Home</Link>
           </div>
           <div className={styles.footerItem}>
-            <a href="#">About</a>
+            <Link href="/about">About</Link>
           </div>
           <div className={styles.footerItem}>
-            <a href="#">Projects</a>
+            <Link href="/works">Works</Link>
           </div>
           <div className={styles.footerItem}>
-            <a href="#">Contact</a>
+            <Link href="/contact">Contact</Link>
           </div>
           <div className={styles.footerItem}>
-            <a href="#">Blog</a>
+            <Link href="/blog">Blog</Link>
           </div>
         </div>
         <div className={styles.footerCol}>
           <div className={styles.footerItem}>
-            <a href="#">LinkedIn</a>
+            <a href="https://www.linkedin.com/in/alhadad-dev/">LinkedIn</a>
           </div>
           <div className={styles.footerItem}>
-            <a href="#">GitHub</a>
+            <a href="https://github.com/alhadad-xyz">GitHub</a>
           </div>
           <div className={styles.footerItem}>
-            <a href="#">Instagram</a>
+            <a href="https://www.instagram.com/alhadad.dev/">Instagram</a>
           </div>
         </div>
       </div>

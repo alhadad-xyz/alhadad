@@ -80,7 +80,7 @@ export async function GET() {
       heroSubtitle: 'Interaction Designer',
       heroTagline: 'Based in Toronto',
       heroImage: null
-    })
+    }, { status: 200 }) // Ensure we return 200 even on error
   }
 }
 

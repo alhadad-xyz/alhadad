@@ -13,6 +13,9 @@ type Args = {
 }
 
 const Page = async ({ params: _params, searchParams: _searchParams }: Args) => {
+  // Params and searchParams are required by Next.js but not used in this implementation
+  void _params; // Explicitly mark as intentionally unused
+  void _searchParams; // Explicitly mark as intentionally unused
   return (
     <AuthProvider>
       <AuthGuard>

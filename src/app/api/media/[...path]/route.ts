@@ -34,7 +34,7 @@ export async function GET(
         const updateTime = new Date(mediaResult.docs[0].updatedAt).getTime()
         cacheBuster = updateTime
       }
-    } catch (dbError) {
+    } catch {
       console.log('Could not fetch file timestamp, using current time')
     }
 

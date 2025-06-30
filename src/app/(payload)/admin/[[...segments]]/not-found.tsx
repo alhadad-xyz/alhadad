@@ -3,6 +3,11 @@
 import config from '../../../../../payload.config'
 import { NotFoundPage } from '@payloadcms/next/views'
 
-const NotFound = () => NotFoundPage({ config })
+const NotFound = () => NotFoundPage({ 
+  config,
+  importMap: {},
+  params: Promise.resolve({ segments: [] }),
+  searchParams: Promise.resolve({})
+})
 
 export default NotFound 

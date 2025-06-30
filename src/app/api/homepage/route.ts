@@ -39,7 +39,7 @@ export async function GET() {
       heroImage: null,
       aboutPreview: 'Creating meaningful digital experiences that bridge technology and human needs.',
       featuredProjects: []
-    })
+    }, { status: 200 }) // Ensure we return 200 even on error
   }
 }
 

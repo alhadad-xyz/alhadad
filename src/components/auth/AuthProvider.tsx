@@ -48,8 +48,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Listen for auth changes
     const { data: authListener } = authMethods.onAuthStateChange(
       async (event, session) => {
-        setSession(session)
-        setUser(session?.user ?? null)
+        setSession(session as Session | null)
+        setUser((session as Session | null)?.user ?? null)
         setLoading(false)
       }
     )

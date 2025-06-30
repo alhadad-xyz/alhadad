@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import styles from './CreateProjectModal.module.css' // Reuse the same styles
-import { uploadMediaFile, getMediaDisplayName } from '@/utils/media'
+import { uploadMediaFile } from '@/utils/media'
 
 interface Project {
   id: string
@@ -190,7 +190,7 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
       } else {
         alert(result.error || 'Failed to upload image. Please try again.')
       }
-    } catch (error) {
+    } catch {
       alert('Failed to upload image. Please try again.')
     } finally {
       setImageUploading(false)
@@ -220,7 +220,7 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
       } else {
         alert(result.error || 'Failed to upload preview image. Please try again.')
       }
-    } catch (error) {
+    } catch {
       alert('Failed to upload preview image. Please try again.')
     } finally {
       setPreviewImageUploading(false)
@@ -256,7 +256,7 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
       } else {
         alert(result.error || 'Failed to upload gallery image. Please try again.')
       }
-    } catch (error) {
+    } catch {
       alert('Failed to upload gallery image. Please try again.')
     } finally {
       setGalleryUploading(false)
@@ -290,7 +290,7 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
       await onUpdate(projectData)
       
       onClose()
-    } catch (error) {
+    } catch {
       alert('Failed to update project. Please try again.')
     } finally {
       setIsSubmitting(false)
@@ -301,7 +301,7 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
     try {
       await onDelete(project.id)
       onClose()
-    } catch (error) {
+    } catch {
       alert('Failed to delete project. Please try again.')
     }
   }
@@ -662,7 +662,7 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
           <div className={styles.confirmOverlay}>
             <div className={styles.confirmDialog}>
               <h3>Delete Project</h3>
-              <p>Are you sure you want to delete "<strong>{project.title}</strong>"?</p>
+              <p>Are you sure you want to delete &ldquo;<strong>{project.title}</strong>&rdquo;?</p>
               <p className={styles.warningText}>This action cannot be undone.</p>
               <div className={styles.confirmActions}>
                 <button 
