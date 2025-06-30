@@ -4,6 +4,8 @@ import "./globals.css"
 import { ConditionalFooter } from "./ConditionalFooter"
 import { GlobalErrorHandler } from "@/components/ErrorBoundary"
 import { DynamicColorProvider } from "@/components/DynamicColorProvider"
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 // Dynamic metadata generation
 export async function generateMetadata(): Promise<Metadata> {
@@ -48,6 +50,8 @@ export default function RootLayout({
             <ConditionalFooter />
           </DynamicColorProvider>
         </GlobalErrorHandler>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
