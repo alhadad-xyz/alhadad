@@ -82,6 +82,40 @@ img {
   object-fit: cover;
 }
 
+/* LCP Optimization for hero images */
+.hero-image-lcp {
+  /* High priority rendering */
+  content-visibility: auto;
+  contain-intrinsic-size: 350px 500px;
+  /* Optimize rendering */
+  will-change: transform;
+  contain: layout style paint;
+  /* Prevent layout shifts */
+  aspect-ratio: 7/10;
+  /* Ensure proper image rendering */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Mobile optimizations */
+@media (max-width: 900px) {
+  .hero-image-lcp {
+    contain-intrinsic-size: 280px 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-image-lcp {
+    contain-intrinsic-size: 240px 340px;
+  }
+}
+
+@media (max-width: 320px) {
+  .hero-image-lcp {
+    contain-intrinsic-size: 200px 280px;
+  }
+}
+
 .container {
   width: 100%;
   margin: 0 auto;

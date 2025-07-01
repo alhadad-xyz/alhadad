@@ -22,6 +22,10 @@ export async function generateMetadata(): Promise<Metadata> {
       icons: {
         icon: settings.siteIcon?.url || "/favicon.ico",
       },
+      // Add preload for hero image if available
+      other: settings.heroImage?.url ? {
+        'link[rel="preload"][as="image"]': settings.heroImage.url,
+      } : {},
     }
   } catch (error) {
     console.error('Error fetching metadata:', error)
@@ -43,6 +47,29 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${rosseta.variable} ${wremena.variable}`}>
+      <head>
+        {/* Preload critical resources */}
+        <link 
+          rel="preload" 
+          href="/images/home/portrait.jpg" 
+          as="image" 
+          fetchPriority="high"
+        />
+        <link 
+          rel="preload" 
+          href="/fonts/Rosseta.otf" 
+          as="font" 
+          type="font/otf" 
+          crossOrigin="anonymous"
+        />
+        <link 
+          rel="preload" 
+          href="/fonts/Wremena_Light.otf" 
+          as="font" 
+          type="font/otf" 
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className={wremena.className}>
         <GlobalErrorHandler>
           <DynamicColorProvider>

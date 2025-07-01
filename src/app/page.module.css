@@ -2,6 +2,8 @@
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  /* Add will-change for better performance */
+  will-change: transform;
 }
 
 /* GSAP Reset utility - ensures proper layout on resize */
@@ -57,6 +59,7 @@
   margin: 0;
 }
 
+/* Optimized hero image container */
 .heroImg {
   position: absolute;
   top: calc(50% - 250px);
@@ -64,12 +67,31 @@
   width: 350px;
   height: 500px;
   z-index: 0;
+  /* Add performance optimizations */
+  will-change: transform, opacity;
+  contain: layout style paint;
 }
 
+/* Optimized hero image - simplified selector for better performance */
 .heroImg img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* Add performance optimizations */
+  will-change: transform;
+  contain: layout style paint;
+  /* Ensure proper rendering */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  /* Prevent layout shifts */
+  aspect-ratio: 7/10;
+}
+
+/* Add a specific class for LCP optimization */
+.heroImgLcp {
+  /* High priority for LCP */
+  content-visibility: auto;
+  contain-intrinsic-size: 350px 500px;
 }
 
 .heroTagline {
@@ -131,6 +153,8 @@
     order: 1;
     margin: 0 auto;
     transform: none !important;
+    /* Update contain-intrinsic-size for mobile */
+    contain-intrinsic-size: 280px 400px;
   }
 
   .heroTagline {
@@ -171,6 +195,8 @@
   .heroImg {
     width: 240px;
     height: 340px;
+    /* Update contain-intrinsic-size for small mobile */
+    contain-intrinsic-size: 240px 340px;
   }
 
   .heroTagline {
@@ -197,5 +223,7 @@
   .heroImg {
     width: 200px;
     height: 280px;
+    /* Update contain-intrinsic-size for extra small screens */
+    contain-intrinsic-size: 200px 280px;
   }
 }

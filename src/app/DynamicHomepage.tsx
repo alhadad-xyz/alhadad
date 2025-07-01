@@ -41,6 +41,22 @@ export default function DynamicHomepage({ homepageData }: DynamicHomepageProps) 
   const heroTaglineReveal = useRef<gsap.core.Timeline | null>(null)
   const isAnimationPlayed = useRef(false)
 
+  // Preload hero image for better LCP
+  useEffect(() => {
+    if (homepageData?.heroImage?.url) {
+      const link = document.createElement('link')
+      link.rel = 'preload'
+      link.as = 'image'
+      link.href = homepageData.heroImage.url
+      link.fetchPriority = 'high'
+      document.head.appendChild(link)
+      
+      return () => {
+        document.head.removeChild(link)
+      }
+    }
+  }, [homepageData?.heroImage?.url])
+
   // Extract hero content with fallbacks
   const heroTitleTop = typeof homepageData?.heroTitleTop === 'string' ? homepageData.heroTitleTop : 'MOHAMMAD KHALID I'
   const heroTitleBottom = typeof homepageData?.heroTitleBottom === 'string' ? homepageData.heroTitleBottom : 'ALHADAD'
@@ -415,12 +431,22 @@ export default function DynamicHomepage({ homepageData }: DynamicHomepageProps) 
   return (
     <PageTransition key="home-page">
       <section className={styles.heroSection}>
-        <div className={styles.heroImg}>
+        <div className={`${styles.heroImg} hero-image-lcp`}>
           <img
             src={heroImage.url}
             alt={heroImage.alt}
             width={350}
             height={500}
+            loading="eager"
+            fetchPriority="high"
+            decoding="sync"
+            style={{
+              // Inline critical styles for faster rendering
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              aspectRatio: '7/10'
+            }}
           />
         </div>
         <div className={styles.heroCopy}>
