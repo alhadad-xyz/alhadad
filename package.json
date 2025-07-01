@@ -7,7 +7,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:init": "node scripts/init-database.js",
+    "db:migrate": "npx payload migrate",
+    "db:migrate:create": "npx payload migrate:create",
+    "db:reset": "npx payload migrate:reset",
+    "db:status": "npx payload migrate:status"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
