@@ -31,15 +31,31 @@ export default function HomePage() {
   const [homepageData, setHomepageData] = useState<HomepageData | null>(null)
   const [featuredProjects, setFeaturedProjects] = useState<Project[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchHomepageData = async () => {
       try {
-        // Fetch data from CMS APIs
+        setError(null)
+        
+        // Fetch data from CMS APIs with timeout
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 15000) // 15 second timeout
+
         const [homepageResponse, projectsResponse] = await Promise.all([
-          fetch('/api/settings'), // Get hero content from settings
-          fetch('/api/projects/featured')
+          fetch('/api/settings', { signal: controller.signal }),
+          fetch('/api/projects/featured', { signal: controller.signal })
         ])
+
+        clearTimeout(timeoutId)
+
+        // Check if responses are ok
+        if (!homepageResponse.ok) {
+          throw new Error(`Settings API error: ${homepageResponse.status}`)
+        }
+        if (!projectsResponse.ok) {
+          throw new Error(`Projects API error: ${projectsResponse.status}`)
+        }
 
         const [homepageData, projectsData] = await Promise.all([
           homepageResponse.json(),
@@ -49,7 +65,7 @@ export default function HomePage() {
         // Transform the settings data to match homepage interface
         const transformedData: HomepageData = {
           heroTitle: homepageData.heroTitle || 'Alhadad.',
-          heroSubtitle: homepageData.heroSubtitle || 'Full Stack Developer',
+          heroSubtitle: homepageData.heroSubtitle || 'Software Engineer',
           heroTagline: homepageData.heroTagline || 'Based in Pasuruan',
           heroImage: homepageData.heroImage || {
             url: '/images/home/portrait.jpg',
@@ -62,10 +78,14 @@ export default function HomePage() {
       } catch (error) {
         console.error('Error fetching homepage data:', error)
         
+        // Set error message for debugging
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+        setError(errorMessage)
+        
         // Fallback data if API fails
         const fallbackData: HomepageData = {
           heroTitle: 'Alhadad.',
-          heroSubtitle: 'Full Stack Developer',
+          heroSubtitle: 'Software Engineer',
           heroTagline: 'Based in Pasuruan',
           heroImage: {
             url: '/images/home/portrait.jpg',
@@ -74,7 +94,30 @@ export default function HomePage() {
         }
         
         setHomepageData(fallbackData)
-        setFeaturedProjects([])
+        setFeaturedProjects([
+          {
+            id: 'fallback-1',
+            title: 'Sample Project 1',
+            slug: 'sample-project-1',
+            year: '2024',
+            category: 'web',
+            featuredImage: {
+              url: '/images/projects/project-1.jpg',
+              alt: 'Sample Project 1'
+            }
+          },
+          {
+            id: 'fallback-2',
+            title: 'Sample Project 2',
+            slug: 'sample-project-2',
+            year: '2023',
+            category: 'mobile',
+            featuredImage: {
+              url: '/images/projects/project-2.jpg',
+              alt: 'Sample Project 2'
+            }
+          }
+        ])
       } finally {
         setIsLoading(false)
       }
@@ -85,6 +128,11 @@ export default function HomePage() {
 
   if (isLoading) {
     return <HeroLoadingState />
+  }
+
+  // Show error message in development
+  if (error && process.env.NODE_ENV === 'development') {
+    console.warn('Homepage API Error:', error)
   }
 
   return (

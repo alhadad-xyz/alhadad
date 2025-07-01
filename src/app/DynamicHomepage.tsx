@@ -60,7 +60,7 @@ export default function DynamicHomepage({ homepageData }: DynamicHomepageProps) 
   // Extract hero content with fallbacks
   const heroTitleTop = typeof homepageData?.heroTitleTop === 'string' ? homepageData.heroTitleTop : 'MOHAMMAD KHALID I'
   const heroTitleBottom = typeof homepageData?.heroTitleBottom === 'string' ? homepageData.heroTitleBottom : 'ALHADAD'
-  const heroSubtitle = typeof homepageData?.heroSubtitle === 'string' ? homepageData.heroSubtitle : 'Full Stack Developer'
+  const heroSubtitle = typeof homepageData?.heroSubtitle === 'string' ? homepageData.heroSubtitle : 'Software Engineer'
   const heroTagline = typeof homepageData?.heroTagline === 'string' ? homepageData.heroTagline : 'Pasuruan'
   const heroImage = homepageData?.heroImage || {
     url: '/images/home/portrait.jpg',

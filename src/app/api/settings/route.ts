@@ -3,20 +3,57 @@ import { getPayloadClient } from '@/lib/payload-client'
 
 export async function GET() {
   try {
+    // Check if database is available
+    if (!process.env.SUPABASE_DATABASE_URL) {
+      console.warn('SUPABASE_DATABASE_URL not configured, returning fallback settings')
+      return NextResponse.json({
+        siteName: 'Alhadad',
+        siteDescription: 'Portfolio of Mohammad Khalid Alhadad, a Software Engineer based in Pasuruan.',
+        footerText: '© 2024 Mohammad Khalid Alhadad. All rights reserved.',
+        customMenuItems: [],
+        // Site branding defaults
+        logoTitle: 'ALHADAD',
+        siteTitle: 'Mohammad Khalid Alhadad - Software Engineer',
+        siteIcon: null,
+        menuPreviewImages: {
+          about: null,
+          work: null,
+          blog: null,
+          contact: null,
+        },
+        // Default hero content
+        heroTitle: 'MOHAMMAD KHALID',
+        heroTitleTop: 'MOHAMMAD KHALID I',
+        heroTitleBottom: 'ALHADAD',
+        heroSubtitle: 'Software Engineer',
+        heroTagline: 'Pasuruan',
+        heroImage: {
+          url: '/images/home/portrait.jpg',
+          alt: 'Portrait'
+        }
+      }, { status: 200 })
+    }
+
     const payload = await getPayloadClient()
     
-    // Fetch both site settings and homepage content
-    const [siteSettings, homepage] = await Promise.all([
-      payload.findGlobal({ slug: 'site-settings' }),
-      payload.findGlobal({ slug: 'homepage' })
+    // Fetch both site settings and homepage content with timeout
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Database query timeout')), 10000)
+    )
+    
+    const dataPromise = Promise.all([
+      payload.findGlobal({ slug: 'site-settings' }).catch(() => null),
+      payload.findGlobal({ slug: 'homepage' }).catch(() => null)
     ])
+
+    const [siteSettings, homepage] = await Promise.race([dataPromise, timeoutPromise]) as [any, any]
 
     // Combine settings with homepage hero content
     const combinedSettings = {
       ...siteSettings,
       // Site branding
-      logoTitle: siteSettings?.logoTitle || 'CURA FUTURI',
-      siteTitle: siteSettings?.siteTitle || 'Cura Futuri - Interaction Designer',
+      logoTitle: siteSettings?.logoTitle || 'ALHADAD',
+      siteTitle: siteSettings?.siteTitle || 'Mohammad Khalid Alhadad - Software Engineer',
       siteIcon: siteSettings?.siteIcon || null,
       menuPreviewImages: {
         about: siteSettings?.menuPreviewImageAbout 
@@ -42,15 +79,18 @@ export async function GET() {
       },
       // Hero section from homepage (extract text from rich text if needed)
       heroTitle: homepage?.heroTitle?.root?.children?.[0]?.children?.[0]?.text || homepage?.heroTitle || 'MOHAMMAD KHALID',
-      heroTitleTop: homepage?.heroTitleTop || 'MOHAMMAD',
-      heroTitleBottom: homepage?.heroTitleBottom || 'KHALID',
-      heroSubtitle: homepage?.heroSubtitle || 'Interaction Designer',
-      heroTagline: homepage?.heroTagline || 'Based in Toronto',
+      heroTitleTop: homepage?.heroTitleTop || 'MOHAMMAD KHALID I',
+      heroTitleBottom: homepage?.heroTitleBottom || 'ALHADAD',
+      heroSubtitle: homepage?.heroSubtitle || 'Software Engineer',
+      heroTagline: homepage?.heroTagline || 'Pasuruan',
       heroImage: homepage?.heroImage 
         ? (homepage.heroImage.url?.startsWith('/media/') 
             ? homepage.heroImage 
             : { ...homepage.heroImage, url: `/media/${homepage.heroImage.filename}` })
-        : null
+        : {
+            url: '/images/home/portrait.jpg',
+            alt: 'Portrait'
+          }
     }
 
     return NextResponse.json(combinedSettings)
@@ -59,13 +99,13 @@ export async function GET() {
     
     // Return default settings if CMS is not available
     return NextResponse.json({
-      siteName: 'Cura Futuri',
-      siteDescription: 'Portfolio of Cura Futuri, an interaction designer based in Toronto specializing in digital experiences and creative development.',
-      footerText: '© 2024 Cura Futuri. All rights reserved.',
+      siteName: 'Alhadad',
+      siteDescription: 'Portfolio of Mohammad Khalid Alhadad, a Software Engineer based in Pasuruan.',
+      footerText: '© 2024 Mohammad Khalid Alhadad. All rights reserved.',
       customMenuItems: [],
       // Site branding defaults
-      logoTitle: 'CURA FUTURI',
-      siteTitle: 'Cura Futuri - Interaction Designer',
+      logoTitle: 'ALHADAD',
+      siteTitle: 'Mohammad Khalid Alhadad - Software Engineer',
       siteIcon: null,
       menuPreviewImages: {
         about: null,
@@ -75,11 +115,14 @@ export async function GET() {
       },
       // Default hero content
       heroTitle: 'MOHAMMAD KHALID',
-      heroTitleTop: 'MOHAMMAD',
-      heroTitleBottom: 'KHALID',
-      heroSubtitle: 'Interaction Designer',
-      heroTagline: 'Based in Toronto',
-      heroImage: null
+      heroTitleTop: 'MOHAMMAD KHALID I',
+      heroTitleBottom: 'ALHADAD',
+      heroSubtitle: 'Software Engineer',
+      heroTagline: 'Pasuruan',
+      heroImage: {
+        url: '/images/home/portrait.jpg',
+        alt: 'Portrait'
+      }
     }, { status: 200 }) // Ensure we return 200 even on error
   }
 }
