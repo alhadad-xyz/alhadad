@@ -68,7 +68,7 @@ export default function HomePage() {
           heroSubtitle: homepageData.heroSubtitle || 'Software Engineer',
           heroTagline: homepageData.heroTagline || 'Based in Pasuruan',
           heroImage: homepageData.heroImage || {
-            url: '/images/home/portrait.jpg',
+            url: '/images/home/portrait.png',
             alt: 'Portrait'
           }
         }
@@ -88,7 +88,7 @@ export default function HomePage() {
           heroSubtitle: 'Software Engineer',
           heroTagline: 'Based in Pasuruan',
           heroImage: {
-            url: '/images/home/portrait.jpg',
+            url: '/images/home/portrait.png',
             alt: 'Portrait'
           }
         }

@@ -2045,7 +2045,7 @@ export default function CMSDashboard() {
                     style={{ width: '150px', height: '150px', objectFit: 'cover' }}
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
-                      target.src = '/images/home/portrait.jpg'
+                      target.src = '/images/home/portrait.png'
                     }}
                   />
                   <button 
@@ -2419,12 +2419,12 @@ export default function CMSDashboard() {
                           ? (settings.menuPreviewImages[menuItem as keyof typeof settings.menuPreviewImages] as string).startsWith('blob:') 
                             ? settings.menuPreviewImages[menuItem as keyof typeof settings.menuPreviewImages] as string
                             : `/media/${settings.menuPreviewImages[menuItem as keyof typeof settings.menuPreviewImages]}`
-                          : ((settings.menuPreviewImages[menuItem as keyof typeof settings.menuPreviewImages] as any)?.url || '/images/home/portrait.jpg')} 
+                          : ((settings.menuPreviewImages[menuItem as keyof typeof settings.menuPreviewImages] as any)?.url || '/images/home/portrait.png')} 
                         alt={`${menuItem} preview image`}
                         style={{width: '120px', height: '80px', objectFit: 'cover'}}
                         onError={(e) => {
                           const target = e.target as HTMLImageElement
-                          target.src = '/images/home/portrait.jpg'
+                          target.src = '/images/home/portrait.png'
                         }}
                       />
                       <button 
@@ -2504,11 +2504,11 @@ export default function CMSDashboard() {
                       ? (settings.heroImage.startsWith('blob:') 
                           ? settings.heroImage 
                           : `/media/${settings.heroImage}`)
-                      : (settings.heroImage?.url || '/images/home/portrait.jpg')} 
+                      : (settings.heroImage?.url || '/images/home/portrait.png')} 
                     alt="Hero image preview"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
-                      target.src = '/images/home/portrait.jpg' // Fallback image
+                      target.src = '/images/home/portrait.png' // Fallback image
                       console.log('Hero image failed to load:', target.src)
                     }}
                   />

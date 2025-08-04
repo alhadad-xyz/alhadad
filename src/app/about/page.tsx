@@ -124,7 +124,7 @@ export default function About() {
               <div className={styles.aboutCol}>
                 <div className={styles.aboutPortraitImg}>
                   <img 
-                    src={aboutContent.profileImage?.url || "/images/home/portrait.jpg"} 
+                    src={aboutContent.profileImage?.url || "/images/home/portrait.png"} 
                     alt={aboutContent.profileImage?.alt || "Profile photo"} 
                   />
                 </div>

@@ -22,7 +22,7 @@ export default function Menu() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [logoTitle, setLogoTitle] = useState("Alhadad.")
   const [menuPreviewImages, setMenuPreviewImages] = useState({
-    about: "/images/home/portrait.jpg",
+    about: "/images/home/portrait.png",
     work: "/images/menu/link-2.jpg",
     blog: "/images/menu/link-3.jpg",
     contact: "/images/menu/link-4.jpg",
@@ -47,7 +47,7 @@ export default function Menu() {
         
         // Set menu preview images with safety checks
         const newMenuImages = {
-          about: settings?.menuPreviewImages?.about?.url || "/images/home/portrait.jpg",
+          about: settings?.menuPreviewImages?.about?.url || "/images/home/portrait.png",
           work: settings?.menuPreviewImages?.work?.url || "/images/menu/link-2.jpg",
           blog: settings?.menuPreviewImages?.blog?.url || "/images/menu/link-3.jpg",
           contact: settings?.menuPreviewImages?.contact?.url || "/images/menu/link-4.jpg",
@@ -58,7 +58,7 @@ export default function Menu() {
         // Keep defaults if fetch fails
         setLogoTitle("Alhadad.")
         setMenuPreviewImages({
-          about: "/images/home/portrait.jpg",
+          about: "/images/home/portrait.png",
           work: "/images/menu/link-2.jpg",
           blog: "/images/menu/link-3.jpg",
           contact: "/images/menu/link-4.jpg",

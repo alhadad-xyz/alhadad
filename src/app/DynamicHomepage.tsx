@@ -63,7 +63,7 @@ export default function DynamicHomepage({ homepageData }: DynamicHomepageProps) 
   const heroSubtitle = typeof homepageData?.heroSubtitle === 'string' ? homepageData.heroSubtitle : 'Software Engineer'
   const heroTagline = typeof homepageData?.heroTagline === 'string' ? homepageData.heroTagline : 'Pasuruan'
   const heroImage = homepageData?.heroImage || {
-    url: '/images/home/portrait.jpg',
+    url: '/images/home/portrait.png',
     alt: 'Portrait'
   }
 

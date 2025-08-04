@@ -51,7 +51,7 @@ export default function RootLayout({
         {/* Preload critical resources */}
         <link 
           rel="preload" 
-          href="/images/home/portrait.jpg" 
+          href="/images/home/portrait.png" 
           as="image" 
           fetchPriority="high"
         />

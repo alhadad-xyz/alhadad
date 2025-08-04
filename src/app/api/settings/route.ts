@@ -28,7 +28,7 @@ export async function GET() {
         heroSubtitle: 'Software Engineer',
         heroTagline: 'Pasuruan',
         heroImage: {
-          url: '/images/home/portrait.jpg',
+          url: '/images/home/portrait.png',
           alt: 'Portrait'
         }
       }, { status: 200 })
@@ -88,7 +88,7 @@ export async function GET() {
             ? homepage.heroImage 
             : { ...homepage.heroImage, url: `/media/${homepage.heroImage.filename}` })
         : {
-            url: '/images/home/portrait.jpg',
+            url: '/images/home/portrait.png',
             alt: 'Portrait'
           }
     }
@@ -120,7 +120,7 @@ export async function GET() {
       heroSubtitle: 'Software Engineer',
       heroTagline: 'Pasuruan',
       heroImage: {
-        url: '/images/home/portrait.jpg',
+        url: '/images/home/portrait.png',
         alt: 'Portrait'
       }
     }, { status: 200 }) // Ensure we return 200 even on error
