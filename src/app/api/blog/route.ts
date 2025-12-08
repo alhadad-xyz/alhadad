@@ -134,9 +134,9 @@ export async function POST(request: NextRequest) {
     // Convert plain text content to Lexical rich text format for Payload
     const richTextContent = content ? {
       root: {
-        type: 'root',
-        direction: 'ltr',
-        format: '',
+        type: 'root' as const,
+        direction: 'ltr' as const,
+        format: '' as const,
         indent: 0,
         version: 1,
         children: [
@@ -145,23 +145,32 @@ export async function POST(request: NextRequest) {
               {
                 detail: 0,
                 format: 0,
-                mode: 'normal',
+                mode: 'normal' as const,
                 style: '',
                 text: content,
-                type: 'text',
+                type: 'text' as const,
                 version: 1,
               }
             ],
-            direction: 'ltr',
-            format: '',
+            direction: 'ltr' as const,
+            format: '' as const,
             indent: 0,
-            type: 'paragraph',
+            type: 'paragraph' as const,
             textFormat: 0,
             version: 1,
           }
         ]
       }
-    } : null
+    } : {
+      root: {
+        type: 'root' as const,
+        direction: 'ltr' as const,
+        format: '' as const,
+        indent: 0,
+        version: 1,
+        children: []
+      }
+    }
 
     const result = await payload.create({
       collection: 'blog-posts',
@@ -232,9 +241,9 @@ export async function PUT(request: NextRequest) {
     // Convert plain text content to Lexical rich text format for Payload
     const richTextContent = content ? {
       root: {
-        type: 'root',
-        direction: 'ltr',
-        format: '',
+        type: 'root' as const,
+        direction: 'ltr' as const,
+        format: '' as const,
         indent: 0,
         version: 1,
         children: [
@@ -243,23 +252,32 @@ export async function PUT(request: NextRequest) {
               {
                 detail: 0,
                 format: 0,
-                mode: 'normal',
+                mode: 'normal' as const,
                 style: '',
                 text: content,
-                type: 'text',
+                type: 'text' as const,
                 version: 1,
               }
             ],
-            direction: 'ltr',
-            format: '',
+            direction: 'ltr' as const,
+            format: '' as const,
             indent: 0,
-            type: 'paragraph',
+            type: 'paragraph' as const,
             textFormat: 0,
             version: 1,
           }
         ]
       }
-    } : null
+    } : {
+      root: {
+        type: 'root' as const,
+        direction: 'ltr' as const,
+        format: '' as const,
+        indent: 0,
+        version: 1,
+        children: []
+      }
+    }
 
     const result = await payload.update({
       collection: 'blog-posts',

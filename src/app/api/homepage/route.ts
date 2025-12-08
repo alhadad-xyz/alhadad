@@ -4,7 +4,7 @@ import { getPayloadClient } from '@/lib/payload-client'
 export async function GET() {
   try {
     const payload = await getPayloadClient()
-    
+
     // Fetch homepage content from CMS with populated relationships
     const homepage = await payload.findGlobal({
       slug: 'homepage',
@@ -14,21 +14,21 @@ export async function GET() {
     // Extract text from rich text fields if they exist
     const transformedHomepage = {
       ...homepage,
-      heroTitle: homepage?.heroTitle?.root?.children?.[0]?.children?.[0]?.text || homepage?.heroTitle || 'MOHAMMAD KHALID',
+      heroTitle: (homepage as any)?.heroTitle?.root?.children?.[0]?.children?.[0]?.text || (homepage as any)?.heroTitle || 'MOHAMMAD KHALID',
       heroTitleTop: homepage?.heroTitleTop || 'MOHAMMAD',
       heroTitleBottom: homepage?.heroTitleBottom || 'KHALID',
       // Ensure hero image URL is correct
-      heroImage: homepage?.heroImage 
-        ? (homepage.heroImage.url?.startsWith('/media/') 
-            ? homepage.heroImage 
-            : { ...homepage.heroImage, url: `/media/${homepage.heroImage.filename}` })
+      heroImage: homepage?.heroImage && typeof homepage.heroImage === 'object'
+        ? ((homepage.heroImage as any).url?.startsWith('/media/')
+          ? homepage.heroImage
+          : { ...(homepage.heroImage as object), url: `/media/${(homepage.heroImage as any).filename}` })
         : null
     }
 
     return NextResponse.json(transformedHomepage)
   } catch (error) {
     console.error('Error fetching homepage content:', error)
-    
+
     // Return default homepage content if CMS is not available
     return NextResponse.json({
       heroTitle: 'MOHAMMAD KHALID',
@@ -47,30 +47,30 @@ export async function POST(request: Request) {
   try {
     const homepageData = await request.json()
     const payload = await getPayloadClient()
-    
+
     // Transform heroTitle to rich text format if it's a string
     const transformedData = {
       ...homepageData,
-      heroTitle: typeof homepageData.heroTitle === 'string' 
+      heroTitle: typeof homepageData.heroTitle === 'string'
         ? {
-            root: {
-              type: 'root',
-              children: [
-                {
-                  type: 'paragraph',
-                  children: [
-                    {
-                      type: 'text',
-                      text: homepageData.heroTitle
-                    }
-                  ]
-                }
-              ]
-            }
+          root: {
+            type: 'root',
+            children: [
+              {
+                type: 'paragraph',
+                children: [
+                  {
+                    type: 'text',
+                    text: homepageData.heroTitle
+                  }
+                ]
+              }
+            ]
           }
+        }
         : homepageData.heroTitle
     }
-    
+
     // Update homepage content in CMS
     const updatedHomepage = await payload.updateGlobal({
       slug: 'homepage',
@@ -84,7 +84,7 @@ export async function POST(request: Request) {
     })
   } catch (error) {
     console.error('Error saving homepage content:', error)
-    
+
     return NextResponse.json({
       success: false,
       message: 'Failed to save homepage content. Please try again.',
