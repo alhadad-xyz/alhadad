@@ -12,12 +12,12 @@ import { useDynamicColor } from "@/components/DynamicColorProvider"
 export default function Menu() {
   const { isLightBackground, hoveredProject, isWorksPage } = useDynamicColor()
 
-  const menuLinks = [
+  const [menuLinks, setMenuLinks] = useState([
     { path: "/about", label: "About" },
     { path: "/works", label: "Work" },
     { path: "/blog", label: "Blog" },
     { path: "/contact", label: "Contact" },
-  ]
+  ])
 
   const menuContainer = useRef<HTMLDivElement>(null)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -30,6 +30,31 @@ export default function Menu() {
   })
   const menuAnimation = useRef<gsap.core.Timeline | null>(null)
   const menuLinksAnimation = useRef<gsap.core.Timeline | null>(null)
+
+  // Fetch menu items from CMS
+  useEffect(() => {
+    const fetchMenuItems = async () => {
+      try {
+        const response = await fetch('/api/menu')
+        if (response.ok) {
+          const result = await response.json()
+          if (result.success && result.data.length > 0) {
+            const cmsMenuItems = result.data.map((item: any) => ({
+              path: item.url,
+              label: item.label,
+              openInNewTab: item.openInNewTab || false
+            }))
+            setMenuLinks(cmsMenuItems)
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching menu items:', error)
+        // Keep defaults if fetch fails
+      }
+    }
+
+    fetchMenuItems()
+  }, [])
 
   // Fetch settings from API
   useEffect(() => {
@@ -218,10 +243,10 @@ export default function Menu() {
 
   // Dynamic hamburger icon class based on background (only on works page)
   const hamburgerIconClass = `${styles.hamburgerIcon} ${isWorksPage && hoveredProject && isLightBackground
-      ? styles.lightBackground
-      : isWorksPage && hoveredProject && !isLightBackground
-        ? styles.darkBackground
-        : ''
+    ? styles.lightBackground
+    : isWorksPage && hoveredProject && !isLightBackground
+      ? styles.darkBackground
+      : ''
     }`.trim()
 
   return (

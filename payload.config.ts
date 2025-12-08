@@ -3,6 +3,7 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import { buildConfig } from 'payload'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { MenuItems } from './src/collections/MenuItems'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -547,6 +548,8 @@ export default buildConfig({
         },
       ],
     },
+    // Menu Items Collection - CMS-managed navigation
+    MenuItems,
   ],
 
   // Global settings (Singleton collections)
