@@ -1,10 +1,12 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
 import styles from './CMSDashboard.module.css'
 import CreateProjectModal from './CreateProjectModal'
 import EditProjectModal from './EditProjectModal'
 import UserMenu from '../../components/auth/UserMenu'
+import type { LexicalContent, LexicalNode, ProjectData, SettingsValue } from '@/types'
 
 interface Project {
   id: string
@@ -27,7 +29,7 @@ interface BlogPost {
   status: string
   publishedAt: string
   excerpt?: string
-  content?: any
+  content?: LexicalContent | string
   featuredImage?: {
     id: number
     url: string
@@ -92,8 +94,8 @@ export default function CMSDashboard() {
   const [editingProject, setEditingProject] = useState<Project | null>(null)
   const [isMounted, setIsMounted] = useState(false)
   const [isSavingSettings, setIsSavingSettings] = useState(false)
-  const [settingsMessage, setSettingsMessage] = useState<{type: 'success' | 'error', text: string} | null>(null)
-  
+  const [settingsMessage, setSettingsMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
+
   const [settings, setSettings] = useState({
     siteName: 'Cura Futuri',
     siteDescription: 'Portfolio of Cura Futuri, an interaction designer based in Toronto specializing in digital experiences and creative development.',
@@ -163,11 +165,11 @@ export default function CMSDashboard() {
       { question: 'What is your hourly rate?', answer: 'While I primarily work with project-based pricing, I understand that some projects may require an hourly rate. My hourly rate varies depending on the complexity and scope of the work.' }
     ]
   })
-  
+
   const [isSavingAbout, setIsSavingAbout] = useState(false)
-  const [aboutMessage, setAboutMessage] = useState<{type: 'success' | 'error', text: string} | null>(null)
+  const [aboutMessage, setAboutMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
   const [aboutImageUploading, setAboutImageUploading] = useState(false)
-  
+
   // Media management state
   const [mediaPage, setMediaPage] = useState(1)
   const [mediaLimit] = useState(20)
@@ -179,7 +181,7 @@ export default function CMSDashboard() {
   const [editingMedia, setEditingMedia] = useState<MediaItem | null>(null)
   const [mediaViewMode, setMediaViewMode] = useState<'grid' | 'list'>('grid')
   const [mediaTotalPages, setMediaTotalPages] = useState(1)
-  
+
   // Blog management state
   const [blogPage, setBlogPage] = useState(1)
   const [blogLimit] = useState(10)
@@ -191,7 +193,7 @@ export default function CMSDashboard() {
 
   // Project import/export state
   const [isImporting, setIsImporting] = useState(false)
-  const [importMessage, setImportMessage] = useState<{type: 'success' | 'error', text: string} | null>(null)
+  const [importMessage, setImportMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
 
   // Helper function to convert category values to display labels
   const getCategoryLabel = (category: string) => {
@@ -246,14 +248,14 @@ export default function CMSDashboard() {
 
       setStats(statsData)
       setProjects(projectsData)
-      
+
       // Fetch media data
       await fetchMediaData()
-      
+
       setIsLoading(false)
     } catch (error) {
       console.error('Error fetching dashboard data:', error)
-      
+
       // Fallback to mock data
       const mockProjects: Project[] = [
         {
@@ -356,7 +358,7 @@ export default function CMSDashboard() {
   const handleSaveSettings = async () => {
     setIsSavingSettings(true)
     setSettingsMessage(null)
-    
+
     try {
       const response = await fetch('/api/settings', {
         method: 'POST',
@@ -378,13 +380,13 @@ export default function CMSDashboard() {
       setSettingsMessage({ type: 'error', text: 'Failed to save settings. Please try again.' })
     } finally {
       setIsSavingSettings(false)
-      
+
       // Clear message after 3 seconds
       setTimeout(() => setSettingsMessage(null), 3000)
     }
   }
 
-  const handleSettingChange = (field: string, value: any) => {
+  const handleSettingChange = (field: string, value: SettingsValue) => {
     if (field.includes('.')) {
       // Handle nested properties like 'menuPreviewImages.about'
       const [parentField, childField] = field.split('.')
@@ -408,9 +410,9 @@ export default function CMSDashboard() {
     if (!file) return
 
     // Show loading state
-    setSettingsMessage({ 
-      type: 'success', 
-      text: `Uploading "${file.name}"...` 
+    setSettingsMessage({
+      type: 'success',
+      text: `Uploading "${file.name}"...`
     })
 
     try {
@@ -435,22 +437,22 @@ export default function CMSDashboard() {
           alt: uploadResult.data.alt,
           filename: uploadResult.data.filename
         })
-        
-        setSettingsMessage({ 
-          type: 'success', 
-          text: `Image "${file.name}" uploaded successfully!` 
+
+        setSettingsMessage({
+          type: 'success',
+          text: `Image "${file.name}" uploaded successfully!`
         })
       } else {
         throw new Error(uploadResult.message || 'Upload failed')
       }
     } catch (error) {
       console.error('Error uploading image:', error)
-      setSettingsMessage({ 
-        type: 'error', 
-        text: `Failed to upload "${file.name}". Please try again.` 
+      setSettingsMessage({
+        type: 'error',
+        text: `Failed to upload "${file.name}". Please try again.`
       })
     }
-    
+
     // Clear message after 3 seconds
     setTimeout(() => setSettingsMessage(null), 3000)
   }
@@ -460,9 +462,9 @@ export default function CMSDashboard() {
     if (!file) return
 
     // Show loading state
-    setSettingsMessage({ 
-      type: 'success', 
-      text: `Uploading "${file.name}"...` 
+    setSettingsMessage({
+      type: 'success',
+      text: `Uploading "${file.name}"...`
     })
 
     try {
@@ -487,22 +489,22 @@ export default function CMSDashboard() {
           alt: uploadResult.data.alt,
           filename: uploadResult.data.filename
         })
-        
-        setSettingsMessage({ 
-          type: 'success', 
-          text: `Icon "${file.name}" uploaded successfully!` 
+
+        setSettingsMessage({
+          type: 'success',
+          text: `Icon "${file.name}" uploaded successfully!`
         })
       } else {
         throw new Error(uploadResult.message || 'Upload failed')
       }
     } catch (error) {
       console.error('Error uploading icon:', error)
-      setSettingsMessage({ 
-        type: 'error', 
-        text: `Failed to upload "${file.name}". Please try again.` 
+      setSettingsMessage({
+        type: 'error',
+        text: `Failed to upload "${file.name}". Please try again.`
       })
     }
-    
+
     // Clear message after 3 seconds
     setTimeout(() => setSettingsMessage(null), 3000)
   }
@@ -512,9 +514,9 @@ export default function CMSDashboard() {
     if (!file) return
 
     // Show loading state
-    setSettingsMessage({ 
-      type: 'success', 
-      text: `Uploading "${file.name}" for ${menuItem}...` 
+    setSettingsMessage({
+      type: 'success',
+      text: `Uploading "${file.name}" for ${menuItem}...`
     })
 
     try {
@@ -539,22 +541,22 @@ export default function CMSDashboard() {
           alt: uploadResult.data.alt,
           filename: uploadResult.data.filename
         })
-        
-        setSettingsMessage({ 
-          type: 'success', 
-          text: `${menuItem} menu image "${file.name}" uploaded successfully!` 
+
+        setSettingsMessage({
+          type: 'success',
+          text: `${menuItem} menu image "${file.name}" uploaded successfully!`
         })
       } else {
         throw new Error(uploadResult.message || 'Upload failed')
       }
     } catch (error) {
       console.error(`Error uploading ${menuItem} menu image:`, error)
-      setSettingsMessage({ 
-        type: 'error', 
-        text: `Failed to upload "${file.name}" for ${menuItem}. Please try again.` 
+      setSettingsMessage({
+        type: 'error',
+        text: `Failed to upload "${file.name}" for ${menuItem}. Please try again.`
       })
     }
-    
+
     // Clear message after 3 seconds
     setTimeout(() => setSettingsMessage(null), 3000)
   }
@@ -587,10 +589,10 @@ export default function CMSDashboard() {
             alt: result.data.alt || 'Profile image'
           }
         }))
-        
-        setAboutMessage({ 
-          type: 'success', 
-          text: 'Profile image uploaded successfully!' 
+
+        setAboutMessage({
+          type: 'success',
+          text: 'Profile image uploaded successfully!'
         })
       } else {
         setAboutMessage({ type: 'error', text: result.message || 'Failed to upload image' })
@@ -600,7 +602,7 @@ export default function CMSDashboard() {
       setAboutMessage({ type: 'error', text: 'Failed to upload image. Please try again.' })
     } finally {
       setAboutImageUploading(false)
-      
+
       // Clear message after 3 seconds
       setTimeout(() => setAboutMessage(null), 3000)
     }
@@ -610,7 +612,7 @@ export default function CMSDashboard() {
     try {
       const response = await fetch('/api/about')
       const aboutData = await response.json()
-      
+
       // Convert null values to empty strings to prevent React warnings
       const cleanedData = {
         ...aboutData,
@@ -629,7 +631,7 @@ export default function CMSDashboard() {
         aboutParagraphs: aboutData.aboutParagraphs || [],
         faqs: aboutData.faqs || []
       }
-      
+
       setAboutContent(cleanedData)
     } catch (error) {
       console.error('Error fetching about content:', error)
@@ -640,7 +642,7 @@ export default function CMSDashboard() {
   const handleSaveAbout = async () => {
     setIsSavingAbout(true)
     setAboutMessage(null)
-    
+
     try {
       const response = await fetch('/api/about', {
         method: 'POST',
@@ -662,13 +664,13 @@ export default function CMSDashboard() {
       setAboutMessage({ type: 'error', text: 'Failed to save about content. Please try again.' })
     } finally {
       setIsSavingAbout(false)
-      
+
       // Clear message after 3 seconds
       setTimeout(() => setAboutMessage(null), 3000)
     }
   }
 
-  const handleAboutChange = (field: string, value: any) => {
+  const handleAboutChange = (field: string, value: SettingsValue) => {
     setAboutContent(prev => ({
       ...prev,
       [field]: value
@@ -678,7 +680,7 @@ export default function CMSDashboard() {
   const handleSkillChange = (index: number, field: string, value: string) => {
     setAboutContent(prev => ({
       ...prev,
-      skills: prev.skills.map((skill, i) => 
+      skills: prev.skills.map((skill, i) =>
         i === index ? { ...skill, [field]: value } : skill
       )
     }))
@@ -701,7 +703,7 @@ export default function CMSDashboard() {
   const handleExperienceChange = (index: number, field: string, value: string) => {
     setAboutContent(prev => ({
       ...prev,
-      experience: prev.experience.map((exp, i) => 
+      experience: prev.experience.map((exp, i) =>
         i === index ? { ...exp, [field]: value } : exp
       )
     }))
@@ -725,7 +727,7 @@ export default function CMSDashboard() {
   const handleTechnicalSkillChange = (index: number, field: string, value: string) => {
     setAboutContent(prev => ({
       ...prev,
-      technicalSkills: prev.technicalSkills.map((skill, i) => 
+      technicalSkills: prev.technicalSkills.map((skill, i) =>
         i === index ? { ...skill, [field]: value } : skill
       )
     }))
@@ -749,7 +751,7 @@ export default function CMSDashboard() {
   const handleAboutParagraphChange = (index: number, value: string) => {
     setAboutContent(prev => ({
       ...prev,
-      aboutParagraphs: prev.aboutParagraphs.map((item, i) => 
+      aboutParagraphs: prev.aboutParagraphs.map((item, i) =>
         i === index ? { ...item, paragraph: value } : item
       )
     }))
@@ -773,7 +775,7 @@ export default function CMSDashboard() {
   const handleFaqChange = (index: number, field: string, value: string) => {
     setAboutContent(prev => ({
       ...prev,
-      faqs: prev.faqs.map((faq, i) => 
+      faqs: prev.faqs.map((faq, i) =>
         i === index ? { ...faq, [field]: value } : faq
       )
     }))
@@ -797,11 +799,11 @@ export default function CMSDashboard() {
   const handleDownloadTemplate = async () => {
     try {
       const response = await fetch('/api/projects/template')
-      
+
       if (!response.ok) {
         throw new Error('Failed to download template')
       }
-      
+
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
@@ -868,7 +870,7 @@ export default function CMSDashboard() {
         console.warn('Import errors:', result.results.errors)
         const errorDetails = result.results.errors.slice(0, 3).join('\n')
         const moreErrors = result.results.errors.length > 3 ? `\n...and ${result.results.errors.length - 3} more errors` : ''
-        
+
         setImportMessage({
           type: result.results.success > 0 ? 'success' : 'error',
           text: `${result.message}\n\nFirst few errors:\n${errorDetails}${moreErrors}`
@@ -892,7 +894,7 @@ export default function CMSDashboard() {
     }
   }
 
-  const handleCreateProject = async (projectData: any) => {
+  const handleCreateProject = async (projectData: ProjectData) => {
     try {
       const response = await fetch('/api/projects', {
         method: 'POST',
@@ -901,7 +903,7 @@ export default function CMSDashboard() {
         },
         body: JSON.stringify(projectData),
       })
-      
+
       const result = await response.json()
 
       if (result.success) {
@@ -922,7 +924,7 @@ export default function CMSDashboard() {
     setShowEditModal(true)
   }
 
-  const handleUpdateProject = async (projectData: any) => {
+  const handleUpdateProject = async (projectData: ProjectData) => {
     try {
       const response = await fetch('/api/projects', {
         method: 'PUT',
@@ -931,7 +933,7 @@ export default function CMSDashboard() {
         },
         body: JSON.stringify(projectData),
       })
-      
+
       const result = await response.json()
 
       if (result.success) {
@@ -982,7 +984,7 @@ export default function CMSDashboard() {
     if (!files) return
 
     setMediaUploading(true)
-    
+
     try {
       const uploadPromises = Array.from(files).map(async (file) => {
         const formData = new FormData()
@@ -999,7 +1001,7 @@ export default function CMSDashboard() {
 
       const results = await Promise.all(uploadPromises)
       const successful = results.filter(r => r.success)
-      
+
       if (successful.length > 0) {
         await fetchMediaData() // Refresh media list
         setShowMediaUpload(false)
@@ -1085,11 +1087,11 @@ export default function CMSDashboard() {
     if (media.sizes?.thumbnail?.url && media.sizes.thumbnail.url !== 'null') {
       return media.sizes.thumbnail.url
     }
-    
+
     if (media.thumbnailURL && media.thumbnailURL !== 'null' && !media.thumbnailURL.includes('null?')) {
       return media.thumbnailURL
     }
-    
+
     // Fallback to main URL - handle both direct media URLs and API URLs
     if (media.url) {
       // If it's an API URL, convert it to direct media URL for thumbnail
@@ -1097,16 +1099,16 @@ export default function CMSDashboard() {
         const filename = media.url.split('/').pop()
         return `/media/${filename}?w=200&h=150&fit=crop`
       }
-      
+
       // If it's already a direct media URL, add thumbnail parameters
       if (media.url.startsWith('/media/')) {
         return `${media.url}?w=200&h=150&fit=crop`
       }
-      
+
       // Fallback to original URL
       return media.url
     }
-    
+
     // Last resort fallback
     return '/images/projects/project-1.jpg'
   }
@@ -1198,9 +1200,9 @@ export default function CMSDashboard() {
     if (!file) return
 
     // Show loading state
-    setSettingsMessage({ 
-      type: 'success', 
-      text: `Uploading "${file.name}"...` 
+    setSettingsMessage({
+      type: 'success',
+      text: `Uploading "${file.name}"...`
     })
 
     try {
@@ -1228,22 +1230,22 @@ export default function CMSDashboard() {
             filename: uploadResult.data.filename
           }
         } : null)
-        
-        setSettingsMessage({ 
-          type: 'success', 
-          text: `Featured image "${file.name}" uploaded successfully!` 
+
+        setSettingsMessage({
+          type: 'success',
+          text: `Featured image "${file.name}" uploaded successfully!`
         })
       } else {
         throw new Error(uploadResult.message || 'Upload failed')
       }
     } catch (error) {
       console.error('Error uploading featured image:', error)
-      setSettingsMessage({ 
-        type: 'error', 
-        text: `Failed to upload "${file.name}". Please try again.` 
+      setSettingsMessage({
+        type: 'error',
+        text: `Failed to upload "${file.name}". Please try again.`
       })
     }
-    
+
     // Clear message after 3 seconds
     setTimeout(() => setSettingsMessage(null), 3000)
   }
@@ -1293,8 +1295,8 @@ export default function CMSDashboard() {
       <div className={styles.quickActions}>
         <h2>Quick Actions</h2>
         <div className={styles.actionGrid}>
-          <button 
-            className={styles.actionButton} 
+          <button
+            className={styles.actionButton}
             onClick={() => setShowCreateModal(true)}
           >
             <span className={styles.actionIcon}>➕</span>
@@ -1321,8 +1323,8 @@ export default function CMSDashboard() {
           {projects.slice(0, 3).map(project => (
             <div key={project.id} className={styles.projectCard}>
               <div className={styles.projectImage}>
-                <img 
-                  src={typeof project.featuredImage === 'object' ? project.featuredImage?.url : '/images/projects/project-1.jpg'} 
+                <Image
+                  src={typeof project.featuredImage === 'object' ? project.featuredImage?.url : '/images/projects/project-1.jpg'}
                   alt={typeof project.featuredImage === 'object' ? project.featuredImage?.alt : project.title}
                   onError={handleImageError}
                 />
@@ -1349,7 +1351,7 @@ export default function CMSDashboard() {
       <div className={styles.sectionHeader}>
         <h2>Projects Management</h2>
         <div className={styles.projectActions}>
-          <button 
+          <button
             className={styles.secondaryButton}
             onClick={handleDownloadTemplate}
             title="Download JSON template for bulk import"
@@ -1366,7 +1368,7 @@ export default function CMSDashboard() {
               disabled={isImporting}
             />
           </label>
-          <button 
+          <button
             className={styles.primaryButton}
             onClick={() => setShowCreateModal(true)}
           >
@@ -1374,14 +1376,14 @@ export default function CMSDashboard() {
           </button>
         </div>
       </div>
-      
+
       {/* Import Status Message */}
       {importMessage && (
         <div className={`${styles.importMessage} ${styles[importMessage.type]}`}>
           <pre>{importMessage.text}</pre>
         </div>
       )}
-      
+
       {/* Loading indicator for import */}
       {isImporting && (
         <div className={styles.importingIndicator}>
@@ -1389,13 +1391,13 @@ export default function CMSDashboard() {
           <span>Importing projects...</span>
         </div>
       )}
-      
+
       <div className={styles.projectsList}>
         {projects.map(project => (
           <div key={project.id} className={styles.projectItem}>
             <div className={styles.projectThumbnail}>
-              <img 
-                src={typeof project.featuredImage === 'object' ? project.featuredImage?.url : '/images/projects/project-1.jpg'} 
+              <Image
+                src={typeof project.featuredImage === 'object' ? project.featuredImage?.url : '/images/projects/project-1.jpg'}
                 alt={typeof project.featuredImage === 'object' ? project.featuredImage?.alt : project.title}
                 onError={handleImageError}
               />
@@ -1408,13 +1410,13 @@ export default function CMSDashboard() {
               </span>
             </div>
             <div className={styles.projectActions}>
-              <button 
+              <button
                 className={styles.editButton}
                 onClick={() => handleEditProject(project)}
               >
                 Edit
               </button>
-              <button 
+              <button
                 className={styles.deleteButton}
                 onClick={() => {
                   if (window.confirm(`Are you sure you want to delete "${project.title}"? This action cannot be undone.`)) {
@@ -1424,7 +1426,7 @@ export default function CMSDashboard() {
               >
                 Delete
               </button>
-              <button 
+              <button
                 className={styles.viewButton}
                 onClick={() => window.open(`/projects/${project.slug}`, '_blank')}
               >
@@ -1461,7 +1463,7 @@ export default function CMSDashboard() {
             <option value="published">Published</option>
             <option value="draft">Drafts</option>
           </select>
-          <button 
+          <button
             className={styles.primaryButton}
             onClick={handleCreateBlog}
           >
@@ -1469,12 +1471,12 @@ export default function CMSDashboard() {
           </button>
         </div>
       </div>
-      
+
       <div className={styles.blogList}>
         {blogPosts.length === 0 ? (
           <div className={styles.emptyState}>
             <p>No blog posts found</p>
-            <button 
+            <button
               className={styles.primaryButton}
               onClick={handleCreateBlog}
             >
@@ -1485,7 +1487,7 @@ export default function CMSDashboard() {
           blogPosts.map(post => (
             <div key={post.id} className={styles.blogItem}>
               <div className={styles.blogThumbnail}>
-                <img 
+                <Image
                   src={getBlogImageUrl(post)}
                   alt={post.title}
                   onError={handleImageError}
@@ -1499,7 +1501,7 @@ export default function CMSDashboard() {
                     {post.status}
                   </span>
                   <span>
-                    {post.publishedAt 
+                    {post.publishedAt
                       ? `Published ${new Date(post.publishedAt).toLocaleDateString()}`
                       : `Updated ${new Date(post.updatedAt).toLocaleDateString()}`
                     }
@@ -1516,19 +1518,19 @@ export default function CMSDashboard() {
                 </div>
               </div>
               <div className={styles.blogActions}>
-                <button 
+                <button
                   className={styles.editButton}
                   onClick={() => handleEditBlog(post)}
                 >
                   Edit
                 </button>
-                <button 
+                <button
                   className={styles.viewButton}
                   onClick={() => window.open(`/blog/${post.slug}`, '_blank')}
                 >
                   View
                 </button>
-                <button 
+                <button
                   className={styles.deleteButton}
                   onClick={() => handleBlogDelete(post.id)}
                 >
@@ -1542,14 +1544,14 @@ export default function CMSDashboard() {
 
       {blogTotalPages > 1 && (
         <div className={styles.pagination}>
-          <button 
+          <button
             disabled={blogPage === 1}
             onClick={() => handleBlogPageChange(blogPage - 1)}
             className={styles.pageButton}
           >
             Previous
           </button>
-          
+
           {[...Array(blogTotalPages)].map((_, index) => (
             <button
               key={index + 1}
@@ -1559,8 +1561,8 @@ export default function CMSDashboard() {
               {index + 1}
             </button>
           ))}
-          
-          <button 
+
+          <button
             disabled={blogPage === blogTotalPages}
             onClick={() => handleBlogPageChange(blogPage + 1)}
             className={styles.pageButton}
@@ -1589,25 +1591,25 @@ export default function CMSDashboard() {
             }}>
               <div className={styles.formGroup}>
                 <label>Title</label>
-                <input 
-                  name="title" 
-                  defaultValue={editingBlog?.title || ''} 
-                  required 
+                <input
+                  name="title"
+                  defaultValue={editingBlog?.title || ''}
+                  required
                 />
               </div>
               <div className={styles.formGroup}>
                 <label>Slug</label>
-                <input 
-                  name="slug" 
-                  defaultValue={editingBlog?.slug || ''} 
+                <input
+                  name="slug"
+                  defaultValue={editingBlog?.slug || ''}
                   placeholder="auto-generated from title"
                 />
               </div>
               <div className={styles.formGroup}>
                 <label>Excerpt</label>
-                <textarea 
-                  name="excerpt" 
-                  defaultValue={editingBlog?.excerpt || ''} 
+                <textarea
+                  name="excerpt"
+                  defaultValue={editingBlog?.excerpt || ''}
                   rows={3}
                   placeholder="Brief summary for blog listing"
                 />
@@ -1617,12 +1619,12 @@ export default function CMSDashboard() {
                 <div className={styles.imageUploadSection}>
                   {editingBlog?.featuredImage && (
                     <div className={styles.currentImage}>
-                      <img 
-                        src={getBlogImageUrl(editingBlog)} 
+                      <Image
+                        src={getBlogImageUrl(editingBlog)}
                         alt="Current featured image"
                         onError={handleImageError}
                       />
-                      <button 
+                      <button
                         type="button"
                         onClick={() => {
                           const form = document.querySelector('form') as HTMLFormElement;
@@ -1654,22 +1656,21 @@ export default function CMSDashboard() {
               </div>
               <div className={styles.formGroup}>
                 <label>Content</label>
-                <textarea 
-                  name="content" 
-                                          defaultValue={editingBlog?.content ? (
-                          editingBlog.content.root ? 
-                            // Lexical format
-                            editingBlog.content.root.children?.map((node: any) => 
-                              node.children?.map((child: any) => child.text || '').join('') || ''
-                            ).join('\n') || ''
-                            : 
-                            // Legacy format (array)
-                            Array.isArray(editingBlog.content) ? 
-                              editingBlog.content.map((node: any) => 
-                                node.children?.map((child: any) => child.text || '').join('') || ''
-                              ).join('\n') 
-                              : ''
-                        ) : ''} 
+                <textarea
+                  name="content"
+                  defaultValue={editingBlog?.content
+                    ? typeof editingBlog.content === 'object' && 'root' in editingBlog.content
+                      ? (editingBlog.content as LexicalContent).root.children?.map((node: LexicalNode) =>
+                        node.children?.map((child: LexicalNode) => child.text || '').join('') || ''
+                      ).join('\n') || ''
+                      : Array.isArray(editingBlog.content)
+                        ? (editingBlog.content as LexicalNode[]).map((node: LexicalNode) =>
+                          node.children?.map((child: LexicalNode) => child.text || '').join('') || ''
+                        ).join('\n')
+                        : typeof editingBlog.content === 'string'
+                          ? editingBlog.content
+                          : ''
+                    : ''}
                   rows={10}
                   required
                   placeholder="Blog post content..."
@@ -1684,17 +1685,17 @@ export default function CMSDashboard() {
               </div>
               <div className={styles.formGroup}>
                 <label>Categories (comma-separated)</label>
-                <input 
-                  name="categories" 
-                  defaultValue={editingBlog?.categories?.map(c => c.category).join(', ') || ''} 
+                <input
+                  name="categories"
+                  defaultValue={editingBlog?.categories?.map(c => c.category).join(', ') || ''}
                   placeholder="Design, Development, Tips"
                 />
               </div>
               <div className={styles.formGroup}>
                 <label>Tags (comma-separated)</label>
-                <input 
-                  name="tags" 
-                  defaultValue={editingBlog?.tags?.map(t => t.tag).join(', ') || ''} 
+                <input
+                  name="tags"
+                  defaultValue={editingBlog?.tags?.map(t => t.tag).join(', ') || ''}
                   placeholder="ui, ux, coding, tutorial"
                 />
               </div>
@@ -1728,19 +1729,19 @@ export default function CMSDashboard() {
             onChange={(e) => handleMediaSearch(e.target.value)}
             className={styles.searchInput}
           />
-          <button 
+          <button
             className={`${styles.viewToggle} ${mediaViewMode === 'grid' ? styles.active : ''}`}
             onClick={() => setMediaViewMode('grid')}
           >
             ⊞
           </button>
-          <button 
+          <button
             className={`${styles.viewToggle} ${mediaViewMode === 'list' ? styles.active : ''}`}
             onClick={() => setMediaViewMode('list')}
           >
             ☰
           </button>
-          <button 
+          <button
             className={styles.primaryButton}
             onClick={() => setShowMediaUpload(true)}
           >
@@ -1748,7 +1749,7 @@ export default function CMSDashboard() {
           </button>
         </div>
       </div>
-      
+
       {showMediaUpload && (
         <div className={styles.uploadSection}>
           <div className={styles.uploadArea}>
@@ -1765,7 +1766,7 @@ export default function CMSDashboard() {
               {mediaUploading ? '📤 Uploading...' : '📁 Select Files to Upload'}
             </label>
             <p>Drop files here or click to browse</p>
-            <button 
+            <button
               className={styles.secondaryButton}
               onClick={() => setShowMediaUpload(false)}
             >
@@ -1774,12 +1775,12 @@ export default function CMSDashboard() {
           </div>
         </div>
       )}
-      
+
       <div className={`${styles.mediaGrid} ${mediaViewMode === 'list' ? styles.mediaList : ''}`}>
         {media.length === 0 ? (
           <div className={styles.emptyState}>
             <p>No media files found</p>
-            <button 
+            <button
               className={styles.primaryButton}
               onClick={() => setShowMediaUpload(true)}
             >
@@ -1790,27 +1791,27 @@ export default function CMSDashboard() {
           media.map(item => (
             <div key={item.id} className={styles.mediaItem}>
               <div className={styles.mediaPreview}>
-                <img 
-                  src={getImageUrl(item)} 
+                <Image
+                  src={getImageUrl(item)}
                   alt={item.alt}
                   onError={handleImageError}
                 />
                 <div className={styles.mediaOverlay}>
-                  <button 
+                  <button
                     onClick={() => handleMediaEdit(item)}
                     className={styles.mediaAction}
                     title="Edit"
                   >
                     ✏️
                   </button>
-                  <button 
+                  <button
                     onClick={() => handleMediaDelete(item.id)}
                     className={styles.mediaAction}
                     title="Delete"
                   >
                     🗑️
                   </button>
-                  <button 
+                  <button
                     onClick={() => navigator.clipboard.writeText(item.url)}
                     className={styles.mediaAction}
                     title="Copy URL"
@@ -1845,14 +1846,14 @@ export default function CMSDashboard() {
 
       {mediaTotalPages > 1 && (
         <div className={styles.pagination}>
-          <button 
+          <button
             disabled={mediaPage === 1}
             onClick={() => handleMediaPageChange(mediaPage - 1)}
             className={styles.pageButton}
           >
             Previous
           </button>
-          
+
           {[...Array(mediaTotalPages)].map((_, index) => (
             <button
               key={index + 1}
@@ -1862,8 +1863,8 @@ export default function CMSDashboard() {
               {index + 1}
             </button>
           ))}
-          
-          <button 
+
+          <button
             disabled={mediaPage === mediaTotalPages}
             onClick={() => handleMediaPageChange(mediaPage + 1)}
             className={styles.pageButton}
@@ -1888,24 +1889,24 @@ export default function CMSDashboard() {
             }}>
               <div className={styles.formGroup}>
                 <label>Alt Text</label>
-                <input 
-                  name="alt" 
-                  defaultValue={editingMedia.alt} 
-                  required 
+                <input
+                  name="alt"
+                  defaultValue={editingMedia.alt}
+                  required
                 />
               </div>
               <div className={styles.formGroup}>
                 <label>Caption</label>
-                <input 
-                  name="caption" 
-                  defaultValue={editingMedia.caption || ''} 
+                <input
+                  name="caption"
+                  defaultValue={editingMedia.caption || ''}
                 />
               </div>
               <div className={styles.formGroup}>
                 <label>Tags (comma-separated)</label>
-                <input 
-                  name="tags" 
-                  defaultValue={editingMedia.tags?.map(t => t.tag).join(', ') || ''} 
+                <input
+                  name="tags"
+                  defaultValue={editingMedia.tags?.map(t => t.tag).join(', ') || ''}
                 />
               </div>
               <div className={styles.formActions}>
@@ -1933,15 +1934,15 @@ export default function CMSDashboard() {
           </div>
         )}
       </div>
-      
+
       <div className={styles.settingsGrid}>
         {/* Contact Information */}
         <div className={styles.settingGroup}>
           <h3>Contact Information</h3>
           <div className={styles.settingItem}>
             <label>Email</label>
-            <input 
-              type="email" 
+            <input
+              type="email"
               value={aboutContent.contactEmail || ''}
               onChange={(e) => handleAboutChange('contactEmail', e.target.value)}
               placeholder="your@email.com"
@@ -1949,8 +1950,8 @@ export default function CMSDashboard() {
           </div>
           <div className={styles.settingItem}>
             <label>Phone</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={aboutContent.contactPhone || ''}
               onChange={(e) => handleAboutChange('contactPhone', e.target.value)}
               placeholder="+1 234 567 8900"
@@ -1958,7 +1959,7 @@ export default function CMSDashboard() {
           </div>
           <div className={styles.settingItem}>
             <label>Address</label>
-            <textarea 
+            <textarea
               value={aboutContent.contactAddress || ''}
               onChange={(e) => handleAboutChange('contactAddress', e.target.value)}
               rows={2}
@@ -1972,8 +1973,8 @@ export default function CMSDashboard() {
           <h3>Page Content</h3>
           <div className={styles.settingItem}>
             <label>Marquee Text</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={aboutContent.marqueeText || ''}
               onChange={(e) => handleAboutChange('marqueeText', e.target.value)}
               placeholder="Scrolling text at the top"
@@ -1981,7 +1982,7 @@ export default function CMSDashboard() {
           </div>
           <div className={styles.settingItem}>
             <label>Introduction Title</label>
-            <textarea 
+            <textarea
               value={aboutContent.introTitle || ''}
               onChange={(e) => handleAboutChange('introTitle', e.target.value)}
               rows={3}
@@ -1990,8 +1991,8 @@ export default function CMSDashboard() {
           </div>
           <div className={styles.settingItem}>
             <label>Established Year</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={aboutContent.establishedYear || ''}
               onChange={(e) => handleAboutChange('establishedYear', e.target.value)}
               placeholder="Est. 1997"
@@ -2006,7 +2007,7 @@ export default function CMSDashboard() {
             <div key={index} className={styles.paragraphItem}>
               <div className={styles.paragraphHeader}>
                 <label>Paragraph {index + 1}</label>
-                <button 
+                <button
                   type="button"
                   className={styles.removeButton}
                   onClick={() => removeAboutParagraph(index)}
@@ -2014,7 +2015,7 @@ export default function CMSDashboard() {
                   ✕
                 </button>
               </div>
-              <textarea 
+              <textarea
                 value={item.paragraph || ''}
                 onChange={(e) => handleAboutParagraphChange(index, e.target.value)}
                 rows={4}
@@ -2022,7 +2023,7 @@ export default function CMSDashboard() {
               />
             </div>
           ))}
-          <button 
+          <button
             type="button"
             className={styles.secondaryButton}
             onClick={addAboutParagraph}
@@ -2039,16 +2040,16 @@ export default function CMSDashboard() {
             <div className={styles.imageUpload}>
               {aboutContent.profileImage?.url ? (
                 <div className={styles.imagePreview}>
-                  <img 
-                    src={aboutContent.profileImage.url} 
-                    alt="Profile preview" 
+                  <Image
+                    src={aboutContent.profileImage.url}
+                    alt="Profile preview"
                     style={{ width: '150px', height: '150px', objectFit: 'cover' }}
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
                       target.src = '/images/home/portrait.png'
                     }}
                   />
-                  <button 
+                  <button
                     type="button"
                     className={styles.removeImageButton}
                     onClick={() => handleAboutChange('profileImage', null)}
@@ -2076,7 +2077,7 @@ export default function CMSDashboard() {
           </div>
           <div className={styles.settingItem}>
             <label>Biography</label>
-            <textarea 
+            <textarea
               value={aboutContent.bio || ''}
               onChange={(e) => handleAboutChange('bio', e.target.value)}
               rows={4}
@@ -2091,13 +2092,13 @@ export default function CMSDashboard() {
           {aboutContent.skills.map((skill, index) => (
             <div key={index} className={styles.skillItem}>
               <div className={styles.skillInputs}>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={skill.skill || ''}
                   onChange={(e) => handleSkillChange(index, 'skill', e.target.value)}
                   placeholder="Skill name"
                 />
-                <select 
+                <select
                   value={skill.proficiency}
                   onChange={(e) => handleSkillChange(index, 'proficiency', e.target.value)}
                 >
@@ -2106,7 +2107,7 @@ export default function CMSDashboard() {
                   <option value="advanced">Advanced</option>
                   <option value="expert">Expert</option>
                 </select>
-                <button 
+                <button
                   type="button"
                   className={styles.removeButton}
                   onClick={() => removeSkill(index)}
@@ -2116,7 +2117,7 @@ export default function CMSDashboard() {
               </div>
             </div>
           ))}
-          <button 
+          <button
             type="button"
             className={styles.secondaryButton}
             onClick={addSkill}
@@ -2132,7 +2133,7 @@ export default function CMSDashboard() {
             <div key={index} className={styles.technicalSkillItem}>
               <div className={styles.technicalSkillHeader}>
                 <label>Category {index + 1}</label>
-                <button 
+                <button
                   type="button"
                   className={styles.removeButton}
                   onClick={() => removeTechnicalSkill(index)}
@@ -2141,19 +2142,19 @@ export default function CMSDashboard() {
                 </button>
               </div>
               <div className={styles.technicalSkillInputs}>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={skill.category || ''}
                   onChange={(e) => handleTechnicalSkillChange(index, 'category', e.target.value)}
                   placeholder="Category (e.g., Frontend, Backend)"
                 />
-                <textarea 
+                <textarea
                   value={skill.primarySkills || ''}
                   onChange={(e) => handleTechnicalSkillChange(index, 'primarySkills', e.target.value)}
                   rows={2}
                   placeholder="Primary skills (left column)"
                 />
-                <textarea 
+                <textarea
                   value={skill.secondarySkills || ''}
                   onChange={(e) => handleTechnicalSkillChange(index, 'secondarySkills', e.target.value)}
                   rows={2}
@@ -2162,7 +2163,7 @@ export default function CMSDashboard() {
               </div>
             </div>
           ))}
-          <button 
+          <button
             type="button"
             className={styles.secondaryButton}
             onClick={addTechnicalSkill}
@@ -2178,7 +2179,7 @@ export default function CMSDashboard() {
             <div key={index} className={styles.experienceItem}>
               <div className={styles.experienceHeader}>
                 <h4>Experience {index + 1}</h4>
-                <button 
+                <button
                   type="button"
                   className={styles.removeButton}
                   onClick={() => removeExperience(index)}
@@ -2187,25 +2188,25 @@ export default function CMSDashboard() {
                 </button>
               </div>
               <div className={styles.experienceInputs}>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={exp.company || ''}
                   onChange={(e) => handleExperienceChange(index, 'company', e.target.value)}
                   placeholder="Company name"
                 />
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={exp.role || ''}
                   onChange={(e) => handleExperienceChange(index, 'role', e.target.value)}
                   placeholder="Job title/role"
                 />
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={exp.period || ''}
                   onChange={(e) => handleExperienceChange(index, 'period', e.target.value)}
                   placeholder="e.g., 2020 - Present"
                 />
-                <textarea 
+                <textarea
                   value={exp.description || ''}
                   onChange={(e) => handleExperienceChange(index, 'description', e.target.value)}
                   placeholder="Brief description of responsibilities and achievements"
@@ -2214,7 +2215,7 @@ export default function CMSDashboard() {
               </div>
             </div>
           ))}
-          <button 
+          <button
             type="button"
             className={styles.secondaryButton}
             onClick={addExperience}
@@ -2228,8 +2229,8 @@ export default function CMSDashboard() {
           <h3>Call to Action Section</h3>
           <div className={styles.settingItem}>
             <label>Call to Action Title</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={aboutContent.callToActionTitle || ''}
               onChange={(e) => handleAboutChange('callToActionTitle', e.target.value)}
               placeholder="Let's work together"
@@ -2237,7 +2238,7 @@ export default function CMSDashboard() {
           </div>
           <div className={styles.settingItem}>
             <label>Call to Action Text</label>
-            <textarea 
+            <textarea
               value={aboutContent.callToActionText || ''}
               onChange={(e) => handleAboutChange('callToActionText', e.target.value)}
               rows={3}
@@ -2253,7 +2254,7 @@ export default function CMSDashboard() {
             <div key={index} className={styles.faqItem}>
               <div className={styles.faqHeader}>
                 <label>FAQ {index + 1}</label>
-                <button 
+                <button
                   type="button"
                   className={styles.removeButton}
                   onClick={() => removeFaq(index)}
@@ -2262,13 +2263,13 @@ export default function CMSDashboard() {
                 </button>
               </div>
               <div className={styles.faqInputs}>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={faq.question || ''}
                   onChange={(e) => handleFaqChange(index, 'question', e.target.value)}
                   placeholder="FAQ question"
                 />
-                <textarea 
+                <textarea
                   value={faq.answer || ''}
                   onChange={(e) => handleFaqChange(index, 'answer', e.target.value)}
                   rows={4}
@@ -2277,7 +2278,7 @@ export default function CMSDashboard() {
               </div>
             </div>
           ))}
-          <button 
+          <button
             type="button"
             className={styles.secondaryButton}
             onClick={addFaq}
@@ -2288,7 +2289,7 @@ export default function CMSDashboard() {
       </div>
 
       <div className={styles.settingsActions}>
-        <button 
+        <button
           className={styles.primaryButton}
           onClick={handleSaveAbout}
           disabled={isSavingAbout}
@@ -2309,21 +2310,21 @@ export default function CMSDashboard() {
           </div>
         )}
       </div>
-      
+
       <div className={styles.settingsGrid}>
         <div className={styles.settingGroup}>
           <h3>Site Information</h3>
           <div className={styles.settingItem}>
             <label>Site Name</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={settings.siteName}
               onChange={(e) => handleSettingChange('siteName', e.target.value)}
             />
           </div>
           <div className={styles.settingItem}>
             <label>Site Description</label>
-            <textarea 
+            <textarea
               value={settings.siteDescription}
               onChange={(e) => handleSettingChange('siteDescription', e.target.value)}
               rows={3}
@@ -2335,55 +2336,55 @@ export default function CMSDashboard() {
           <h3>Site Branding</h3>
           <div className={styles.settingItem}>
             <label>Logo Title</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={settings.logoTitle}
               onChange={(e) => handleSettingChange('logoTitle', e.target.value)}
               placeholder="e.g., CURA FUTURI"
             />
-            <p style={{color: '#94a3b8', fontSize: '14px', margin: '4px 0 0 0'}}>
+            <p style={{ color: '#94a3b8', fontSize: '14px', margin: '4px 0 0 0' }}>
               This appears in the top-left corner of your site
             </p>
           </div>
           <div className={styles.settingItem}>
             <label>Site Title (Browser Tab)</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={settings.siteTitle}
               onChange={(e) => handleSettingChange('siteTitle', e.target.value)}
               placeholder="e.g., Cura Futuri - Interaction Designer"
             />
-            <p style={{color: '#94a3b8', fontSize: '14px', margin: '4px 0 0 0'}}>
+            <p style={{ color: '#94a3b8', fontSize: '14px', margin: '4px 0 0 0' }}>
               This appears in browser tabs and search results
             </p>
           </div>
           <div className={styles.settingItem}>
             <label>Site Icon (Favicon)</label>
             <div className={styles.imageUpload}>
-                             {settings.siteIcon ? (
-                 <div className={styles.imagePreview}>
-                   <img 
-                     src={typeof settings.siteIcon === 'string' 
-                       ? (settings.siteIcon.startsWith('blob:') 
-                           ? settings.siteIcon 
-                           : `/media/${settings.siteIcon}`)
-                       : settings.siteIcon.url} 
-                     alt="Site icon preview"
-                     style={{width: '32px', height: '32px', objectFit: 'cover'}}
-                     onError={(e) => {
-                       const target = e.target as HTMLImageElement
-                       target.src = '/favicon.ico' // Fallback icon
-                     }}
-                   />
-                   <button 
-                     type="button"
-                     className={styles.removeImageButton}
-                     onClick={() => handleSettingChange('siteIcon', null)}
-                   >
-                     ✕ Remove
-                   </button>
-                 </div>
-               ) : (
+              {settings.siteIcon ? (
+                <div className={styles.imagePreview}>
+                  <Image
+                    src={typeof settings.siteIcon === 'string'
+                      ? (settings.siteIcon.startsWith('blob:')
+                        ? settings.siteIcon
+                        : `/media/${settings.siteIcon}`)
+                      : settings.siteIcon.url}
+                    alt="Site icon preview"
+                    style={{ width: '32px', height: '32px', objectFit: 'cover' }}
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement
+                      target.src = '/favicon.ico' // Fallback icon
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className={styles.removeImageButton}
+                    onClick={() => handleSettingChange('siteIcon', null)}
+                  >
+                    ✕ Remove
+                  </button>
+                </div>
+              ) : (
                 <div className={styles.uploadPlaceholder}>
                   <input
                     type="file"
@@ -2402,32 +2403,32 @@ export default function CMSDashboard() {
           </div>
           <div className={styles.settingItem}>
             <label>Menu Preview Images</label>
-            <p style={{color: '#94a3b8', fontSize: '14px', margin: '4px 0 8px 0'}}>
+            <p style={{ color: '#94a3b8', fontSize: '14px', margin: '4px 0 8px 0' }}>
               These images appear when hovering over menu items
             </p>
-            
+
             {['about', 'work', 'blog', 'contact'].map((menuItem) => (
-              <div key={menuItem} style={{marginBottom: '16px'}}>
-                <label style={{fontSize: '14px', textTransform: 'capitalize', marginBottom: '8px', display: 'block'}}>
+              <div key={menuItem} style={{ marginBottom: '16px' }}>
+                <label style={{ fontSize: '14px', textTransform: 'capitalize', marginBottom: '8px', display: 'block' }}>
                   {menuItem} Page Image
                 </label>
                 <div className={styles.imageUpload}>
                   {settings.menuPreviewImages[menuItem as keyof typeof settings.menuPreviewImages] ? (
                     <div className={styles.imagePreview}>
-                      <img 
-                        src={typeof settings.menuPreviewImages[menuItem as keyof typeof settings.menuPreviewImages] === 'string' 
-                          ? (settings.menuPreviewImages[menuItem as keyof typeof settings.menuPreviewImages] as string).startsWith('blob:') 
+                      <Image
+                        src={typeof settings.menuPreviewImages[menuItem as keyof typeof settings.menuPreviewImages] === 'string'
+                          ? (settings.menuPreviewImages[menuItem as keyof typeof settings.menuPreviewImages] as string).startsWith('blob:')
                             ? settings.menuPreviewImages[menuItem as keyof typeof settings.menuPreviewImages] as string
                             : `/media/${settings.menuPreviewImages[menuItem as keyof typeof settings.menuPreviewImages]}`
-                          : ((settings.menuPreviewImages[menuItem as keyof typeof settings.menuPreviewImages] as any)?.url || '/images/home/portrait.png')} 
+                          : ((settings.menuPreviewImages[menuItem as keyof typeof settings.menuPreviewImages] as any)?.url || '/images/home/portrait.png')}
                         alt={`${menuItem} preview image`}
-                        style={{width: '120px', height: '80px', objectFit: 'cover'}}
+                        style={{ width: '120px', height: '80px', objectFit: 'cover' }}
                         onError={(e) => {
                           const target = e.target as HTMLImageElement
                           target.src = '/images/home/portrait.png'
                         }}
                       />
-                      <button 
+                      <button
                         type="button"
                         className={styles.removeImageButton}
                         onClick={() => handleSettingChange(`menuPreviewImages.${menuItem}`, null)}
@@ -2460,8 +2461,8 @@ export default function CMSDashboard() {
           <h3>Homepage Hero Section</h3>
           <div className={styles.settingItem}>
             <label>Hero Title (Top Line)</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={settings.heroTitleTop}
               onChange={(e) => handleSettingChange('heroTitleTop', e.target.value)}
               placeholder="e.g., MOHAMMAD"
@@ -2469,8 +2470,8 @@ export default function CMSDashboard() {
           </div>
           <div className={styles.settingItem}>
             <label>Hero Title (Bottom Line)</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={settings.heroTitleBottom}
               onChange={(e) => handleSettingChange('heroTitleBottom', e.target.value)}
               placeholder="e.g., KHALID"
@@ -2478,8 +2479,8 @@ export default function CMSDashboard() {
           </div>
           <div className={styles.settingItem}>
             <label>Hero Subtitle</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={settings.heroSubtitle}
               onChange={(e) => handleSettingChange('heroSubtitle', e.target.value)}
               placeholder="e.g., Interaction Designer"
@@ -2487,8 +2488,8 @@ export default function CMSDashboard() {
           </div>
           <div className={styles.settingItem}>
             <label>Hero Tagline</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={settings.heroTagline}
               onChange={(e) => handleSettingChange('heroTagline', e.target.value)}
               placeholder="e.g., Based in Toronto"
@@ -2499,12 +2500,12 @@ export default function CMSDashboard() {
             <div className={styles.imageUpload}>
               {settings.heroImage ? (
                 <div className={styles.imagePreview}>
-                  <img 
-                    src={typeof settings.heroImage === 'string' 
-                      ? (settings.heroImage.startsWith('blob:') 
-                          ? settings.heroImage 
-                          : `/media/${settings.heroImage}`)
-                      : (settings.heroImage?.url || '/images/home/portrait.png')} 
+                  <Image
+                    src={typeof settings.heroImage === 'string'
+                      ? (settings.heroImage.startsWith('blob:')
+                        ? settings.heroImage
+                        : `/media/${settings.heroImage}`)
+                      : (settings.heroImage?.url || '/images/home/portrait.png')}
                     alt="Hero image preview"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
@@ -2512,7 +2513,7 @@ export default function CMSDashboard() {
                       console.log('Hero image failed to load:', target.src)
                     }}
                   />
-                  <button 
+                  <button
                     type="button"
                     className={styles.removeImageButton}
                     onClick={() => handleSettingChange('heroImage', null)}
@@ -2543,7 +2544,7 @@ export default function CMSDashboard() {
           <h3>Footer Settings</h3>
           <div className={styles.settingItem}>
             <label>Footer Text</label>
-            <textarea 
+            <textarea
               value={settings.footerText}
               onChange={(e) => handleSettingChange('footerText', e.target.value)}
               rows={2}
@@ -2555,12 +2556,12 @@ export default function CMSDashboard() {
           <h3>Custom Menu Items</h3>
           <div className={styles.settingItem}>
             <label>Menu Items</label>
-            <p style={{color: '#94a3b8', fontSize: '14px', margin: '8px 0'}}>
-              {settings.customMenuItems.length === 0 
+            <p style={{ color: '#94a3b8', fontSize: '14px', margin: '8px 0' }}>
+              {settings.customMenuItems.length === 0
                 ? 'No custom menu items configured'
                 : `${settings.customMenuItems.length} custom menu items`}
             </p>
-            <button 
+            <button
               type="button"
               className={styles.secondaryButton}
               onClick={() => {
@@ -2575,7 +2576,7 @@ export default function CMSDashboard() {
       </div>
 
       <div className={styles.settingsActions}>
-        <button 
+        <button
           className={styles.primaryButton}
           onClick={handleSaveSettings}
           disabled={isSavingSettings}
@@ -2603,7 +2604,7 @@ export default function CMSDashboard() {
           <h1>Dashboard</h1>
           <div className={styles.headerActions}>
             <span className={styles.userInfo}>Welcome back! 👋</span>
-            <button 
+            <button
               className={styles.previewButton}
               onClick={() => window.open('/', '_blank')}
             >

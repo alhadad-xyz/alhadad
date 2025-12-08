@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useRef, useLayoutEffect } from "react"
+import Image from "next/image"
 import PageTransition from "@/components/transition/PageTransition"
 import styles from "./page.module.css"
 import { gsap } from "gsap"
@@ -50,7 +51,7 @@ export default function DynamicHomepage({ homepageData }: DynamicHomepageProps) 
       link.href = homepageData.heroImage.url
       link.fetchPriority = 'high'
       document.head.appendChild(link)
-      
+
       return () => {
         document.head.removeChild(link)
       }
@@ -97,20 +98,20 @@ export default function DynamicHomepage({ homepageData }: DynamicHomepageProps) 
           y: 30,
           clearProps: "top"
         })
-        
+
         gsap.set(`.${styles.heroCopyWrapper}:nth-child(2) h1`, {
           opacity: 0,
           y: 50,
           clearProps: "top"
         })
-        
+
         gsap.set(`.${styles.heroImg}`, {
           opacity: 0,
           y: 100,
           rotation: 0,
           transformOrigin: "center center"
         })
-        
+
         gsap.set(`.${styles.heroTagline}`, {
           opacity: 0,
           y: 30,
@@ -159,18 +160,18 @@ export default function DynamicHomepage({ homepageData }: DynamicHomepageProps) 
           top: "100px",
           clearProps: "transform"
         })
-        
+
         gsap.set(`.${styles.heroCopyWrapper}:nth-child(2) h1`, {
           top: "300px",
           clearProps: "transform"
         })
-        
+
         gsap.set(`.${styles.heroImg}`, {
           y: "1000",
           rotation: -10,
           transformOrigin: "center center"
         })
-        
+
         gsap.set(`.${styles.heroTagline}`, {
           opacity: 0,
           bottom: "-5%",
@@ -246,19 +247,19 @@ export default function DynamicHomepage({ homepageData }: DynamicHomepageProps) 
 
     const handleResize = () => {
       if (isResizing) return
-      
+
       clearTimeout(resizeTimer)
       resizeTimer = setTimeout(() => {
         isResizing = true
-        
+
         // Reset animation flag to allow re-initialization
         isAnimationPlayed.current = false
-        
+
         // Kill current animations
         heroCopyReveal.current?.kill()
         heroImageReveal.current?.kill()
         heroTaglineReveal.current?.kill()
-        
+
         // Properly clear all GSAP inline styles
         const elementsToReset = [
           `.${styles.heroCopyWrapper}:nth-child(1) h1`,
@@ -266,7 +267,7 @@ export default function DynamicHomepage({ homepageData }: DynamicHomepageProps) 
           `.${styles.heroImg}`,
           `.${styles.heroTagline}`
         ]
-        
+
         elementsToReset.forEach(selector => {
           const elements = document.querySelectorAll(selector)
           elements.forEach(el => {
@@ -286,10 +287,10 @@ export default function DynamicHomepage({ homepageData }: DynamicHomepageProps) 
             if (element.style.transform) element.style.transform = ''
           })
         })
-        
+
         // Use GSAP clearProps as backup
         gsap.set(elementsToReset, { clearProps: "all" })
-        
+
         // Re-initialize animations after clearing
         setTimeout(() => {
           // Check if we're on mobile
@@ -302,20 +303,20 @@ export default function DynamicHomepage({ homepageData }: DynamicHomepageProps) 
               y: 30,
               clearProps: "top"
             })
-            
+
             gsap.set(`.${styles.heroCopyWrapper}:nth-child(2) h1`, {
               opacity: 0,
               y: 50,
               clearProps: "top"
             })
-            
+
             gsap.set(`.${styles.heroImg}`, {
               opacity: 0,
               y: 100,
               rotation: 0,
               transformOrigin: "center center"
             })
-            
+
             gsap.set(`.${styles.heroTagline}`, {
               opacity: 0,
               y: 30,
@@ -362,18 +363,18 @@ export default function DynamicHomepage({ homepageData }: DynamicHomepageProps) 
               top: "100px",
               clearProps: "transform"
             })
-            
+
             gsap.set(`.${styles.heroCopyWrapper}:nth-child(2) h1`, {
               top: "300px",
               clearProps: "transform"
             })
-            
+
             gsap.set(`.${styles.heroImg}`, {
               y: "1000",
               rotation: -10,
               transformOrigin: "center center"
             })
-            
+
             gsap.set(`.${styles.heroTagline}`, {
               opacity: 0,
               bottom: "-5%",
@@ -414,7 +415,7 @@ export default function DynamicHomepage({ homepageData }: DynamicHomepageProps) 
                 delay: 0.6,
               })
           }
-          
+
           isAnimationPlayed.current = true
           isResizing = false
         }, 50)
@@ -432,20 +433,18 @@ export default function DynamicHomepage({ homepageData }: DynamicHomepageProps) 
     <PageTransition key="home-page">
       <section className={styles.heroSection}>
         <div className={`${styles.heroImg} hero-image-lcp`}>
-          <img
+          <Image
             src={heroImage.url}
             alt={heroImage.alt}
             width={350}
             height={500}
-            loading="eager"
-            fetchPriority="high"
-            decoding="sync"
+            priority
+            quality={90}
+            sizes="(max-width: 768px) 100vw, 350px"
             style={{
-              // Inline critical styles for faster rendering
               width: '100%',
               height: '100%',
-              objectFit: 'cover',
-              aspectRatio: '7/10'
+              objectFit: 'cover'
             }}
           />
         </div>

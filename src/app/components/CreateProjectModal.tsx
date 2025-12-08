@@ -3,11 +3,12 @@
 import React, { useState } from 'react'
 import styles from './CreateProjectModal.module.css'
 import { uploadMediaFile } from '@/utils/media'
+import type { ProjectData } from '@/types'
 
 interface CreateProjectModalProps {
   isOpen: boolean
   onClose: () => void
-  onSubmit: (projectData: any) => void
+  onSubmit: (projectData: ProjectData) => void
 }
 
 export default function CreateProjectModal({ isOpen, onClose, onSubmit }: CreateProjectModalProps) {
@@ -27,7 +28,7 @@ export default function CreateProjectModal({ isOpen, onClose, onSubmit }: Create
     previewImage: null as number | null,
     gallery: [] as { image: number; caption: string }[],
   })
-  
+
   const [currentTechnology, setCurrentTechnology] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -42,7 +43,7 @@ export default function CreateProjectModal({ isOpen, onClose, onSubmit }: Create
       ...prev,
       [name]: value
     }))
-    
+
     // Auto-generate slug from title
     if (name === 'title') {
       const slug = value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
@@ -65,18 +66,18 @@ export default function CreateProjectModal({ isOpen, onClose, onSubmit }: Create
     setImageUploading(true)
     try {
       const result = await uploadMediaFile(
-        file, 
+        file,
         '',
         `${formData.title} - Featured Image`
       )
-      
+
       if (result.success && result.data) {
         // Store the media ID for Payload CMS compatibility
         setFormData(prev => ({
           ...prev,
           featuredImage: result.data.id
         }))
-        
+
         // Reset the file input
         event.target.value = ''
       } else {
@@ -98,17 +99,17 @@ export default function CreateProjectModal({ isOpen, onClose, onSubmit }: Create
     setPreviewImageUploading(true)
     try {
       const result = await uploadMediaFile(
-        file, 
+        file,
         '',
         `${formData.title} - Preview Image`
       )
-      
+
       if (result.success && result.data) {
         setFormData(prev => ({
           ...prev,
           previewImage: result.data.id
         }))
-        
+
         // Reset the file input
         event.target.value = ''
       } else {
@@ -130,22 +131,22 @@ export default function CreateProjectModal({ isOpen, onClose, onSubmit }: Create
     setGalleryUploading(true)
     try {
       const result = await uploadMediaFile(
-        file, 
+        file,
         '',
         `${formData.title} - Gallery Image`
       )
-      
+
       if (result.success && result.data) {
         const newGalleryItem = {
           image: result.data.id,
           caption: currentGalleryCaption || ''
         }
-        
+
         setFormData(prev => ({
           ...prev,
           gallery: [...prev.gallery, newGalleryItem]
         }))
-        
+
         // Reset inputs
         event.target.value = ''
         setCurrentGalleryCaption('')
@@ -214,7 +215,7 @@ export default function CreateProjectModal({ isOpen, onClose, onSubmit }: Create
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!validateForm()) {
       return
     }
@@ -231,7 +232,7 @@ export default function CreateProjectModal({ isOpen, onClose, onSubmit }: Create
       // Call the API to create the project
       await onSubmit(projectData)
       onClose()
-      
+
       // Reset form
       setFormData({
         title: '',
@@ -450,7 +451,7 @@ export default function CreateProjectModal({ isOpen, onClose, onSubmit }: Create
                   </div>
                 </div>
               )}
-              
+
               {/* Upload area */}
               <div className={styles.uploadPlaceholder}>
                 <input
@@ -487,7 +488,7 @@ export default function CreateProjectModal({ isOpen, onClose, onSubmit }: Create
                   </div>
                 </div>
               )}
-              
+
               {/* Upload area */}
               <div className={styles.uploadPlaceholder}>
                 <input
@@ -522,8 +523,8 @@ export default function CreateProjectModal({ isOpen, onClose, onSubmit }: Create
                     <div key={index} className={styles.galleryItem}>
                       <div className={styles.galleryItemHeader}>
                         <span>Image ID: {item.image}</span>
-                        <button 
-                          type="button" 
+                        <button
+                          type="button"
                           onClick={() => removeGalleryItem(index)}
                           className={styles.removeGalleryButton}
                         >
@@ -537,7 +538,7 @@ export default function CreateProjectModal({ isOpen, onClose, onSubmit }: Create
                   ))}
                 </div>
               )}
-              
+
               {/* Add Gallery Item */}
               <div className={styles.galleryUpload}>
                 <div className={styles.galleryInputRow}>

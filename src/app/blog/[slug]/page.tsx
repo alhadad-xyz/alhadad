@@ -2,19 +2,21 @@
 
 import React, { useState, useEffect } from "react"
 import { useParams } from "next/navigation"
+import Image from "next/image"
 import PageTransition from "@/components/transition/PageTransition"
 import Link from "next/link"
 import MagneticButton from "@/components/magneticbutton/MagneticButton"
 import { LoadingSpinner } from "@/components/LoadingStates"
 import RichTextRenderer from "@/components/RichTextRenderer"
 import styles from "./page.module.css"
+import type { LexicalContent } from '@/types';
 
 interface BlogPost {
   id: string
   title: string
   slug: string
   excerpt?: string
-  content: any
+  content: LexicalContent | string
   publishedAt: string
   categories?: { category: string; id?: string }[]
   tags?: { tag: string; id?: string }[]
@@ -43,7 +45,7 @@ export default function BlogPostPage() {
       try {
         const response = await fetch(`/api/blog/${params.slug}`)
         const result = await response.json()
-        
+
         if (result.success) {
           setPost(result.data)
         } else {
@@ -123,14 +125,14 @@ export default function BlogPostPage() {
               {/* Meta Information */}
               <p>
                 <span>
-                  {post.categories && post.categories.length > 0 
-                    ? post.categories[0].category 
+                  {post.categories && post.categories.length > 0
+                    ? post.categories[0].category
                     : 'Blog'} • {formatDate(post.publishedAt)}
                 </span>
               </p>
 
               <br />
-              
+
               {/* Excerpt */}
               {post.excerpt && (
                 <>
@@ -142,7 +144,7 @@ export default function BlogPostPage() {
 
               {/* Rich Text Content */}
               <div className={styles.richContent}>
-                <RichTextRenderer content={post.content} />
+                <RichTextRenderer content={post.content as any} />
               </div>
             </div>
 
@@ -153,21 +155,29 @@ export default function BlogPostPage() {
                 <span>Share</span>
                 <div className={styles.shareIcon}>
                   <svg width="18" height="18" viewBox="0 0 256 256" fill="none">
-                    <path d="M100 108c4.3-2.5 8.7-5 13-7.5l84-48c10.9-6.2 24.5 1.5 24.5 14v110c0 12.5-13.6 20.2-24.5 14l-84-48c-4.3-2.5-8.7-5-13-7.5zM28 40v176c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V40c0-8.8-7.2-16-16-16H44c-8.8 0-16 7.2-16 16z" fill="#fff"/>
+                    <path d="M100 108c4.3-2.5 8.7-5 13-7.5l84-48c10.9-6.2 24.5 1.5 24.5 14v110c0 12.5-13.6 20.2-24.5 14l-84-48c-4.3-2.5-8.7-5-13-7.5zM28 40v176c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V40c0-8.8-7.2-16-16-16H44c-8.8 0-16 7.2-16 16z" fill="#fff" />
                   </svg>
                 </div>
                 <div className={styles.shareIcon}>
                   <svg width="18" height="18" viewBox="0 0 256 256" fill="none">
-                    <path d="M214.75 211.71l-62.6-98.38 61.77-67.95a8 8 0 0 0-11.84-10.76L143.24 99.34 102.75 35.71A8 8 0 0 0 96 32H48a8 8 0 0 0-6.75 12.3l62.6 98.37-61.77 67.95a8 8 0 0 0 11.84 10.76l58.84-64.72 40.49 63.63A8 8 0 0 0 160 224h48a8 8 0 0 0 6.75-12.29z" fill="#fff"/>
+                    <path d="M214.75 211.71l-62.6-98.38 61.77-67.95a8 8 0 0 0-11.84-10.76L143.24 99.34 102.75 35.71A8 8 0 0 0 96 32H48a8 8 0 0 0-6.75 12.3l62.6 98.37-61.77 67.95a8 8 0 0 0 11.84 10.76l58.84-64.72 40.49 63.63A8 8 0 0 0 160 224h48a8 8 0 0 0 6.75-12.29z" fill="#fff" />
                   </svg>
                 </div>
               </div>
 
               {/* Featured Image */}
               <div className={styles.blogContentImg}>
-                <img 
-                  src={getImageUrl(post.featuredImage)} 
-                  alt={post.featuredImage?.alt || post.title} 
+                <Image
+                  src={getImageUrl(post.featuredImage)}
+                  alt={post.featuredImage?.alt || post.title}
+                  width={600}
+                  height={400}
+                  sizes="(max-width: 768px) 100vw, 600px"
+                  style={{
+                    width: '100%',
+                    height: 'auto',
+                    objectFit: 'cover'
+                  }}
                 />
               </div>
 

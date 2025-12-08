@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image'
 import { getMediaDisplayName, getResponsiveImageUrls } from '@/utils/media'
 import styles from './MediaDisplay.module.css'
 
@@ -17,10 +18,10 @@ interface MediaDisplayProps {
   loading?: 'lazy' | 'eager'
 }
 
-export default function MediaDisplay({ 
-  media, 
-  size = 'medium', 
-  showCaption = false, 
+export default function MediaDisplay({
+  media,
+  size = 'medium',
+  showCaption = false,
   showFilename = false,
   className = '',
   loading = 'lazy'
@@ -42,20 +43,28 @@ export default function MediaDisplay({
   return (
     <div className={`${styles.mediaContainer} ${className}`}>
       <div className={styles.imageWrapper}>
-        <img
+        <Image
           src={imageUrl}
           alt={media.alt}
+          width={800}
+          height={600}
           loading={loading}
           className={styles.image}
+          sizes="(max-width: 768px) 100vw, 800px"
+          style={{
+            width: '100%',
+            height: 'auto',
+            objectFit: 'cover'
+          }}
         />
       </div>
-      
+
       {showCaption && media.caption && (
         <div className={styles.caption}>
           {media.caption}
         </div>
       )}
-      
+
       {showFilename && (
         <div className={styles.filename}>
           <span className={styles.displayName}>{displayName}</span>
@@ -75,10 +84,10 @@ interface MediaGalleryProps {
   className?: string
 }
 
-export function MediaGallery({ 
-  images, 
-  columns = 3, 
-  size = 'medium', 
+export function MediaGallery({
+  images,
+  columns = 3,
+  size = 'medium',
   showCaptions = false,
   className = ''
 }: MediaGalleryProps) {

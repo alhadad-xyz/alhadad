@@ -12,15 +12,15 @@ export async function GET(request: NextRequest) {
     const includeContent = searchParams.get('includeContent') === 'true'
 
     const payload = await getPayloadClient()
-    
+
     // Build where clause for filtering
     const whereClause: any = {}
-    
+
     // Filter by status (for admin vs public)
     if (status !== 'all') {
       whereClause.status = { equals: status }
     }
-    
+
     // Search functionality
     if (search) {
       whereClause.or = [
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
         },
       ]
     }
-    
+
     // Filter by category
     if (category) {
       whereClause['categories.category'] = {
@@ -55,9 +55,7 @@ export async function GET(request: NextRequest) {
       page,
       limit,
       sort: '-publishedAt',
-      populate: {
-        featuredImage: true,
-      },
+      depth: 2, // Populate related fields including featuredImage
       select: includeContent ? undefined : {
         content: false, // Exclude content for listing views to improve performance
       },
@@ -105,17 +103,17 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { 
-      title, 
-      slug, 
-      excerpt, 
-      content, 
-      featuredImage, 
-      categories, 
-      tags, 
-      status, 
+    const {
+      title,
+      slug,
+      excerpt,
+      content,
+      featuredImage,
+      categories,
+      tags,
+      status,
       publishedAt,
-      seoData 
+      seoData
     } = body
 
     if (!title || !content) {
@@ -126,7 +124,7 @@ export async function POST(request: NextRequest) {
     }
 
     const payload = await getPayloadClient()
-    
+
     // Generate slug if not provided
     const finalSlug = slug || title
       .toLowerCase()
@@ -207,7 +205,7 @@ export async function PUT(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
-    
+
     if (!id) {
       return NextResponse.json({
         success: false,
@@ -216,21 +214,21 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { 
-      title, 
-      slug, 
-      excerpt, 
-      content, 
-      featuredImage, 
-      categories, 
-      tags, 
-      status, 
+    const {
+      title,
+      slug,
+      excerpt,
+      content,
+      featuredImage,
+      categories,
+      tags,
+      status,
       publishedAt,
-      seoData 
+      seoData
     } = body
 
     const payload = await getPayloadClient()
-    
+
     // Convert plain text content to Lexical rich text format for Payload
     const richTextContent = content ? {
       root: {
@@ -262,7 +260,7 @@ export async function PUT(request: NextRequest) {
         ]
       }
     } : null
-    
+
     const result = await payload.update({
       collection: 'blog-posts',
       id,
@@ -306,7 +304,7 @@ export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
-    
+
     if (!id) {
       return NextResponse.json({
         success: false,
@@ -315,7 +313,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     const payload = await getPayloadClient()
-    
+
     await payload.delete({
       collection: 'blog-posts',
       id,

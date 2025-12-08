@@ -1,20 +1,21 @@
 import { getPayload } from 'payload'
 import config from '../../payload.config'
+import type { Payload } from 'payload'
 
 // Initialize Payload client for server-side data fetching
-let cachedPayload: any = null
+let cachedPayload: Payload | null = null
 let connectionError: boolean = false
 let lastConnectionAttempt: number = 0
 const CONNECTION_RETRY_DELAY = 30000 // 30 seconds
 
 export async function getPayloadClient() {
   const now = Date.now()
-  
+
   // If we had a connection error recently, don't retry immediately
   if (connectionError && (now - lastConnectionAttempt) < CONNECTION_RETRY_DELAY) {
     throw new Error('Database connection failed - retry later')
   }
-  
+
   if (cachedPayload) {
     return cachedPayload
   }
@@ -22,7 +23,7 @@ export async function getPayloadClient() {
   try {
     lastConnectionAttempt = now
     connectionError = false
-    
+
     // Check if required environment variables are present
     if (!process.env.SUPABASE_DATABASE_URL) {
       console.error('SUPABASE_DATABASE_URL environment variable is not set')

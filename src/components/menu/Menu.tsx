@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from "react"
+import Image from "next/image"
 import styles from "./Menu.module.css"
 import Link from "next/link"
 import { gsap } from "gsap"
@@ -39,12 +40,12 @@ export default function Menu() {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
         const settings = await response.json()
-        
+
         // Ensure logoTitle is a string
         if (settings && typeof settings.logoTitle === 'string') {
           setLogoTitle(settings.logoTitle)
         }
-        
+
         // Set menu preview images with safety checks
         const newMenuImages = {
           about: settings?.menuPreviewImages?.about?.url || "/images/home/portrait.png",
@@ -65,7 +66,7 @@ export default function Menu() {
         })
       }
     }
-    
+
     fetchSettings()
   }, [])
 
@@ -208,21 +209,20 @@ export default function Menu() {
 
   // Dynamic text color based on background (only on works page)
   const dynamicTextStyle = {
-    color: isWorksPage && hoveredProject && isLightBackground 
-      ? '#1a1a1a' 
+    color: isWorksPage && hoveredProject && isLightBackground
+      ? '#1a1a1a'
       : isWorksPage && hoveredProject && !isLightBackground
-      ? '#f5f5f5'
-      : undefined
+        ? '#f5f5f5'
+        : undefined
   }
 
   // Dynamic hamburger icon class based on background (only on works page)
-  const hamburgerIconClass = `${styles.hamburgerIcon} ${
-    isWorksPage && hoveredProject && isLightBackground 
+  const hamburgerIconClass = `${styles.hamburgerIcon} ${isWorksPage && hoveredProject && isLightBackground
       ? styles.lightBackground
       : isWorksPage && hoveredProject && !isLightBackground
-      ? styles.darkBackground
-      : ''
-  }`.trim()
+        ? styles.darkBackground
+        : ''
+    }`.trim()
 
   return (
     <div className={styles.menuContainer} ref={menuContainer}>
@@ -232,7 +232,7 @@ export default function Menu() {
         </div>
         <div className={styles.menuActions}>
           <div className={styles.menuToggle}>
-            <button 
+            <button
               className={hamburgerIconClass}
               onClick={toggleMenu}
             ></button>
@@ -241,9 +241,9 @@ export default function Menu() {
       </div>
       <div className={styles.menu}>
         <div className={styles.linkPreviewImg}>
-          <img src={menuPreviewImages.about} alt="" width={400} height={300} />
-                      <div className={styles.bindNewImg}>
-              <img src={menuPreviewImages.about} alt="" width={400} height={300} />
+          <Image src={menuPreviewImages.about} alt="" width={400} height={300} />
+          <div className={styles.bindNewImg}>
+            <Image src={menuPreviewImages.about} alt="" width={400} height={300} />
           </div>
         </div>
         <div className={styles.menuCol}>

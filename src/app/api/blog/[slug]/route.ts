@@ -8,7 +8,7 @@ export async function GET(
   try {
     const resolvedParams = await params
     const { slug } = resolvedParams
-    
+
     if (!slug) {
       return NextResponse.json({
         success: false,
@@ -17,28 +17,26 @@ export async function GET(
     }
 
     const payload = await getPayloadClient()
-    
-    const result = await payload.find({
+
+    const posts = await payload.find({
       collection: 'blog-posts',
       where: {
         slug: { equals: slug },
         status: { equals: 'published' },
       },
       limit: 1,
-      populate: {
-        featuredImage: true,
-      },
+      depth: 2, // Populate related fields including featuredImage
     })
 
-    if (result.docs.length === 0) {
+    if (posts.docs.length === 0) {
       return NextResponse.json({
         success: false,
         message: 'Blog post not found'
       }, { status: 404 })
     }
 
-    const post = result.docs[0]
-    
+    const post = posts.docs[0]
+
     // Format the response data
     const formattedPost = {
       id: post.id,

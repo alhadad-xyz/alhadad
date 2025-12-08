@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from "react"
+import Image from "next/image"
 import PageTransition from "@/components/transition/PageTransition"
 import MagneticButton from "@/components/magneticbutton/MagneticButton"
 import Marquee from "react-fast-marquee"
@@ -93,7 +94,7 @@ export default function About() {
                 {aboutContent.aboutParagraphs.map((item, index) => (
                   <h3 key={index} style={index > 0 ? { textIndent: "100px" } : {}}>
                     {item.paragraph}
-                </h3>
+                  </h3>
                 ))}
               </div>
             </div>
@@ -123,26 +124,34 @@ export default function About() {
               </div>
               <div className={styles.aboutCol}>
                 <div className={styles.aboutPortraitImg}>
-                  <img 
-                    src={aboutContent.profileImage?.url || "/images/home/portrait.png"} 
-                    alt={aboutContent.profileImage?.alt || "Profile photo"} 
+                  <Image
+                    src={aboutContent.profileImage?.url || "/images/home/portrait.png"}
+                    alt={aboutContent.profileImage?.alt || "Profile photo"}
+                    width={400}
+                    height={500}
+                    sizes="(max-width: 768px) 100vw, 400px"
+                    style={{
+                      width: '100%',
+                      height: 'auto',
+                      objectFit: 'cover'
+                    }}
                   />
                 </div>
 
                 <div className={styles.faqs}>
                   {aboutContent.faqs.map((faq, index) => (
                     <div key={index} className={styles.faqItem}>
-                      <div 
+                      <div
                         className={styles.faqQuestion}
                         onClick={() => toggleFaq(index)}
                       >
                         <div>{faq.question}</div>
                         <span className={styles.faqIcon}>
-                          <svg 
-                            xmlns="http://www.w3.org/2000/svg" 
-                            viewBox="0 0 24 24" 
-                            fill="currentColor" 
-                            width="20px" 
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            width="20px"
                             height="20px"
                             style={{
                               transform: expandedFaq === index ? 'rotate(180deg)' : 'rotate(0deg)',
@@ -178,21 +187,21 @@ export default function About() {
 
             {aboutContent.technicalSkills.map((skillCategory, index) => (
               <div key={index} className={`${styles.aboutRow} ${styles.awardRow}`}>
-              <div className={styles.aboutCol}>
-                <div className={styles.awardYear}>
+                <div className={styles.aboutCol}>
+                  <div className={styles.awardYear}>
                     <p>{skillCategory.category}</p>
-                </div>
-                <div className={styles.awardView}>
+                  </div>
+                  <div className={styles.awardView}>
                     <p>{skillCategory.primarySkills}</p>
+                  </div>
                 </div>
-              </div>
-              <div className={styles.aboutCol}>
-                <div className={styles.awardInfo}>
+                <div className={styles.aboutCol}>
+                  <div className={styles.awardInfo}>
                     <p>{skillCategory.secondarySkills}</p>
-                </div>
-                <div className={styles.awardProject}>
+                  </div>
+                  <div className={styles.awardProject}>
                     <p></p>
-                </div>
+                  </div>
                 </div>
               </div>
             ))}

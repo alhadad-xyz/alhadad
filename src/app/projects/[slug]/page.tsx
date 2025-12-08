@@ -7,6 +7,7 @@ import styles from "./page.module.css"
 import { gsap } from "gsap"
 import { notFound } from "next/navigation"
 import MediaDisplay from "@/components/MediaDisplay"
+import type { LexicalContent } from '@/types'
 
 interface ProjectMedia {
   id: string
@@ -36,7 +37,7 @@ interface Project {
   technologies?: { technology: string }[]
   liveUrl?: string
   githubUrl?: string
-  richContent?: any
+  richContent?: LexicalContent | string
   status: string
 }
 
@@ -49,7 +50,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
   const [nextProject, setNextProject] = useState<Project | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  
+
   const nextProjectPreview = useRef<gsap.core.Timeline | null>(null)
   const nextProjectPreviewBg = useRef<gsap.core.Timeline | null>(null)
 
@@ -57,27 +58,27 @@ export default function ProjectPage({ params }: ProjectPageProps) {
     async function fetchProject() {
       try {
         setIsLoading(true)
-        
+
         // Await params for Next.js 15 compatibility
         const resolvedParams = await params
-        
+
         // Fetch current project
-        const response = await fetch(`/api/projects?slug=${resolvedParams.slug}`)
+        const response = await fetch(`/ api / projects ? slug = ${resolvedParams.slug} `)
         if (!response.ok) {
           if (response.status === 404) {
             notFound()
           }
           throw new Error('Failed to fetch project')
         }
-        
+
         const projects = await response.json()
         if (!projects || projects.length === 0) {
           notFound()
         }
-        
+
         const currentProject = projects[0]
         setProject(currentProject)
-        
+
         // Fetch next project for navigation
         const allProjectsResponse = await fetch('/api/projects')
         if (allProjectsResponse.ok) {
@@ -86,7 +87,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
           const nextIndex = (currentIndex + 1) % allProjects.length
           setNextProject(allProjects[nextIndex])
         }
-        
+
       } catch (error) {
         console.error('Error fetching project:', error)
         setError('Failed to load project')
@@ -106,10 +107,10 @@ export default function ProjectPage({ params }: ProjectPageProps) {
   const handleMouseMove = (e: React.MouseEvent) => {
     try {
       const { clientX, clientY } = e
-      const nextProjectContainer = document.querySelector(`.${styles.nextProjectPreview}`)
+      const nextProjectContainer = document.querySelector(`.${styles.nextProjectPreview} `)
 
       if (nextProjectContainer) {
-        gsap.to(`.${styles.nextProjectPreview}`, {
+        gsap.to(`.${styles.nextProjectPreview} `, {
           x: clientX - nextProjectContainer.getBoundingClientRect().width / 2,
           y: clientY - nextProjectContainer.getBoundingClientRect().height / 2,
           duration: 0.5,
@@ -130,7 +131,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
     try {
       nextProjectPreview.current = gsap
         .timeline({ paused: true })
-        .to(`.${styles.nextProjectPreview}`, {
+        .to(`.${styles.nextProjectPreview} `, {
           duration: 1,
           clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
           ease: "power4.inOut",
@@ -138,7 +139,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
       nextProjectPreviewBg.current = gsap
         .timeline({ paused: true })
-        .to(`.${styles.nextProjectPreviewBg}`, {
+        .to(`.${styles.nextProjectPreviewBg} `, {
           opacity: 1,
           duration: 0.3,
         })
@@ -150,19 +151,19 @@ export default function ProjectPage({ params }: ProjectPageProps) {
   // Helper function to convert project media to MediaDisplay format
   const convertToMediaDisplayFormat = (media: ProjectMedia | undefined) => {
     if (!media) return null
-    
+
     // Handle cases where media might be just an ID string
     if (typeof media === 'string') {
       console.warn('Media is a string ID, not populated object:', media)
       return null
     }
-    
+
     // Ensure we have the required fields
     if (!media.url) {
       console.warn('Media object missing URL:', media)
       return null
     }
-    
+
     return {
       id: parseInt(media.id) || 0,
       url: media.url,
@@ -178,21 +179,21 @@ export default function ProjectPage({ params }: ProjectPageProps) {
       console.warn('Gallery item missing image:', galleryItem)
       return null
     }
-    
+
     const media = galleryItem.image
-    
+
     // Handle cases where media might be just an ID string (should not happen with depth: 2)
     if (typeof media === 'string') {
       console.warn('Gallery image is a string ID, not populated object. Check API depth parameter:', media)
       return null
     }
-    
+
     // Ensure we have the required fields
     if (!media.url) {
       console.warn('Gallery media object missing URL:', media)
       return null
     }
-    
+
     return {
       id: parseInt(media.id) || 0,
       url: media.url,
@@ -207,7 +208,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
   if (isLoading) {
     return (
       <PageTransition>
-        <div className={`${styles.project} ${styles.page}`}>
+        <div className={`${styles.project} ${styles.page} `}>
           <div className="container">
             <div className={styles.loading}>
               <h1>Loading project...</h1>
@@ -221,7 +222,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
   if (error || !project) {
     return (
       <PageTransition>
-        <div className={`${styles.project} ${styles.page}`}>
+        <div className={`${styles.project} ${styles.page} `}>
           <div className="container">
             <div className={styles.error}>
               <h1>Project not found</h1>
@@ -235,11 +236,11 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
   return (
     <PageTransition>
-      <div className={`${styles.project} ${styles.page}`}>
+      <div className={`${styles.project} ${styles.page} `}>
         {/* Hero Section */}
         <section className={styles.projectHero}>
-          <MediaDisplay 
-            media={convertToMediaDisplayFormat(project.featuredImage)} 
+          <MediaDisplay
+            media={convertToMediaDisplayFormat(project.featuredImage)}
             loading="eager"
           />
         </section>
@@ -247,7 +248,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
         {/* Next Project Background */}
         {nextProject && (
           <div className={styles.nextProjectPreviewBg}>
-            <MediaDisplay 
+            <MediaDisplay
               media={convertToMediaDisplayFormat(nextProject.featuredImage)}
             />
           </div>
@@ -275,7 +276,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                   <p><span>Year</span></p>
                   <p>{project.year}</p>
                 </div>
-                
+
                 {project.technologies && project.technologies.length > 0 && (
                   <div className={styles.projectSubCol}>
                     <p><span>Technologies</span></p>
@@ -297,14 +298,16 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                   </div>
                 )}
               </div>
-              
+
               <div className={styles.projectCol}>
                 {project.richContent && (
                   <div className={styles.projectContent}>
-                    <div dangerouslySetInnerHTML={{ 
-                      __html: project.richContent
-                        .replace(/\\n/g, '<br/>') // Handle escaped \n
-                        .replace(/\n/g, '<br/>') // Handle actual newlines
+                    <div dangerouslySetInnerHTML={{
+                      __html: typeof project.richContent === 'string'
+                        ? project.richContent
+                          .replace(/\\n/g, '<br/>') // Handle escaped \n
+                          .replace(/\n/g, '<br/>') // Handle actual newlines
+                        : JSON.stringify(project.richContent) // Fallback for LexicalContent
                     }} />
                   </div>
                 )}
@@ -318,7 +321,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
               <div className={styles.galleryGrid}>
                 {project.gallery.map((item, index) => (
                   <div key={index} className={styles.projectImg}>
-                    <MediaDisplay 
+                    <MediaDisplay
                       media={convertGalleryItemToMediaFormat(item)}
                     />
                     {item.caption && (
@@ -334,7 +337,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
           {nextProject && (
             <section className={styles.nextProject}>
               <div className={styles.nextProjectPreview}>
-                <MediaDisplay 
+                <MediaDisplay
                   media={convertToMediaDisplayFormat(nextProject.featuredImage)}
                 />
               </div>
@@ -345,7 +348,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                   onMouseMove={handleMouseMove}
                   onMouseOut={handleNextProjectHoverOut}
                 >
-                  <Link href={`/projects/${nextProject.slug}`}>
+                  <Link href={`/ projects / ${nextProject.slug} `}>
                     {nextProject.title}
                   </Link>
                 </h1>

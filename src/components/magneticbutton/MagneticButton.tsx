@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import styles from "./MagneticButton.module.css"
 import gsap from "gsap"
 
@@ -81,9 +82,9 @@ export default function MagneticButton() {
       <Link href="/">
         <div className={styles.mBtn} ref={btnRef}>
           <div className={styles.arrowRight}>
-            <img
+            <Image
               src="https://assets-global.website-files.com/61385c793ab59f1f6a3372f7/613b078390142aafe0cdc267_arrow-next_white.svg"
-              alt=""
+              alt="Arrow icon"
               width={20}
               height={20}
             />

@@ -4,7 +4,7 @@ import { getPayloadClient } from '@/lib/payload-client'
 export async function GET() {
   try {
     const payload = await getPayloadClient()
-    
+
     // Fetch about content from CMS
     const about = await payload.findGlobal({
       slug: 'about',
@@ -21,9 +21,9 @@ export async function GET() {
     const transformedAbout = {
       ...about,
       // Fix profile image URL format for Next.js static serving
-      profileImage: about?.profileImage ? {
-        ...about.profileImage,
-        url: about.profileImage.filename ? `/media/${about.profileImage.filename}` : about.profileImage.url
+      profileImage: about?.profileImage && typeof about.profileImage === 'object' ? {
+        ...(about.profileImage as object),
+        url: (about.profileImage as any).filename ? `/media/${(about.profileImage as any).filename}` : (about.profileImage as any).url
       } : null,
       bio: extractRichText(about?.bio) || 'Interaction Designer based in Toronto, specializing in creating meaningful digital experiences that bridge the gap between technology and human needs.',
       introTitle: extractRichText(about?.introTitle) || '',
@@ -41,7 +41,7 @@ export async function GET() {
     return NextResponse.json(transformedAbout)
   } catch (error) {
     console.error('Error fetching about content:', error)
-    
+
     // Return default about content if CMS is not available
     return NextResponse.json({
       profileImage: null,
@@ -125,7 +125,7 @@ export async function POST(request: Request) {
   try {
     const aboutData = await request.json()
     const payload = await getPayloadClient()
-    
+
     // Helper function to convert string to rich text format
     const stringToRichText = (text: string) => ({
       root: {
@@ -161,7 +161,7 @@ export async function POST(request: Request) {
         answer: typeof faq.answer === 'string' ? stringToRichText(faq.answer) : faq.answer
       }))
     }
-    
+
     // Update about content in CMS
     const updatedAbout = await payload.updateGlobal({
       slug: 'about',
@@ -175,7 +175,7 @@ export async function POST(request: Request) {
     })
   } catch (error) {
     console.error('Error saving about content:', error)
-    
+
     return NextResponse.json({
       success: false,
       message: 'Failed to save about content. Please try again.',

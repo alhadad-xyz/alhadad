@@ -1,15 +1,17 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
 import styles from './CreateProjectModal.module.css' // Reuse the same styles
 import { uploadMediaFile } from '@/utils/media'
+import type { LexicalContent, ProjectData } from '@/types'
 
-interface Project {
+interface ProjectForEdit {
   id: string
   title: string
   slug: string
   description?: string
-  richContent?: any
+  richContent?: LexicalContent | string
   year: string
   category: string
   status: string
@@ -33,13 +35,28 @@ interface Project {
 interface EditProjectModalProps {
   isOpen: boolean
   onClose: () => void
-  onUpdate: (projectData: any) => void
+  onUpdate: (projectData: ProjectData) => void
   onDelete: (projectId: string) => void
-  project: Project
+  project: ProjectForEdit
 }
 
 export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, project }: EditProjectModalProps) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    title: string
+    slug: string
+    description: string
+    richContent: string | LexicalContent
+    year: string
+    category: string
+    status: string
+    technologies: string[]
+    clientName: string
+    liveUrl: string
+    githubUrl: string
+    featuredImage: { id: number; url: string; alt: string } | number | null
+    previewImage: { id: number; url: string; alt: string } | number | null
+    gallery: { image: { id: number; url: string; alt: string } | number; caption: string }[]
+  }>({
     title: '',
     slug: '',
     description: '', // Brief description
@@ -55,7 +72,7 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
     previewImage: null as { id: number; url: string; alt: string } | number | null,
     gallery: [] as { image: { id: number; url: string; alt: string } | number; caption: string }[]
   })
-  
+
   const [currentTechnology, setCurrentTechnology] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [imageUploading, setImageUploading] = useState(false)
@@ -69,28 +86,28 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
   useEffect(() => {
     if (isOpen && project) {
       // Transform technologies from API format to string array
-      const transformedTechnologies = project.technologies?.map(tech => 
+      const transformedTechnologies = project.technologies?.map((tech: string | { id: string; technology: string }) =>
         typeof tech === 'string' ? tech : tech.technology
       ) || []
 
       // Handle featuredImage - if it's an object, extract the ID
       let featuredImageValue = null
       if (project.featuredImage) {
-        featuredImageValue = typeof project.featuredImage === 'number' 
-          ? project.featuredImage 
+        featuredImageValue = typeof project.featuredImage === 'number'
+          ? project.featuredImage
           : project.featuredImage.id
       }
 
       // Handle previewImage - if it's an object, extract the ID
       let previewImageValue = null
       if (project.previewImage) {
-        previewImageValue = typeof project.previewImage === 'number' 
-          ? project.previewImage 
+        previewImageValue = typeof project.previewImage === 'number'
+          ? project.previewImage
           : project.previewImage.id
       }
 
       // Transform gallery from API format
-      const transformedGallery = project.gallery?.map(item => ({
+      const transformedGallery = project.gallery?.map((item: { image: { id: number; url: string; alt: string } | number; caption?: string }) => ({
         image: typeof item.image === 'number' ? item.image : item.image.id,
         caption: item.caption || ''
       })) || []
@@ -131,12 +148,12 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
-    
+
     setFormData(prev => ({
       ...prev,
       [name]: value
     }))
-    
+
     // Auto-generate slug from title
     if (name === 'title') {
       const slug = value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
@@ -171,17 +188,17 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
     setImageUploading(true)
     try {
       const result = await uploadMediaFile(
-        file, 
+        file,
         undefined,
         undefined
       )
-      
+
       if (result.success && result.data) {
         setFormData(prev => ({
           ...prev,
           featuredImage: result.data.id
         }))
-        
+
         // Reset the file input
         event.target.value = ''
 
@@ -204,17 +221,17 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
     setPreviewImageUploading(true)
     try {
       const result = await uploadMediaFile(
-        file, 
+        file,
         undefined,
         undefined
       )
-      
+
       if (result.success && result.data) {
         setFormData(prev => ({
           ...prev,
           previewImage: result.data.id
         }))
-        
+
         // Reset the file input
         event.target.value = ''
       } else {
@@ -234,22 +251,22 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
     setGalleryUploading(true)
     try {
       const result = await uploadMediaFile(
-        file, 
+        file,
         undefined,
         undefined
       )
-      
+
       if (result.success && result.data) {
         const newGalleryItem = {
           image: result.data.id,
           caption: currentGalleryCaption || ''
         }
-        
+
         setFormData(prev => ({
           ...prev,
           gallery: [...prev.gallery, newGalleryItem]
         }))
-        
+
         // Reset inputs
         event.target.value = ''
         setCurrentGalleryCaption('')
@@ -272,23 +289,23 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!formData.title.trim()) {
       alert('Please enter a project title')
       return
     }
 
     setIsSubmitting(true)
-    
+
     try {
       // Include the project ID for the update
       const projectData = {
         id: project.id,
         ...formData
       }
-      
-      await onUpdate(projectData)
-      
+
+      await onUpdate(projectData as ProjectData)
+
       onClose()
     } catch {
       alert('Failed to update project. Please try again.')
@@ -369,7 +386,7 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
             <textarea
               id="richContent"
               name="richContent"
-              value={formData.richContent}
+              value={typeof formData.richContent === 'string' ? formData.richContent : JSON.stringify(formData.richContent)}
               onChange={handleInputChange}
               placeholder="Detailed project description, case study, process, challenges, and outcomes..."
               rows={6}
@@ -486,11 +503,14 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
               {/* Show current image if it exists and no new upload */}
               {formData.featuredImage && typeof formData.featuredImage === 'object' && !imageUploading && (
                 <div className={styles.imagePreview}>
-                  <img 
-                    src={formData.featuredImage.url} 
+                  <Image
+                    src={formData.featuredImage.url}
                     alt={formData.featuredImage.alt}
+                    width={400}
+                    height={300}
+                    style={{ width: '100%', height: 'auto', objectFit: 'cover' }}
                   />
-                  <button 
+                  <button
                     type="button"
                     className={styles.removeImageButton}
                     onClick={() => setFormData(prev => ({ ...prev, featuredImage: null }))}
@@ -499,7 +519,7 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
                   </button>
                 </div>
               )}
-              
+
               {/* Show upload success if new image uploaded */}
               {formData.featuredImage && typeof formData.featuredImage === 'number' && hasUploadedNewImage && (
                 <div className={styles.uploadSuccess}>
@@ -512,7 +532,7 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
                   </div>
                 </div>
               )}
-              
+
               {/* Upload area - always show for new uploads */}
               <div className={styles.uploadPlaceholder}>
                 <input
@@ -538,11 +558,14 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
               {/* Show current preview image if it exists */}
               {formData.previewImage && typeof formData.previewImage === 'object' && !previewImageUploading && (
                 <div className={styles.imagePreview}>
-                  <img 
-                    src={formData.previewImage.url} 
+                  <Image
+                    src={formData.previewImage.url}
                     alt={formData.previewImage.alt}
+                    width={400}
+                    height={300}
+                    style={{ width: '100%', height: 'auto', objectFit: 'cover' }}
                   />
-                  <button 
+                  <button
                     type="button"
                     className={styles.removeImageButton}
                     onClick={() => setFormData(prev => ({ ...prev, previewImage: null }))}
@@ -551,7 +574,7 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
                   </button>
                 </div>
               )}
-              
+
               {/* Show upload success if new preview image uploaded */}
               {formData.previewImage && typeof formData.previewImage === 'number' && (
                 <div className={styles.uploadSuccess}>
@@ -561,7 +584,7 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
                   </div>
                 </div>
               )}
-              
+
               {/* Upload area */}
               <div className={styles.uploadPlaceholder}>
                 <input
@@ -591,8 +614,8 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
                     <div key={index} className={styles.galleryItem}>
                       <div className={styles.galleryItemHeader}>
                         <span>Image ID: {typeof item.image === 'number' ? item.image : item.image.id}</span>
-                        <button 
-                          type="button" 
+                        <button
+                          type="button"
                           onClick={() => removeGalleryItem(index)}
                           className={styles.removeGalleryButton}
                         >
@@ -606,7 +629,7 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
                   ))}
                 </div>
               )}
-              
+
               {/* Add Gallery Item */}
               <div className={styles.galleryUpload}>
                 <div className={styles.galleryInputRow}>
@@ -638,9 +661,9 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
           </div>
 
           <div className={styles.modalActions}>
-            <button 
-              type="button" 
-              onClick={confirmDelete} 
+            <button
+              type="button"
+              onClick={confirmDelete}
               className={styles.deleteButton}
               disabled={isSubmitting}
             >
@@ -665,16 +688,16 @@ export default function EditProjectModal({ isOpen, onClose, onUpdate, onDelete, 
               <p>Are you sure you want to delete &ldquo;<strong>{project.title}</strong>&rdquo;?</p>
               <p className={styles.warningText}>This action cannot be undone.</p>
               <div className={styles.confirmActions}>
-                <button 
-                  type="button" 
-                  onClick={cancelDelete} 
+                <button
+                  type="button"
+                  onClick={cancelDelete}
                   className={styles.cancelButton}
                 >
                   Cancel
                 </button>
-                <button 
-                  type="button" 
-                  onClick={handleDelete} 
+                <button
+                  type="button"
+                  onClick={handleDelete}
                   className={styles.confirmDeleteButton}
                 >
                   Delete Project

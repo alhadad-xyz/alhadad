@@ -1,9 +1,10 @@
 import React from 'react'
+import Image from 'next/image'
 import styles from './LoadingStates.module.css'
 
 // Loading spinner component
-export const LoadingSpinner: React.FC<{ size?: 'small' | 'medium' | 'large' }> = ({ 
-  size = 'medium' 
+export const LoadingSpinner: React.FC<{ size?: 'small' | 'medium' | 'large' }> = ({
+  size = 'medium'
 }) => {
   return (
     <div className={`${styles.spinner} ${styles[size]}`}>
@@ -67,8 +68,8 @@ export const ProjectGridLoadingState: React.FC<{ count?: number }> = ({ count = 
 }
 
 // Loading overlay for full page loads
-export const LoadingOverlay: React.FC<{ message?: string }> = ({ 
-  message = 'Loading...' 
+export const LoadingOverlay: React.FC<{ message?: string }> = ({
+  message = 'Loading...'
 }) => {
   return (
     <div className={styles.overlay}>
@@ -86,28 +87,28 @@ export const ErrorState: React.FC<{
   message?: string
   onRetry?: () => void
   showRetry?: boolean
-}> = ({ 
+}> = ({
   title = 'Something went wrong',
   message = 'Please try again later',
   onRetry,
-  showRetry = true 
+  showRetry = true
 }) => {
-  return (
-    <div className={styles.errorState}>
-      <div className={styles.errorIcon}>⚠️</div>
-      <h3 className={styles.errorTitle}>{title}</h3>
-      <p className={styles.errorMessage}>{message}</p>
-      {showRetry && onRetry && (
-        <button 
-          className={styles.retryButton}
-          onClick={onRetry}
-        >
-          Try Again
-        </button>
-      )}
-    </div>
-  )
-}
+    return (
+      <div className={styles.errorState}>
+        <div className={styles.errorIcon}>⚠️</div>
+        <h3 className={styles.errorTitle}>{title}</h3>
+        <p className={styles.errorMessage}>{message}</p>
+        {showRetry && onRetry && (
+          <button
+            className={styles.retryButton}
+            onClick={onRetry}
+          >
+            Try Again
+          </button>
+        )}
+      </div>
+    )
+  }
 
 // Empty state component
 export const EmptyState: React.FC<{
@@ -118,28 +119,28 @@ export const EmptyState: React.FC<{
     label: string
     onClick: () => void
   }
-}> = ({ 
+}> = ({
   title = 'No content found',
   message = 'There\'s nothing to display here yet',
   icon = '📝',
-  action 
+  action
 }) => {
-  return (
-    <div className={styles.emptyState}>
-      <div className={styles.emptyIcon}>{icon}</div>
-      <h3 className={styles.emptyTitle}>{title}</h3>
-      <p className={styles.emptyMessage}>{message}</p>
-      {action && (
-        <button 
-          className={styles.actionButton}
-          onClick={action.onClick}
-        >
-          {action.label}
-        </button>
-      )}
-    </div>
-  )
-}
+    return (
+      <div className={styles.emptyState}>
+        <div className={styles.emptyIcon}>{icon}</div>
+        <h3 className={styles.emptyTitle}>{title}</h3>
+        <p className={styles.emptyMessage}>{message}</p>
+        {action && (
+          <button
+            className={styles.actionButton}
+            onClick={action.onClick}
+          >
+            {action.label}
+          </button>
+        )}
+      </div>
+    )
+  }
 
 // Progressive loading wrapper
 export const ProgressiveLoader: React.FC<{
@@ -161,39 +162,39 @@ export const ProgressiveLoader: React.FC<{
   emptyComponent,
   onRetry
 }) => {
-  if (isLoading) {
-    return <>{loadingComponent || <LoadingSpinner />}</>
-  }
+    if (isLoading) {
+      return <>{loadingComponent || <LoadingSpinner />}</>
+    }
 
-  if (error) {
-    return (
-      <>
-        {errorComponent || (
-          <ErrorState 
-            title="Failed to load content"
-            message={error.message}
-            onRetry={onRetry}
-          />
-        )}
-      </>
-    )
-  }
+    if (error) {
+      return (
+        <>
+          {errorComponent || (
+            <ErrorState
+              title="Failed to load content"
+              message={error.message}
+              onRetry={onRetry}
+            />
+          )}
+        </>
+      )
+    }
 
-  if (isEmpty) {
-    return (
-      <>
-        {emptyComponent || (
-          <EmptyState 
-            title="No content available"
-            message="Content will appear here once it's added"
-          />
-        )}
-      </>
-    )
-  }
+    if (isEmpty) {
+      return (
+        <>
+          {emptyComponent || (
+            <EmptyState
+              title="No content available"
+              message="Content will appear here once it's added"
+            />
+          )}
+        </>
+      )
+    }
 
-  return <>{children}</>
-}
+    return <>{children}</>
+  }
 
 // Content fade in wrapper for smooth animations
 export const ContentFadeIn: React.FC<{
@@ -212,7 +213,7 @@ export const ContentFadeIn: React.FC<{
   }, [delay])
 
   return (
-    <div 
+    <div
       className={`${styles.fadeIn} ${isVisible ? styles.visible : ''} ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
@@ -246,52 +247,63 @@ export const ProgressiveImage: React.FC<{
   placeholder?: string
   onLoad?: () => void
   onError?: () => void
-}> = ({ 
-  src, 
-  alt, 
-  className = '', 
+}> = ({
+  src,
+  alt,
+  className = '',
   placeholder = '/images/placeholder.jpg',
   onLoad,
-  onError 
+  onError
 }) => {
-  const [isLoaded, setIsLoaded] = React.useState(false)
-  const [hasError, setHasError] = React.useState(false)
-  const [imageSrc, setImageSrc] = React.useState(placeholder)
+    const [isLoaded, setIsLoaded] = React.useState(false)
+    const [hasError, setHasError] = React.useState(false)
+    const [imageSrc, setImageSrc] = React.useState(placeholder)
 
-  React.useEffect(() => {
-    const img = new Image()
-    img.onload = () => {
-      setImageSrc(src)
-      setIsLoaded(true)
-      onLoad?.()
-    }
-    img.onerror = () => {
-      setHasError(true)
-      onError?.()
-    }
-    img.src = src
-  }, [src, onLoad, onError])
+    React.useEffect(() => {
+      const img = new window.Image() // Use window.Image to avoid conflict with Next.js Image
+      img.onload = () => {
+        setImageSrc(src)
+        setIsLoaded(true)
+        onLoad?.()
+      }
+      img.onerror = () => {
+        setHasError(true)
+        onError?.()
+      }
+      img.src = src
+    }, [src, onLoad, onError])
 
-  return (
-    <div className={`${styles.progressiveImage} ${className}`}>
-      <img
-        src={imageSrc}
-        alt={alt}
-        className={`${styles.image} ${isLoaded ? styles.loaded : ''} ${hasError ? styles.error : ''}`}
-      />
-      {!isLoaded && !hasError && (
-        <div className={styles.imageOverlay}>
-          <LoadingSpinner size="small" />
-        </div>
-      )}
-      {hasError && (
-        <div className={styles.imageError}>
-          <span>Failed to load image</span>
-        </div>
-      )}
-    </div>
-  )
-}
+    return (
+      <div className={`${styles.progressiveImage} ${className}`}>
+        <Image
+          src={imageSrc}
+          alt={alt}
+          width={800}
+          height={600}
+          className={`${styles.image} ${isLoaded ? styles.loaded : ''} ${hasError ? styles.error : ''}`}
+          onLoad={() => {
+            setIsLoaded(true)
+            onLoad?.()
+          }}
+          onError={() => {
+            setHasError(true)
+            onError?.()
+          }}
+          sizes="(max-width: 768px) 100vw, 800px"
+        />
+        {!isLoaded && !hasError && (
+          <div className={styles.imageOverlay}>
+            <LoadingSpinner size="small" />
+          </div>
+        )}
+        {hasError && (
+          <div className={styles.imageError}>
+            <span>Failed to load image</span>
+          </div>
+        )}
+      </div>
+    )
+  }
 
 // Utility hook for loading states
 export const useLoadingState = (initialState = false) => {

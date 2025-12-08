@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useRef, useEffect } from "react"
+import Image from "next/image"
 import PageTransition from "@/components/transition/PageTransition"
 import Link from "next/link"
 import MagneticButton from "@/components/magneticbutton/MagneticButton"
@@ -32,64 +33,64 @@ interface DynamicWorksProps {
 // Utility function to analyze image brightness
 const analyzeImageBrightness = (imageUrl: string): Promise<boolean> => {
   return new Promise((resolve) => {
-    const img = new Image()
-    
+    const img = new window.Image() // Use window.Image to avoid conflict with Next.js Image
+
     // Try without CORS first, then with if needed
     img.onload = () => {
       try {
         const canvas = document.createElement('canvas')
         const ctx = canvas.getContext('2d')
-        
+
         if (!ctx) {
           resolve(false) // Default to dark text if can't analyze
           return
         }
-        
+
         // Use smaller canvas for performance
         const maxSize = 100
         const scale = Math.min(maxSize / img.width, maxSize / img.height)
         canvas.width = img.width * scale
         canvas.height = img.height * scale
-        
+
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-        
+
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
         const data = imageData.data
-        
+
         let totalBrightness = 0
         let pixelCount = 0
-        
+
         // Sample every 4th pixel for performance
         for (let i = 0; i < data.length; i += 16) {
           const r = data[i]
           const g = data[i + 1]
           const b = data[i + 2]
-          
+
           // Calculate perceived brightness using luminance formula
           const brightness = (0.299 * r + 0.587 * g + 0.114 * b)
           totalBrightness += brightness
           pixelCount++
         }
-        
+
         const averageBrightness = totalBrightness / pixelCount
-        
+
         // If average brightness > 140, image is considered light (adjusted threshold)
         resolve(averageBrightness > 140)
       } catch (error) {
         console.error('Error analyzing image brightness:', error)
         // Fallback: try to determine from URL or filename
-        const isLikelyLight = imageUrl.toLowerCase().includes('light') || 
-                             imageUrl.toLowerCase().includes('white') ||
-                             imageUrl.toLowerCase().includes('bright')
+        const isLikelyLight = imageUrl.toLowerCase().includes('light') ||
+          imageUrl.toLowerCase().includes('white') ||
+          imageUrl.toLowerCase().includes('bright')
         resolve(isLikelyLight)
       }
     }
-    
+
     img.onerror = () => {
       // Fallback: assume dark background for better default readability
       resolve(false)
     }
-    
+
     // Set source after event listeners
     img.src = imageUrl
   })
@@ -125,7 +126,7 @@ export default function DynamicWorks({ projects }: DynamicWorksProps) {
   }, [])
 
   // Create preview images array from projects data
-  const projectPreviewImages = projects.map(project => 
+  const projectPreviewImages = projects.map(project =>
     project.previewImage?.url || project.featuredImage?.url || '/images/projects/project-1.jpg'
   )
 
@@ -135,7 +136,7 @@ export default function DynamicWorks({ projects }: DynamicWorksProps) {
     try {
       setHoveredProject(null)
       setIsLightBackground(false)
-      
+
       gsap.to(`.${styles.projectPreview} img`, {
         opacity: 0,
         duration: 0.3,
@@ -154,11 +155,11 @@ export default function DynamicWorks({ projects }: DynamicWorksProps) {
 
       if (index !== lastHoveredIndex && projectPreviewContainer) {
         console.log(`Hovered ${index}`)
-        
+
         setHoveredProject(index)
-        
+
         const imageUrl = projectPreviewImages[index - 1]
-        
+
         // Analyze image brightness for text color adjustment
         const isLight = await analyzeImageBrightness(imageUrl)
         setIsLightBackground(isLight)
@@ -211,11 +212,11 @@ export default function DynamicWorks({ projects }: DynamicWorksProps) {
 
   // Dynamic text color based on background (only when on works page)
   const dynamicTextStyle = {
-    color: isWorksPage && hoveredProject && isLightBackground 
-      ? '#1a1a1a' 
+    color: isWorksPage && hoveredProject && isLightBackground
+      ? '#1a1a1a'
       : isWorksPage && hoveredProject && !isLightBackground
-      ? '#f5f5f5'
-      : undefined
+        ? '#f5f5f5'
+        : undefined
   }
 
   return (
@@ -252,9 +253,17 @@ export default function DynamicWorks({ projects }: DynamicWorksProps) {
                     >
                       <div className={styles.projectImg}>
                         <Link href={`/projects/${project.slug}`}>
-                          <img 
-                            src={project.featuredImage?.url || '/images/projects/project-1.jpg'} 
-                            alt={project.featuredImage?.alt || project.title} 
+                          <Image
+                            src={project.featuredImage?.url || '/images/projects/project-1.jpg'}
+                            alt={project.featuredImage?.alt || project.title}
+                            width={800}
+                            height={600}
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            style={{
+                              width: '100%',
+                              height: 'auto',
+                              objectFit: 'cover'
+                            }}
                           />
                         </Link>
                       </div>
@@ -281,7 +290,7 @@ export default function DynamicWorks({ projects }: DynamicWorksProps) {
           >
             <Marquee>
               <h1 style={dynamicTextStyle}>
-                {projects.length > 0 
+                {projects.length > 0
                   ? `${projects.length} projects • Interactive design • Creative development • User experience`
                   : 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vitae, odit?'
                 }
