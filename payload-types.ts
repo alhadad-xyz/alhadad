@@ -71,6 +71,7 @@ export interface Config {
     'blog-posts': BlogPost;
     media: Media;
     users: User;
+    'menu-items': MenuItem;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -81,6 +82,7 @@ export interface Config {
     'blog-posts': BlogPostsSelect<false> | BlogPostsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    'menu-items': MenuItemsSelect<false> | MenuItemsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -401,6 +403,39 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "menu-items".
+ */
+export interface MenuItem {
+  id: number;
+  /**
+   * The text displayed in the navigation
+   */
+  label: string;
+  /**
+   * The URL path (e.g., /about, /works, /contact)
+   */
+  url: string;
+  /**
+   * Display order (lower numbers appear first)
+   */
+  order: number;
+  /**
+   * Show/hide this menu item
+   */
+  isActive?: boolean | null;
+  /**
+   * Open link in new tab
+   */
+  openInNewTab?: boolean | null;
+  /**
+   * Optional icon name (for future use)
+   */
+  icon?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -421,6 +456,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: number | User;
+      } | null)
+    | ({
+        relationTo: 'menu-items';
+        value: number | MenuItem;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -641,6 +680,20 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "menu-items_select".
+ */
+export interface MenuItemsSelect<T extends boolean = true> {
+  label?: T;
+  url?: T;
+  order?: T;
+  isActive?: T;
+  openInNewTab?: T;
+  icon?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
