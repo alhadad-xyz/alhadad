@@ -9,7 +9,7 @@ export default defineType({
             name: 'headerTitle',
             title: 'Contact Page Header',
             type: 'string',
-            description: 'e.g. Summon Juno to Your Project',
+            description: 'e.g. Summon Al to Your Project',
         }),
         defineField({
             name: 'contactGif',

@@ -76,7 +76,7 @@ export default defineType({
             name: 'spotlightIntroText',
             title: 'Spotlight Intro Header',
             type: 'string',
-            description: 'e.g. Trends shout but Juno whispers',
+            description: 'e.g. Trends shout but Al whispers',
         }),
         defineField({
             name: 'spotlightMaskImage',

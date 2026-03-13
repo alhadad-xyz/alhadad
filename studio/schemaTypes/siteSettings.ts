@@ -9,7 +9,7 @@ export default defineType({
             name: 'email',
             title: 'Contact Email',
             type: 'string',
-            description: 'e.g. hey@junowatts.com',
+            description: 'e.g. alhadad.dev@gmail.com',
         }),
         defineField({
             name: 'instagramUrl',
