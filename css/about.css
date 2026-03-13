@@ -15,12 +15,18 @@
 
 .about-hero .about-header {
   position: absolute;
-  bottom: 2.75rem;
+  bottom: 5svh;
   left: 50%;
   transform: translateX(-50%);
-  width: 60%;
+  width: 80%;
   text-align: center;
   color: var(--base-100);
+}
+
+.about-hero .about-header h2 {
+  font-size: clamp(3rem, 10vw, 8rem);
+  line-height: 0.9;
+  text-transform: uppercase;
 }
 
 .anime-text-container {
@@ -290,10 +296,22 @@
   }
 
   .about-hero .about-header {
-    width: 90%;
-    top: 50%;
-    bottom: unset;
-    transform: translate(-50%, -50%);
+    width: 95%;
+    bottom: 2rem;
+    top: unset;
+    transform: translateX(-50%);
+  }
+
+  .about-hero .about-header h2 {
+    font-size: clamp(1.5rem, 12vw, 3rem);
+  }
+
+  .about-skills-header h3 {
+    font-size: clamp(1.5rem, 8vw, 2.5rem);
+  }
+
+  .sticky-cards-header h3 {
+    font-size: clamp(1.5rem, 8vw, 2.5rem);
   }
 
   .about-skills {

@@ -17,11 +17,12 @@
   width: 90%;
   margin: 0 auto;
   text-align: center;
-  padding-top: 15svh;
+  padding-top: 12svh;
 }
 
 .hero .hero-content .hero-header h1 {
-  font-size: 16vw;
+  font-size: clamp(3rem, 15vw, 18vw);
+  line-height: 1;
 }
 
 .hero .hero-content .hero-footer {
@@ -599,30 +600,36 @@
   }
 
   .hero .hero-content .hero-header h1 {
-    font-size: 20vw;
+    font-size: 18vw;
   }
 
   .hero .hero-cards {
-    width: 50%;
+    width: 60%;
+    gap: 0.5rem;
   }
 }
 
 @media (max-width: 1000px) {
   .hero .hero-content .hero-header h1 {
-    font-size: 22.5vw;
+    font-size: 20vw;
   }
 
   .hero .hero-content .hero-footer-copy {
     display: none;
   }
 
+  .hero .hero-content .hero-footer {
+    padding-bottom: 2rem;
+  }
+
   .hero .hero-content .hero-footer-tags {
     width: 100%;
     justify-content: space-between;
+    padding: 0 1rem;
   }
 
   .hero .hero-cards .card p {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
   }
 
   .home-about {
@@ -703,22 +710,61 @@
 
 @media (max-width: 600px) {
   .hero .hero-content .hero-header h1 {
-    font-size: 25vw;
+    font-size: 18vw;
   }
 
   .hero .hero-cards {
-    top: 65%;
-    width: 75%;
+    top: 55%;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    transform: translate(-50%, -40%);
+  }
+
+  .hero .hero-cards .card {
+    width: 160px;
+    height: 80px;
+    aspect-ratio: auto;
+    position: relative;
+    transform: scale(0);
+  }
+
+  .hero .hero-cards .card .hero-card-inner {
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: none;
+    width: 100%;
+    height: 100%;
+    padding: 0.75rem;
+    animation: none;
+  }
+
+  .hero .hero-cards .card p {
+    font-size: 0.6rem;
+  }
+
+  .hero .hero-content .hero-footer-tags {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+    padding-bottom: 2rem;
   }
 }
 
 @media (max-width: 500px) {
   .hero .hero-content .hero-header h1 {
-    font-size: 30vw;
+    font-size: 20vw;
   }
 
   .hero .hero-cards {
-    width: 85%;
+    top: 55%;
+  }
+
+  .hero .hero-cards .card {
+    width: 140px;
+    height: 70px;
   }
 }
 
