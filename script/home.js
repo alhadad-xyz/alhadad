@@ -402,14 +402,33 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function loadSpotlightImages() {
   try {
-    const query = '*[_type == "project" && defined(mainImage)] | order(_createdAt desc)[0...9]';
+    const query = `*[_type == "project" && defined(mainImage)] | order(year desc, _createdAt desc)[0...9]{
+      mainImage,
+      slug
+    }`;
     const projects = await client.fetch(query);
 
-    const imageHolders = document.querySelectorAll('.home-spotlight-image.image-holder img');
+    const imageHolders = document.querySelectorAll('.home-spotlight-image.image-holder');
 
     projects.forEach((project, index) => {
-      if (imageHolders[index] && project.mainImage) {
-        imageHolders[index].src = urlFor(project.mainImage).url();
+      const holder = imageHolders[index];
+      if (!holder) return;
+
+      const img = holder.querySelector('img');
+      if (img && project.mainImage) {
+        img.src = urlFor(project.mainImage).width(800).auto('format').url();
+        
+        if (project.slug) {
+          // If no link exists, create one
+          let link = holder.querySelector('a');
+          if (!link) {
+            link = document.createElement('a');
+            link.className = 'spotlight-project-link';
+            img.parentNode.insertBefore(link, img);
+            link.appendChild(img);
+          }
+          link.href = `/project/${project.slug.current}`;
+        }
       }
     });
   } catch (error) {

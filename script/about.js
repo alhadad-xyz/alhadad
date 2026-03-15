@@ -525,19 +525,32 @@ async function loadAboutData() {
     // Gallery cards
     const gallerySection = document.querySelector('.about-sticky-cards');
     if (gallerySection && data.galleryImages && data.galleryImages.length > 0) {
+      const cardsContainer = gallerySection.querySelector('.container') || gallerySection;
       const existingCards = gallerySection.querySelectorAll('.gallery-card');
-      existingCards.forEach(c => c.remove());
-      // Insert before the outro section (or at end of sticky cards)
-      const bottomBar = gallerySection.querySelector('.home-spotlight-bottom-bar');
-      data.galleryImages.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'gallery-card';
+      
+      // Determine how many cards to update or create
+      data.galleryImages.forEach((item, i) => {
+        let card = existingCards[i];
+        if (!card) {
+          card = document.createElement('div');
+          card.className = 'gallery-card';
+          gallerySection.appendChild(card);
+        }
+        
         card.innerHTML = `
-          <div class="gallery-card-img"><img src="${urlFor(item.image).url()}" alt="" /></div>
-          <div class="gallery-card-content"><p class="mono">${item.label || ''}</p></div>
+          <div class="gallery-card-img">
+            <img src="${urlFor(item.image).width(1000).auto('format').url()}" alt="" />
+          </div>
+          <div class="gallery-card-content">
+            <p class="mono">${item.label || ''}</p>
+          </div>
         `;
-        gallerySection.appendChild(card);
       });
+
+      // Remove extra cards if any
+      for (let i = data.galleryImages.length; i < existingCards.length; i++) {
+        existingCards[i].remove();
+      }
     }
   } catch (e) {
     console.error('Error loading about page data:', e);
