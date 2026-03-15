@@ -492,44 +492,49 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function loadAboutData() {
   try {
-    const data = await client.fetch(`*[_type == "aboutPage"][0]`);
-    if (!data) return;
+    const [data, projects] = await Promise.all([
+      client.fetch(`*[_type == "aboutPage"][0]`),
+      client.fetch(`*[_type == "project" && defined(mainImage)] | order(year desc, _createdAt desc)[0...6]{ mainImage, number, title }`)
+    ]);
 
-    // Hero image & header
-    const heroImg = document.querySelector('.about-hero-img img');
-    if (heroImg && data.heroImage) heroImg.src = urlFor(data.heroImage).url();
-    const heroHeader = document.querySelector('.about-header h2');
-    if (heroHeader && data.heroHeader) heroHeader.textContent = data.heroHeader;
+    if (!data && (!projects || projects.length === 0)) return;
 
-    // Bio paragraphs
-    const bioParagraphs = document.querySelectorAll('.anime-text p');
-    if (data.bioParagraph1 && bioParagraphs[0]) bioParagraphs[0].textContent = data.bioParagraph1;
-    if (data.bioParagraph2 && bioParagraphs[1]) bioParagraphs[1].textContent = data.bioParagraph2;
+    if (data) {
+      // Hero image & header
+      const heroImg = document.querySelector('.about-hero-img img');
+      if (heroImg && data.heroImage) heroImg.src = urlFor(data.heroImage).url();
+      const heroHeader = document.querySelector('.about-header h2');
+      if (heroHeader && data.heroHeader) heroHeader.textContent = data.heroHeader;
 
-    // Skills bubbles
-    const objectContainer = document.querySelector('.object-container');
-    if (objectContainer && data.skillsList && data.skillsList.length > 0) {
-      const styleClasses = ['os-1', 'os-2', 'os-3'];
-      objectContainer.innerHTML = '';
-      data.skillsList.forEach((skill, i) => {
-        const div = document.createElement('div');
-        div.className = `object ${styleClasses[i % 3]}`;
-        const p = document.createElement('p');
-        p.className = 'mono';
-        p.textContent = skill;
-        div.appendChild(p);
-        objectContainer.appendChild(div);
-      });
+      // Bio paragraphs
+      const bioParagraphs = document.querySelectorAll('.anime-text p');
+      if (data.bioParagraph1 && bioParagraphs[0]) bioParagraphs[0].textContent = data.bioParagraph1;
+      if (data.bioParagraph2 && bioParagraphs[1]) bioParagraphs[1].textContent = data.bioParagraph2;
+
+      // Skills bubbles
+      const objectContainer = document.querySelector('.object-container');
+      if (objectContainer && data.skillsList && data.skillsList.length > 0) {
+        const styleClasses = ['os-1', 'os-2', 'os-3'];
+        objectContainer.innerHTML = '';
+        data.skillsList.forEach((skill, i) => {
+          const div = document.createElement('div');
+          div.className = `object ${styleClasses[i % 3]}`;
+          const p = document.createElement('p');
+          p.className = 'mono';
+          p.textContent = skill;
+          div.appendChild(p);
+          objectContainer.appendChild(div);
+        });
+      }
     }
 
-    // Gallery cards
+    // Gallery cards from projects
     const gallerySection = document.querySelector('.about-sticky-cards');
-    if (gallerySection && data.galleryImages && data.galleryImages.length > 0) {
-      const cardsContainer = gallerySection.querySelector('.container') || gallerySection;
+    if (gallerySection && projects && projects.length > 0) {
       const existingCards = gallerySection.querySelectorAll('.gallery-card');
       
-      // Determine how many cards to update or create
-      data.galleryImages.forEach((item, i) => {
+      // Update or create cards based on projects
+      projects.forEach((project, i) => {
         let card = existingCards[i];
         if (!card) {
           card = document.createElement('div');
@@ -539,16 +544,16 @@ async function loadAboutData() {
         
         card.innerHTML = `
           <div class="gallery-card-img">
-            <img src="${urlFor(item.image).width(1000).auto('format').url()}" alt="" />
+            <img src="${urlFor(project.mainImage).width(1000).auto('format').url()}" alt="" />
           </div>
           <div class="gallery-card-content">
-            <p class="mono">${item.label || ''}</p>
+            <p class="mono">${project.number ? project.number + ' - ' : ''}${project.title || ''}</p>
           </div>
         `;
       });
 
       // Remove extra cards if any
-      for (let i = data.galleryImages.length; i < existingCards.length; i++) {
+      for (let i = projects.length; i < existingCards.length; i++) {
         existingCards[i].remove();
       }
     }
