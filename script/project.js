@@ -43,12 +43,12 @@ async function loadProjectData(slug) {
         `*[_type == "project" && slug.current == $slug][0]{
           title, slug, client, year, role, liveUrl,
           mainImage, gallery, longDescription, stack,
-          clientReviewText, number
+          clientReviewText, number, visibility
         }`,
         { slug }
       ),
       client.fetch(
-        `*[_type == "project"] | order(number asc){ title, slug, liveUrl, year, role, client }`,
+        `*[_type == "project"] | order(number asc){ title, slug, liveUrl, year, role, client, visibility }`,
       ),
     ]);
 
@@ -97,7 +97,20 @@ async function loadProjectData(slug) {
 
     // ── Banner image ─────────────────────────────────
     if (project.mainImage) {
-      document.querySelector('.project-banner-img img').src = urlFor(project.mainImage).url();
+      const bannerImg = document.querySelector('.project-banner-img img');
+      bannerImg.src = urlFor(project.mainImage).url();
+      if (project.visibility === 'private') {
+        bannerImg.classList.add('project-private-blur');
+        bannerImg.parentElement.classList.add('project-private-container');
+        
+        const overlay = document.createElement('div');
+        overlay.className = 'project-private-overlay';
+        overlay.innerHTML = `
+          <p class="mono">Confidential</p>
+          <h4>PRIVATE PROJECT</h4>
+        `;
+        bannerImg.parentElement.appendChild(overlay);
+      }
     }
 
     // ── Long description ─────────────────────────────
@@ -139,9 +152,40 @@ async function loadProjectData(slug) {
       project.gallery.forEach(img => {
         const div = document.createElement('div');
         div.className = 'project-snapshot';
+        
+        const wrapper = document.createElement('div');
+        wrapper.className = 'project-snapshot-img-wrapper';
+        wrapper.style.width = '65%';
+        wrapper.style.height = '65%';
+        wrapper.style.position = 'relative';
+        wrapper.style.borderRadius = '8px';
+        wrapper.style.overflow = 'hidden';
+        
+        if (project.visibility === 'private') {
+          wrapper.classList.add('project-private-container');
+        }
+        
         const imageEl = document.createElement('img');
         imageEl.src = urlFor(img).url();
-        div.appendChild(imageEl);
+        imageEl.style.width = '100%';
+        imageEl.style.height = '100%';
+        if (project.visibility === 'private') {
+          imageEl.classList.add('project-private-blur');
+        }
+        
+        wrapper.appendChild(imageEl);
+        
+        if (project.visibility === 'private') {
+          const overlay = document.createElement('div');
+          overlay.className = 'project-private-overlay';
+          overlay.innerHTML = `
+            <p class="mono">Gallery Locked</p>
+            <h4>PRIVATE</h4>
+          `;
+          wrapper.appendChild(overlay);
+        }
+        
+        div.appendChild(wrapper);
         snapshotsWrapper.appendChild(div);
       });
     }

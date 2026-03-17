@@ -404,7 +404,9 @@ async function loadSpotlightImages() {
   try {
     const query = `*[_type == "project" && defined(mainImage)] | order(year desc, _createdAt desc)[0...9]{
       mainImage,
-      slug
+      slug,
+      visibility,
+      title
     }`;
     const projects = await client.fetch(query);
 
@@ -418,6 +420,19 @@ async function loadSpotlightImages() {
       if (img && project.mainImage) {
         img.src = urlFor(project.mainImage).width(800).auto('format').url();
         
+        if (project.visibility === 'private') {
+          img.classList.add('project-private-blur');
+          holder.classList.add('project-private-container');
+          
+          const overlay = document.createElement('div');
+          overlay.className = 'project-private-overlay';
+          overlay.innerHTML = `
+            <p class="mono">Private</p>
+            <h4>${project.title || 'Project'}</h4>
+          `;
+          holder.appendChild(overlay);
+        }
+
         if (project.slug) {
           // If no link exists, create one
           let link = holder.querySelector('a');
@@ -427,7 +442,7 @@ async function loadSpotlightImages() {
             img.parentNode.insertBefore(link, img);
             link.appendChild(img);
           }
-          link.href = `/project/${project.slug.current}`;
+          link.href = `/project.html?id=${project.slug.current}`;
         }
       }
     });

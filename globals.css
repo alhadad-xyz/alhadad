@@ -138,3 +138,44 @@ a span {
     padding: 2rem;
   }
 }
+
+/* Private Project Overlay */
+.project-private-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.project-private-blur {
+  filter: blur(20px);
+  pointer-events: none;
+}
+
+.project-private-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(10, 10, 10, 0.5);
+  color: var(--base-100);
+  z-index: 5;
+  text-align: center;
+  backdrop-filter: blur(8px);
+  padding: 2rem;
+  transition: background-color 0.4s ease;
+}
+
+.project-private-container:hover .project-private-overlay {
+  background-color: rgba(10, 10, 10, 0.6);
+}
+
+.project-private-overlay p.mono {
+  margin-bottom: 0.5rem;
+  opacity: 0.8;
+}
+
+.project-private-overlay h4 {
+  font-size: 1.5rem;
+  letter-spacing: 0.1rem;
+}

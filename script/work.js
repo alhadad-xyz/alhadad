@@ -68,6 +68,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       };
     }
 
+    if (slideData.visibility === 'private') {
+      img.classList.add('project-private-blur');
+      slideImg.classList.add('project-private-container');
+      
+      const overlay = document.createElement('div');
+      overlay.className = 'project-private-overlay';
+      overlay.innerHTML = `
+        <p class="mono">Private</p>
+        <h4>${slideData.slideTitle || 'Project'}</h4>
+      `;
+      slideImg.appendChild(overlay);
+    }
+
     slideImg.appendChild(img);
 
     const slideHeader = document.createElement("div");

@@ -82,5 +82,18 @@ export default defineType({
             title: 'Live Site URL',
             type: 'url',
         }),
+        defineField({
+            name: 'visibility',
+            title: 'Visibility',
+            type: 'string',
+            options: {
+                list: [
+                    { title: 'Public', value: 'public' },
+                    { title: 'Private', value: 'private' },
+                ],
+                layout: 'radio',
+            },
+            initialValue: 'public',
+        }),
     ],
 })
