@@ -313,7 +313,7 @@ async function loadSiteSettings() {
   try {
     const [data, firstProject] = await Promise.all([
       client.fetch(`*[_type == "siteSettings"][0]`),
-      client.fetch(`*[_type == "project"] | order(number asc)[0]{ slug }`),
+      client.fetch(`*[_type == "project"] | order(year desc)[0]{ slug }`),
     ]);
 
     // Update "Log 01" nav links to point to the first project

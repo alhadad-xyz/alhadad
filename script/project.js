@@ -43,12 +43,12 @@ async function loadProjectData(slug) {
         `*[_type == "project" && slug.current == $slug][0]{
           title, slug, client, year, role, liveUrl,
           mainImage, gallery, longDescription, stack,
-          clientReviewText, number, visibility
+          clientReviewText, visibility
         }`,
         { slug }
       ),
       client.fetch(
-        `*[_type == "project"] | order(number asc){ title, slug, liveUrl, year, role, client, visibility }`,
+        `*[_type == "project"] | order(year desc){ title, slug, liveUrl, year, role, client, visibility }`,
       ),
     ]);
 

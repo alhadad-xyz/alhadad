@@ -494,7 +494,7 @@ async function loadAboutData() {
   try {
     const [data, projects] = await Promise.all([
       client.fetch(`*[_type == "aboutPage"][0]`),
-      client.fetch(`*[_type == "project" && defined(mainImage)] | order(year desc, _createdAt desc)[0...6]{ mainImage, number, title }`)
+      client.fetch(`*[_type == "project" && defined(mainImage)] | order(year desc, _createdAt desc)[0...6]{ mainImage, title }`)
     ]);
 
     if (!data && (!projects || projects.length === 0)) return;
@@ -547,7 +547,7 @@ async function loadAboutData() {
             <img src="${urlFor(project.mainImage).width(1000).auto('format').url()}" alt="" />
           </div>
           <div class="gallery-card-content">
-            <p class="mono">${project.number ? project.number + ' - ' : ''}${project.title || ''}</p>
+            <p class="mono">${String(i + 1).padStart(2, '0')} - ${project.title || ''}</p>
           </div>
         `;
       });

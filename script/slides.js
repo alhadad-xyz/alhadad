@@ -8,7 +8,7 @@ function urlFor(source) {
 }
 
 export async function getSlides() {
-  const query = '*[_type == "project"] | order(number asc) { title, shortDescription, slug, role, mainImage, visibility }';
+  const query = '*[_type == "project"] | order(year desc) { title, shortDescription, slug, role, mainImage, visibility }';
   try {
     const projects = await client.fetch(query);
 

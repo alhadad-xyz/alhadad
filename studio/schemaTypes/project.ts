@@ -22,11 +22,6 @@ export default defineType({
             validation: (Rule) => Rule.required(),
         }),
         defineField({
-            name: 'number',
-            title: 'Project Number (e.g. 01, 02)',
-            type: 'string',
-        }),
-        defineField({
             name: 'client',
             title: 'Client Name',
             type: 'string',
