@@ -438,7 +438,6 @@ async function loadSpotlightImages() {
           
           overlay.innerHTML = `
             <p class="mono">Private</p>
-            <h4>${project.title || 'Project'}</h4>
           `;
           // Reveal button removed per user request (Project page only)
         } else {

@@ -84,7 +84,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       overlay.className = 'project-private-overlay';
       overlay.innerHTML = `
         <p class="mono">Private</p>
-        <h4>${slideData.slideTitle || 'Project'}</h4>
       `;
 
       // Reveal button removed per user request (Project page only)

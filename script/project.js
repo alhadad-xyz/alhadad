@@ -125,7 +125,6 @@ async function loadProjectData(slug) {
         
         overlay.innerHTML = `
           <p class="mono">Confidential</p>
-          <h4>PRIVATE PROJECT</h4>
         `;
 
         const revealBtn = revealManager.createRevealButton(settings, () => {
@@ -201,7 +200,6 @@ async function loadProjectData(slug) {
           overlay.className = 'project-private-overlay';
           overlay.innerHTML = `
             <p class="mono">Gallery Locked</p>
-            <h4>PRIVATE</h4>
           `;
           
           const revealBtn = revealManager.createRevealButton(settings, () => {
