@@ -1,9 +1,15 @@
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { getSlides } from "./slides";
+import { revealManager } from './reveal';
+
+import { client } from '../sanityClient';
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const slides = await getSlides();
+  const [slides, settings] = await Promise.all([
+    getSlides(),
+    client.fetch(`*[_type == "siteSettings"][0]{ globalRevealKey, globalRevealExpires }`)
+  ]);
   const totalSlides = slides.length;
   let currentSlide = 1;
 
@@ -68,7 +74,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       };
     }
 
-    if (slideData.visibility === 'private') {
+    const isRevealed = revealManager.isRevealed();
+
+    if (slideData.visibility === 'private' && !isRevealed) {
       img.classList.add('project-private-blur');
       slideImg.classList.add('project-private-container');
       
@@ -78,6 +86,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         <p class="mono">Private</p>
         <h4>${slideData.slideTitle || 'Project'}</h4>
       `;
+
+      // Reveal button removed per user request (Project page only)
       slideImg.appendChild(overlay);
     }
 

@@ -3,6 +3,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { initAnimations } from "./anime";
 import { client } from '../sanityClient';
 import imageUrlBuilder from '@sanity/image-url';
+import { revealManager } from './reveal';
 
 const builder = imageUrlBuilder(client);
 function urlFor(source) {
@@ -37,8 +38,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function loadProjectData(slug) {
   try {
-    // Single GROQ query — fetch current project + all project slugs in one round trip
-    const [project, allProjects] = await Promise.all([
+    const params = new URLSearchParams(window.location.search);
+    // Single GROQ query — fetch current project + all project slugs + site settings
+    const [project, allProjects, settings] = await Promise.all([
       client.fetch(
         `*[_type == "project" && slug.current == $slug][0]{
           title, slug, client, year, role, liveUrl,
@@ -50,13 +52,22 @@ async function loadProjectData(slug) {
       client.fetch(
         `*[_type == "project"] | order(year desc){ title, slug, liveUrl, year, role, client, visibility }`,
       ),
+      client.fetch(`*[_type == "siteSettings"][0]{ globalRevealKey, globalRevealExpires }`)
     ]);
 
-    // Project not found — show error state instead of blank template
+    // Project not found
     if (!project) {
       showNotFound();
       return;
     }
+
+    // Handle URL reveal parameter
+    const urlRevealKey = params.get('reveal');
+    if (urlRevealKey && revealManager.validateKey(settings, urlRevealKey)) {
+      revealManager.persistReveal();
+    }
+
+    const isRevealed = revealManager.isRevealed();
 
     // ── Title & SEO meta ─────────────────────────────
     document.title = `${project.title} | Alhadad`;
@@ -95,21 +106,37 @@ async function loadProjectData(slug) {
       metaCols[5].textContent = project.client || '';
     }
 
-    // ── Banner image ─────────────────────────────────
     if (project.mainImage) {
       const bannerImg = document.querySelector('.project-banner-img img');
       bannerImg.src = urlFor(project.mainImage).url();
-      if (project.visibility === 'private') {
+      
+      const bannerContainer = bannerImg.parentElement;
+
+      if (project.visibility === 'private' && !isRevealed) {
         bannerImg.classList.add('project-private-blur');
-        bannerImg.parentElement.classList.add('project-private-container');
+        bannerContainer.classList.add('project-private-container');
         
-        const overlay = document.createElement('div');
-        overlay.className = 'project-private-overlay';
+        let overlay = bannerContainer.querySelector('.project-private-overlay');
+        if (!overlay) {
+          overlay = document.createElement('div');
+          overlay.className = 'project-private-overlay';
+          bannerContainer.appendChild(overlay);
+        }
+        
         overlay.innerHTML = `
           <p class="mono">Confidential</p>
           <h4>PRIVATE PROJECT</h4>
         `;
-        bannerImg.parentElement.appendChild(overlay);
+
+        const revealBtn = revealManager.createRevealButton(settings, () => {
+          window.location.reload();
+        });
+        overlay.appendChild(revealBtn);
+      } else {
+        bannerImg.classList.remove('project-private-blur');
+        bannerContainer.classList.remove('project-private-container');
+        const overlay = bannerContainer.querySelector('.project-private-overlay');
+        if (overlay) overlay.remove();
       }
     }
 
@@ -161,30 +188,30 @@ async function loadProjectData(slug) {
         wrapper.style.borderRadius = '8px';
         wrapper.style.overflow = 'hidden';
         
-        if (project.visibility === 'private') {
-          wrapper.classList.add('project-private-container');
-        }
-        
         const imageEl = document.createElement('img');
         imageEl.src = urlFor(img).url();
         imageEl.style.width = '100%';
         imageEl.style.height = '100%';
-        if (project.visibility === 'private') {
+
+        if (project.visibility === 'private' && !isRevealed) {
+          wrapper.classList.add('project-private-container');
           imageEl.classList.add('project-private-blur');
-        }
-        
-        wrapper.appendChild(imageEl);
-        
-        if (project.visibility === 'private') {
+          
           const overlay = document.createElement('div');
           overlay.className = 'project-private-overlay';
           overlay.innerHTML = `
             <p class="mono">Gallery Locked</p>
             <h4>PRIVATE</h4>
           `;
+          
+          const revealBtn = revealManager.createRevealButton(settings, () => {
+            window.location.reload();
+          });
+          overlay.appendChild(revealBtn);
           wrapper.appendChild(overlay);
         }
         
+        wrapper.appendChild(imageEl);
         div.appendChild(wrapper);
         snapshotsWrapper.appendChild(div);
       });

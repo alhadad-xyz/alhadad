@@ -47,5 +47,21 @@ export default defineType({
             type: 'string',
             description: 'e.g. © 2025 All Rights Reserved',
         }),
+        defineField({
+            name: 'globalRevealKey',
+            title: 'Global Reveal Key',
+            type: 'slug',
+            options: {
+                source: () => Math.random().toString(36).substring(2, 12).toUpperCase(),
+                slugify: (input) => input,
+            },
+            description: 'Secret key to unlock all private projects site-wide. Click Generate for a random key.',
+        }),
+        defineField({
+            name: 'globalRevealExpires',
+            title: 'Global Reveal Key Expires At',
+            type: 'datetime',
+            description: 'Optional: When the global reveal key should expire.',
+        }),
     ],
 })

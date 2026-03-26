@@ -179,3 +179,122 @@ a span {
   font-size: 1.5rem;
   letter-spacing: 0.1rem;
 }
+
+/* Reveal Button & Modal */
+.reveal-btn {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--base-100);
+  color: var(--base-300);
+  border: none;
+  font-family: "DM Mono";
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  pointer-events: auto; /* Ensure clickable in overlay */
+}
+
+.reveal-btn:hover {
+  background-color: var(--accent-1);
+  transform: translateY(-2px);
+}
+
+.reveal-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.85);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.reveal-modal.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.reveal-modal-content {
+  background: var(--base-100);
+  padding: 3rem;
+  max-width: 450px;
+  width: 90%;
+  text-align: center;
+  position: relative;
+  transform: translateY(20px);
+  transition: transform 0.4s ease;
+}
+
+.reveal-modal.active .reveal-modal-content {
+  transform: translateY(0);
+}
+
+.reveal-modal-content h3 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--base-300);
+}
+
+.reveal-modal-content p {
+  margin-bottom: 2rem;
+  opacity: 0.7;
+}
+
+.reveal-input-group {
+  margin-bottom: 2rem;
+}
+
+.reveal-input {
+  width: 100%;
+  padding: 1rem;
+  background: var(--base-200);
+  border: 1px solid rgba(0,0,0,0.1);
+  font-family: inherit;
+  font-size: 1rem;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.reveal-input:focus {
+  border-color: var(--base-300);
+}
+
+.reveal-submit-btn {
+  width: 100%;
+  padding: 1rem;
+  background: var(--base-300);
+  color: var(--base-100);
+  font-family: "DM Mono";
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.reveal-submit-btn:hover {
+  background: var(--accent-1);
+  color: var(--base-300);
+}
+
+.reveal-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  font-size: 2rem;
+  cursor: pointer;
+  font-family: "DM Mono";
+  line-height: 1;
+}
+
+.reveal-error {
+  color: #d93025;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  display: none;
+}

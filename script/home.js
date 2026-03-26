@@ -5,6 +5,7 @@ import { initAnimations } from "./anime";
 import { client } from '../sanityClient';
 import imageUrlBuilder from '@sanity/image-url';
 import { initEmailForms } from './email';
+import { revealManager } from './reveal';
 
 const builder = imageUrlBuilder(client);
 function urlFor(source) {
@@ -402,13 +403,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function loadSpotlightImages() {
   try {
-    const query = `*[_type == "project" && defined(mainImage)] | order(year desc, _createdAt desc)[0...9]{
-      mainImage,
-      slug,
-      visibility,
-      title
-    }`;
-    const projects = await client.fetch(query);
+    const [projects, settings] = await Promise.all([
+      client.fetch(`*[_type == "project" && defined(mainImage)] | order(year desc, _createdAt desc)[0...9]{
+        mainImage,
+        slug,
+        visibility,
+        title
+      }`),
+      client.fetch(`*[_type == "siteSettings"][0]{ globalRevealKey, globalRevealExpires }`)
+    ]);
 
     const imageHolders = document.querySelectorAll('.home-spotlight-image.image-holder');
 
@@ -420,17 +423,29 @@ async function loadSpotlightImages() {
       if (img && project.mainImage) {
         img.src = urlFor(project.mainImage).width(800).auto('format').url();
         
-        if (project.visibility === 'private') {
+        const isRevealed = revealManager.isRevealed();
+
+        if (project.visibility === 'private' && !isRevealed) {
           img.classList.add('project-private-blur');
           holder.classList.add('project-private-container');
           
-          const overlay = document.createElement('div');
-          overlay.className = 'project-private-overlay';
+          let overlay = holder.querySelector('.project-private-overlay');
+          if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.className = 'project-private-overlay';
+            holder.appendChild(overlay);
+          }
+          
           overlay.innerHTML = `
             <p class="mono">Private</p>
             <h4>${project.title || 'Project'}</h4>
           `;
-          holder.appendChild(overlay);
+          // Reveal button removed per user request (Project page only)
+        } else {
+          img.classList.remove('project-private-blur');
+          holder.classList.remove('project-private-container');
+          const overlay = holder.querySelector('.project-private-overlay');
+          if (overlay) overlay.remove();
         }
 
         if (project.slug) {
