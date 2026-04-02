@@ -1,10 +1,10 @@
 import gsap from "gsap";
 import { initAnimations } from "./anime.js";
 import { client } from '../sanityClient';
-import imageUrlBuilder from '@sanity/image-url';
+import { createImageUrlBuilder } from '@sanity/image-url';
 import emailjs from '@emailjs/browser';
 
-const builder = imageUrlBuilder(client);
+const builder = createImageUrlBuilder(client);
 function urlFor(source) { return builder.image(source); }
 
 const EMAILJS_PUBLIC_KEY    = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'Tet6K7frJPYMXhM45';

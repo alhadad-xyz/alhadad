@@ -25,7 +25,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.emailjs.com https://www.youtube.com https://s.ytimg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://cdn.sanity.io https://i.ytimg.com; connect-src 'self' https://*.apicdn.sanity.io https://*.sanity.io https://api.emailjs.com wss://api.lanyard.rest https://api.lanyard.rest; frame-src 'self' https://www.youtube.com; frame-ancestors 'none';"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.emailjs.com https://www.youtube.com https://s.ytimg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://cdn.sanity.io https://i.ytimg.com https://i.scdn.co; connect-src 'self' https://*.apicdn.sanity.io https://*.sanity.io https://api.emailjs.com wss://api.lanyard.rest https://api.lanyard.rest; frame-src 'self' https://www.youtube.com; frame-ancestors 'none';"
         },
         {
           "key": "X-Content-Type-Options",
