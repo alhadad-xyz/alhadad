@@ -97,6 +97,8 @@ function initContactForm() {
         sender_email: email,
         message:      message,
         sent_from:    window.location.href,
+      }, {
+        publicKey: EMAILJS_PUBLIC_KEY,
       });
       form.reset();
       setStatus(status, "✓ Message sent — I'll be in touch soon.", 'success');

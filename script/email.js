@@ -39,6 +39,8 @@ function setupForm(form) {
         subscriber_email: email,
         to_name: 'Alhadad',
         sent_from: window.location.href,
+      }, {
+        publicKey: EMAILJS_PUBLIC_KEY,
       });
       input.value = '';
       showFeedback(form, "You're in ✓", 'success');
@@ -64,8 +66,16 @@ function setupForm(form) {
     form.appendChild(hp);
   }
 
-  button.addEventListener('click', submit);
-  input.addEventListener('keydown', e => { if (e.key === 'Enter') submit(); });
+  button.addEventListener('click', (e) => {
+    e.preventDefault();
+    submit();
+  });
+  input.addEventListener('keydown', e => { 
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      submit();
+    }
+  });
 }
 
 function isValidEmail(email) {
