@@ -1,0 +1,13 @@
+# Append to /etc/caddy/Caddyfile next to paper's block, then: sudo systemctl reload caddy
+# Build locally (npm run build), then copy out/ to the server:
+#   rsync -a --delete site/out/ server:/srv/alhadad-site/
+alhadad.dev {
+	encode zstd gzip
+	root * /srv/alhadad-site
+	try_files {path} {path}.html
+	file_server
+}
+
+www.alhadad.dev {
+	redir https://alhadad.dev{uri} permanent
+}

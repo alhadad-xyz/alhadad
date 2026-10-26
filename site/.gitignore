@@ -1,0 +1,6 @@
+.plan/
+node_modules/
+*.db
+.next/
+next-env.d.ts
+out/
