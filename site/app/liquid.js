@@ -1,6 +1,9 @@
+import { SHEET_RATIO } from './doodles';
+
 // Liquid portrait: the cursor pours a fluid field over the hero. Where the
-// fluid is dense the backdrop turns to paper, gravity drags it into drips,
-// and its velocity pushes the photo's pixels around.
+// fluid is dense it reveals the painted version (paper, contour rings around
+// the silhouette, doodles); gravity drags the paint into drips and its
+// velocity pushes the photo's pixels around.
 
 const VERT = `#version 300 es
 out vec2 vUv;
@@ -43,20 +46,39 @@ const SHOW = `#version 300 es
 precision highp float;
 in vec2 vUv;
 out vec4 o;
-uniform sampler2D uSim, uPhoto;
-uniform vec4 uRect;
+uniform sampler2D uSim, uPhoto, uPaint, uDist;
+uniform vec4 uRect, uSheet;
 uniform float uTime;
+
+float hash(float x) { return fract(sin(x * 91.3458) * 47453.5453); }
+float hash(vec2 v) { return fract(sin(dot(v, vec2(127.1, 311.7))) * 43758.5453); }
+float noise(vec2 x) {
+  vec2 i = floor(x), f = fract(x);
+  f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x), mix(hash(i + vec2(0, 1)), hash(i + 1.0), f.x), f.y);
+}
 
 void main() {
   vec4 s = texture(uSim, vUv);
   float m = smoothstep(0.26, 0.34, s.z);
-  vec2 p = (vUv - uRect.xy) / uRect.zw - s.xy * (0.01 + 0.03 * m);
-  vec4 ph = texture(uPhoto, p); // premultiplied
+  vec2 uv = vUv - s.xy * (0.01 + 0.03 * m) * uRect.zw;
+  vec4 ph = texture(uPhoto, (uv - uRect.xy) / uRect.zw); // premultiplied
 
-  // Inside the paint: paper backdrop, photo pushed to higher contrast.
-  vec3 c = clamp((ph.rgb - 0.5 * ph.a) * 1.35 + 0.5 * ph.a, 0.0, ph.a);
-  vec4 paper = vec4(vec3(0.949, 0.937, 0.914) * (1.0 - ph.a) + c, 1.0);
-  o = mix(ph, paper, m);
+  // Painted version: contour rings ripple out from the silhouette like marker on paper.
+  vec2 q = (uv - uSheet.xy) / uSheet.zw;
+  vec4 pt = texture(uPaint, q); // rows flipped on upload by UNPACK_FLIP_Y
+  vec2 outside = max(vec2(0), abs(q - 0.5) - 0.5);
+  pt.gb *= step(dot(outside, outside), 0.0);
+  float d = texture(uDist, q).r + length(outside * vec2(textureSize(uDist, 0)));
+  float w = d + (noise(q * vec2(40.0, 18.0)) - 0.5) * 7.0;
+  float ring = floor(w / 13.0);
+  float line = (1.0 - smoothstep(0.7, 1.7, abs(fract(w / 13.0) - 0.5) * 13.0))
+             * smoothstep(9.0, 14.0, d) * (1.0 - smoothstep(380.0, 510.0, d)) * step(hash(ring), 0.85);
+  vec3 back = mix(vec3(0.949, 0.937, 0.914), vec3(mix(0.12, 0.6, hash(ring + 7.0))), line);
+  back = mix(back, vec3(0.1), pt.g);
+  vec3 c = clamp((ph.rgb - 0.5 * ph.a) * 1.2 + 0.5 * ph.a, 0.0, ph.a);
+  vec4 painted = vec4(mix(back * (1.0 - ph.a) + c, vec3(1.0), pt.b), 1.0);
+  o = mix(ph, painted, m);
 
   float g = fract(sin(dot(vUv * 1000.0 + uTime, vec2(12.9898, 78.233))) * 43758.5453);
   o.rgb = clamp(o.rgb + (g - 0.5) * 0.06 * o.a, 0.0, o.a);
@@ -67,7 +89,7 @@ const STEP = 1000 / 60;
 const IDLE_MS = 2000;
 
 // Returns a cleanup function, or null when WebGL2 float targets are missing (the <img> stays).
-export function mountLiquid(canvas, img) {
+export function mountLiquid(canvas, img, paint) {
   const gl = canvas.getContext('webgl2', { antialias: false });
   if (!gl || !gl.getExtension('EXT_color_buffer_float')) return null;
 
@@ -86,7 +108,11 @@ export function mountLiquid(canvas, img) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
+  const sheet = texture(gl, paint.width, paint.height, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, paint.data);
+  const dist = texture(gl, paint.width, paint.height, gl.R16F, gl.RED, gl.FLOAT, paint.dist);
+
   const rect = [0, 0, 1, 1];
+  const sheetRect = [0, 0, 1, 1];
   let aspect = 1;
   const resize = () => {
     const dpr = Math.min(devicePixelRatio, 2);
@@ -100,6 +126,11 @@ export function mountLiquid(canvas, img) {
     rect[1] = (c.bottom - i.bottom) / c.height;
     rect[2] = i.width / c.width;
     rect[3] = i.height / c.height;
+    const sw = (i.height * SHEET_RATIO) / c.width;
+    sheetRect[0] = rect[0] + rect[2] / 2 - sw / 2;
+    sheetRect[1] = rect[1];
+    sheetRect[2] = sw;
+    sheetRect[3] = rect[3];
   };
   const ro = new ResizeObserver(resize);
   ro.observe(canvas);
@@ -158,6 +189,13 @@ export function mountLiquid(canvas, img) {
     gl.bindTexture(gl.TEXTURE_2D, photo);
     gl.uniform1i(show.u.uPhoto, 1);
     gl.uniform4fv(show.u.uRect, rect);
+    gl.activeTexture(gl.TEXTURE2);
+    gl.bindTexture(gl.TEXTURE_2D, sheet);
+    gl.uniform1i(show.u.uPaint, 2);
+    gl.uniform4fv(show.u.uSheet, sheetRect);
+    gl.activeTexture(gl.TEXTURE3);
+    gl.bindTexture(gl.TEXTURE_2D, dist);
+    gl.uniform1i(show.u.uDist, 3);
     gl.uniform1f(show.u.uTime, (t % 1000) / 1000);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
@@ -196,14 +234,19 @@ function program(gl, frag) {
   return { p, u };
 }
 
-function target(gl, w, h) {
+function texture(gl, w, h, internal, format, type, data) {
   const tex = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, tex);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, w, h, 0, gl.RGBA, gl.HALF_FLOAT, null);
+  gl.texImage2D(gl.TEXTURE_2D, 0, internal, w, h, 0, format, type, data);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  return tex;
+}
+
+function target(gl, w, h) {
+  const tex = texture(gl, w, h, gl.RGBA16F, gl.RGBA, gl.HALF_FLOAT, null);
   const fb = gl.createFramebuffer();
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
   gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);

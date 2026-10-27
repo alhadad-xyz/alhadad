@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { mountLiquid } from './liquid';
+import { paintSheet } from './doodles';
 
 export default function Portrait() {
   const canvas = useRef(null);
@@ -10,9 +11,9 @@ export default function Portrait() {
   useEffect(() => {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     let cleanup, cancelled = false;
-    img.current.decode().then(() => {
+    img.current.decode().then(() => paintSheet(img.current)).then((paint) => {
       if (cancelled) return;
-      cleanup = mountLiquid(canvas.current, img.current);
+      cleanup = mountLiquid(canvas.current, img.current, paint);
       if (cleanup) canvas.current.parentElement.classList.add('is-gl');
     }).catch(() => {});
     return () => {
