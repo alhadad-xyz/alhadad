@@ -10,7 +10,7 @@ export default function RootLayout({ children }) {
     // is-loading is removed by Intro once the preloader finishes.
     <html lang="en" className={`is-loading ${newsreader.variable}`} suppressHydrationWarning>
       <head>
-        <noscript><style>{'.preloader { display: none; } html { overflow: auto; } .wordmark { visibility: visible; }'}</style></noscript>
+        <noscript><style>{'.preloader { display: none; } html { overflow: auto; }'}</style></noscript>
       </head>
       <body>{children}</body>
     </html>

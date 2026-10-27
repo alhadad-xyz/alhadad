@@ -1,7 +1,5 @@
 import Intro from './Intro';
 
-const images = [1011, 1027, 1035, 1043, 1062, 1074];
-
 export default function Home() {
   return (
     <>
@@ -9,18 +7,34 @@ export default function Home() {
         <a className="wordmark" href="#hook">Alhadad</a>
       </header>
 
-      <div className="preloader" aria-hidden="true">
+      <div className="preloader">
         <div className="preloader__panel"></div>
-        <div className="preloader__images invisible">
-          {images.map((id) => (
-            <img key={id} src={`https://picsum.photos/id/${id}/450/600`} width="450" height="600" alt="" />
-          ))}
-        </div>
-        <div className="preloader__center">
-          <div className="preloader__word invisible">
-            {'ALHADAD'.split('').map((c, i) => <span key={i}>{c}</span>)}
-          </div>
-          <div className="preloader__count"><span>000</span></div>
+        <p className="preloader__top invisible" aria-hidden="true">
+          <span className="mask"><span className="preloader__count">00</span></span>
+          <span className="mask"><span className="preloader__ready">Ready</span></span>
+        </p>
+        <button className="preloader__gate invisible" type="button" aria-label="Enter site" disabled>
+          <span className="preloader__mark" aria-hidden="true">A</span>
+          <span className="mask" aria-hidden="true"><span className="preloader__enter">Enter</span></span>
+          <span className="mask" aria-hidden="true"><span className="preloader__welcome">Welcome</span></span>
+          <svg className="preloader__ring" viewBox="0 0 220 220" aria-hidden="true">
+            <circle cx="110" cy="110" r="108" pathLength="100" />
+            <circle cx="110" cy="110" r="108" pathLength="100" />
+          </svg>
+        </button>
+        <div className="preloader__meta invisible" aria-hidden="true">
+          <p>
+            <span className="mask"><span>Alhadad</span></span>
+            <span className="mask"><span>Personal site</span></span>
+          </p>
+          <p>
+            <span className="mask"><span>Index:</span></span>
+            <span className="mask"><span>05 Chapters</span></span>
+          </p>
+          <p>
+            <span className="preloader__blocks"><span>▊</span><span>▊</span><span>▊</span></span>
+            <span className="mask"><span>V-001</span></span>
+          </p>
         </div>
       </div>
 
