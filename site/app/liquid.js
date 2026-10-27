@@ -66,6 +66,9 @@ void main() {
 
   // Painted version: contour rings ripple out from the silhouette like marker on paper.
   vec2 q = (uv - uSheet.xy) / uSheet.zw;
+  // Line boil: the drawing redraws itself ~8 times a second, like hand-drawn animation.
+  float frame = floor(uTime * 8.0);
+  q += (vec2(noise(q * 14.0 + frame * 7.1), noise(q * 14.0 + frame * 3.7 + 31.0)) - 0.5) * vec2(0.0024, 0.005);
   vec4 pt = texture(uPaint, q); // rows flipped on upload by UNPACK_FLIP_Y
   vec2 outside = max(vec2(0), abs(q - 0.5) - 0.5);
   pt.gb *= step(dot(outside, outside), 0.0);
@@ -75,9 +78,12 @@ void main() {
   float line = (1.0 - smoothstep(0.7, 1.7, abs(fract(w / 13.0) - 0.5) * 13.0))
              * smoothstep(9.0, 14.0, d) * (1.0 - smoothstep(380.0, 510.0, d)) * step(hash(ring), 0.85);
   vec3 back = mix(vec3(0.949, 0.937, 0.914), vec3(mix(0.12, 0.6, hash(ring + 7.0))), line);
-  back = mix(back, vec3(0.1), pt.g);
+  back = mix(back, vec3(0.1), max(pt.g, smoothstep(2.0, 3.0, d) * (1.0 - smoothstep(4.5, 5.5, d)) * 0.85));
   vec3 c = clamp((ph.rgb - 0.5 * ph.a) * 1.2 + 0.5 * ph.a, 0.0, ph.a);
-  vec4 painted = vec4(mix(back * (1.0 - ph.a) + c, vec3(1.0), pt.b), 1.0);
+  vec3 under = back * (1.0 - ph.a) + c;
+  // Marks on the person switch pen: white on hair and knit, black on skin and paper.
+  vec3 pen = vec3(mix(0.08, 0.96, 1.0 - smoothstep(0.45, 0.55, dot(under, vec3(0.333)))));
+  vec4 painted = vec4(mix(under, pen, pt.b), 1.0);
   o = mix(ph, painted, m);
 
   float g = fract(sin(dot(vUv * 1000.0 + uTime, vec2(12.9898, 78.233))) * 43758.5453);
