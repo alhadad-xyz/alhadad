@@ -163,6 +163,7 @@ function flicker(el, times = 3, step = 0.08) {
 function playHook() {
   const split = SplitText.create("#hook h1", { type: "lines", mask: "lines" });
   gsap.from(split.lines, { yPercent: 105, duration: 1.1, ease: "expo.out", stagger: 0.09 });
+  gsap.from(".hero__portrait", { autoAlpha: 0, scale: 1.04, duration: 1.6, ease: "expo.out" });
 }
 
 function revealChapters() {

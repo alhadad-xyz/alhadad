@@ -1,4 +1,5 @@
 import Intro from './Intro';
+import Portrait from './Portrait';
 
 export default function Home() {
   return (
@@ -39,9 +40,11 @@ export default function Home() {
       </div>
 
       <main>
-        <section className="chapter" id="hook">
-          <p className="eyebrow">Chapter 0</p>
-          <h1 className="reveal">Your name. One line that says who you are.</h1>
+        <section className="hero" id="hook">
+          <Portrait />
+          <h1 className="hero__name">Alhadad</h1>
+          <p className="eyebrow hero__eyebrow">Chapter 0 — One line that says who you are.</p>
+          <p className="eyebrow hero__hint" aria-hidden="true">Move to pour</p>
         </section>
 
         <section className="chapter" id="origin">

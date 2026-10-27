@@ -124,6 +124,55 @@ html:not(.is-loading) .preloader { display: none; }
   .preloader__meta { left: 32px; right: 32px; bottom: 28px; gap: 6rem; }
 }
 
+/* Hero: photo bottom-anchored, name in front with difference so it reads on dark and on paint */
+.hero {
+  position: relative;
+  height: 100svh;
+  min-height: 32rem;
+  overflow: hidden;
+}
+.hero__portrait { position: absolute; inset: 0; }
+.hero__photo {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  translate: -50% 0;
+  /* Wider than the viewport on phones: the sides crop, the face fills the screen. */
+  height: min(92%, 150vw);
+  max-width: none;
+  width: auto;
+}
+.hero__canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+/* The canvas draws the photo itself once WebGL is up; the <img> stays for layout and fallback. */
+.hero__portrait.is-gl .hero__photo { visibility: hidden; }
+
+.hero__name {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 9%;
+  color: var(--cream);
+  font-size: clamp(4.5rem, 21vw, 22rem);
+  line-height: .8;
+  letter-spacing: -0.05em;
+  text-align: center;
+  mix-blend-mode: difference;
+  pointer-events: none;
+}
+.hero__eyebrow, .hero__hint {
+  position: absolute;
+  bottom: 20px;
+  margin: 0;
+  color: var(--cream);
+  mix-blend-mode: difference;
+}
+.hero__eyebrow { left: 16px; right: 16px; }
+.hero__hint { right: 16px; display: none; }
+@media (hover: hover) and (min-width: 768px) {
+  .hero__eyebrow { right: auto; left: 32px; bottom: 28px; }
+  .hero__hint { display: block; right: 32px; bottom: 28px; }
+}
+
 .eyebrow { color: var(--muted); text-transform: uppercase; letter-spacing: .1em; font-size: .8rem; }
 h1, h2 { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.02em; text-wrap: balance; }
 h1 { font-size: clamp(2.5rem, 8vw, 6rem); line-height: 1; margin: 0; }
