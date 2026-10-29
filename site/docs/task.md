@@ -70,7 +70,11 @@ These items are small and finish the frame around the content.
     - Contrast of the difference-blended text over the photo and the paint.
     - Keyboard path through the gate, the cover lines and the running header.
     - Screen-reader reading order.
+    - 2026-10-29: Lighthouse a11y 91 → 95–96. `--muted` darkened to `#6e6a63` (3.2 → 4.7:1), SplitText uses `aria: "none"` (its default put `aria-label` on `<p>`s), wordmark label is "A. Alhadad". Still flagged: the chapter 2 words at 0.15 opacity before they light up (intentional). Keyboard and screen-reader passes not done yet.
 11. [ ] **Performance:** Lighthouse on mobile, size of `hero.webp`, font payload (Bodoni variable `opsz`), and the 8s preloader cap.
+    - 2026-10-29, local build, Lighthouse 12 mobile, real GPU: perf 53–67 → 69–91 (noisy), TBT 1.4–4.9 s → 0.17–0.4 s. `paintSheet()` was one ~620 ms task at 4× throttle; it now yields between steps and every 100 rows of the distance passes.
+    - LCP was ~3.3 s: the preloader in the HTML hid the hero until JS ran, even on return visits. Now an inline `<head>` script in `layout.jsx` drops `is-loading` before first paint when `intro-seen` is set, and return visits skip the `hook()` entrance. First run gave LCP 2.1 s; not re-measured cleanly (machine load ~230). First visits are unchanged.
+    - Swiftshader (software WebGL) runs score far lower (27–47); use a real GPU when measuring.
 12. [x] **Check the favicon at 16px.** The period survives at about 2px; no change needed.
 13. [x] **SEO and sharing:** `app/opengraph-image.jpg` (the cover, shot with reduced motion so the paint is off), `app/robots.js`, `app/sitemap.js`, and a drafted description in `layout.jsx`. Re-shoot the image and rewrite the description once the hero line is real (task 2).
     - An Open Graph image (the cover).
@@ -78,11 +82,36 @@ These items are small and finish the frame around the content.
     - `robots.txt` and `sitemap.xml`. Today both URLs return the home page with a 200.
 14. [x] **Real 404s:** `app/not-found.jsx` plus `handle_errors` in `deploy/Caddyfile`, applied on the server 2026-10-29 (backup: `/etc/caddy/Caddyfile.bak-20261029171906`). `/nope` now returns 404.
 
+## Next version: Issue 002
+
+Brainstormed 2026-10-29. The content in tasks 2 and 3 comes first: without it the new features have nothing to show. Close the quality tasks (9 to 11) before adding pages.
+
+Order: tasks 2 and 3, then 15, then 16. Tasks 17 and 20 are small extras that can ship alongside.
+
+15. [ ] **Case-study pages as magazine features** (`/work/[slug]`). This resolves the PRD's open question on case studies.
+    - Each project opens with a feature spread: a huge title and a standfirst, then image and text spreads.
+    - The work index row pours into the feature page with `drips()`.
+    - Static export: generate the pages with `generateStaticParams` from `PROJECTS`.
+    - Needs the real projects from task 3.
+16. [ ] **Print edition.** A `@media print` stylesheet that turns the site into a printable magazine that doubles as a CV.
+    - Each chapter starts on a new page, and the back cover becomes the contact page.
+    - Drop the preloader, the running header and the WebGL canvas; print the plain portrait.
+17. [ ] **Colophon.** A small page at the back for peers: the fonts, the stack, how the liquid shader works, and the issue credits.
+18. [ ] **Back issues.** Freeze each version at `/issues/001`, `/issues/002` and so on, and add a "Back issues" link on the cover.
+    - Build a git tag into a subfolder of the static export.
+    - This replaces "Refresh the issue line each season" from Later.
+19. [ ] **Seasonal cover.** Each issue changes the accent colour, the cover photo, the doodle set and the lead line. The liquid and the layout stay the same. Pairs with task 18.
+20. [ ] **Real barcode.** Make the back-cover barcode encode `alhadad.dev` as Code 128, so it scans.
+21. [ ] **Keyboard reading.** `J`/`K` (or `←`/`→`) jump between chapters, and the running header shows the hint. This also helps task 10.
+
+Skipped for Issue 002:
+
+- Guestbook, reader letters and a "subscribe to the next issue" newsletter. All need a backend, and the site is static. Revisit with a form service.
+- A blog or notes column. It's a non-goal in the PRD.
+- A page-turn scroll hijack between chapters. It fights native scroll and the accessibility goals.
+- The liquid shader on every image. It costs too much against the Lighthouse ≥ 90 target.
+
 ## Dropped
 
 - ~~Active cover line for the chapter in view.~~ The cover lines are visible only on the cover. The running header's index marks the current chapter instead.
 
-## Later
-
-- [ ] Case-study pages per project, if the PRD open question resolves that way.
-- [ ] Refresh the issue line each season.

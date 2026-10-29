@@ -66,7 +66,7 @@ One page, organised as a magazine issue with six sections.
 | `--bg` | `#f2efe9` | Paper (page background) |
 | `--fg` | `#0e0e0e` | Ink (text) |
 | `--cream` | `#ede4dd` | Chrome under `mix-blend-mode: difference`: it reads as ink on paper and as light on the photo or paint |
-| `--muted` | `#8a867f` | Secondary text |
+| `--muted` | `#6e6a63` | Secondary text (4.7:1 on paper, AA) |
 | `--accent` | `#ff5a1f` | Focus rings, selection, the contact CTA |
 
 - Display type is Bodoni Moda (variable, with `opsz`), used for the masthead, lead, cover lines and headings.
@@ -91,5 +91,5 @@ One page, organised as a magazine issue with six sections.
 
 - The real lead line for the hero, which says who Alhadad is.
 - The copy for chapters 1, 2 and 4.
-- Which projects go in chapter 3, and whether each gets a case-study page or stays a single entry.
-- Whether to keep the issue line ("Issue 001 — Autumn 2026") and update it with each refresh, or drop it.
+- Which projects go in chapter 3. Issue 002 plans a case-study page for each (`task.md`, task 15).
+- The issue line ("Issue 001 — Autumn 2026") stays. Issue 002 plans to keep each version as a back issue (`task.md`, task 18).

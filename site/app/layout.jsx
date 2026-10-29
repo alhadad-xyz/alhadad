@@ -20,6 +20,9 @@ export default function RootLayout({ children }) {
     // is-loading is removed by Intro once the preloader finishes.
     <html lang="en" className={`is-loading ${bodoni.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
+        {/* Return visits skip the preloader before first paint, so the cover isn't held for JS (LCP).
+            Must match readSeen() and the ?intro check in Intro.jsx. */}
+        <script dangerouslySetInnerHTML={{ __html: `try{sessionStorage.getItem("intro-seen")==="1"&&!new URLSearchParams(location.search).has("intro")&&document.documentElement.classList.remove("is-loading")}catch(e){}` }} />
         <noscript><style>{'.preloader { display: none; } html { overflow: auto; }'}</style></noscript>
       </head>
       <body>{children}</body>

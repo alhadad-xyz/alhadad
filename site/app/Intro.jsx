@@ -35,9 +35,10 @@ function init() {
   const mm = gsap.matchMedia();
 
   mm.add("(prefers-reduced-motion: no-preference)", () => {
+    // Seen: layout.jsx already dropped the preloader before first paint, so the cover is
+    // on screen; animating it in now would flash it out and back.
     if (seen) {
       finishLoading();
-      hook();
     } else {
       runPreloader();
     }
@@ -201,9 +202,10 @@ function flicker(el, times = 3, step = 0.08) {
 // The hero's entrance: name and chrome rise into the slots the preloader just vacated.
 function hook() {
   // Hidden elements (the hint on touch screens) can't be measured into lines.
+  // aria "none": the default puts aria-label on the <p>s, which ARIA prohibits; the split text stays readable.
   const lines = (sel) =>
     gsap.utils.toArray(sel).filter((el) => el.offsetParent)
-      .flatMap((el) => SplitText.create(el, { type: "lines", mask: "lines" }).lines);
+      .flatMap((el) => SplitText.create(el, { type: "lines", mask: "lines", aria: "none" }).lines);
   const rise = { yPercent: 105, duration: 1.1, ease: "expo.out" };
   return gsap.timeline()
     .from(".hero__portrait", { autoAlpha: 0, scale: 1.04, duration: 1.6, ease: "expo.out" }, 0)
@@ -224,7 +226,7 @@ function turningPoint() {
   const pour = drips(section.querySelector("#flip path"), -1).pause();
   ScrollTrigger.create({ trigger: section, start: "top 70%", end: "top top", scrub: 0.5, animation: pour });
 
-  const words = SplitText.create(section.querySelector(".flip__sentence"), { type: "words" }).words;
+  const words = SplitText.create(section.querySelector(".flip__sentence"), { type: "words", aria: "none" }).words;
   gsap.fromTo(words, { opacity: 0.15 }, {
     opacity: 1,
     stagger: 0.1,

@@ -103,10 +103,14 @@ export async function paintSheet(photo) {
   };
   const [back, face] = await Promise.all([BACKDROP, FACE].map(load));
 
+  // Each step yields so the bake never blocks the main thread for long (Lighthouse TBT).
   const shape = alpha(() => ctx.drawImage(photo, (W - pw) / 2, 0, pw, H));
+  await pause();
   const ink = alpha(() => ctx.drawImage(back, 0, 0, W, H));
+  await pause();
   const glow = alpha(() => ctx.drawImage(face, 0, 0, W, H));
-  const dist = distance(shape);
+  await pause();
+  const dist = await distance(shape);
 
   const data = new Uint8Array(W * H * 4);
   for (let i = 0; i < W * H; i++) {
@@ -125,12 +129,16 @@ function load(markup) {
   return img.decode().then(() => img).finally(() => URL.revokeObjectURL(url));
 }
 
+const pause = () => new Promise((r) => setTimeout(r));
+const ROWS = 100;
+
 // shortcut: two-pass chamfer distance, octagonal not Euclidean; the shader's wobble hides it.
-function distance(alpha) {
+async function distance(alpha) {
   const d = new Float32Array(W * H);
   for (let i = 0; i < d.length; i++) d[i] = alpha[i] > 127 ? 0 : 1e6;
   const D = Math.SQRT2;
-  for (let y = 0; y < H; y++)
+  for (let y = 0; y < H; y++) {
+    if (y % ROWS === 0) await pause();
     for (let x = 0; x < W; x++) {
       const i = y * W + x;
       if (x > 0) d[i] = Math.min(d[i], d[i - 1] + 1);
@@ -140,7 +148,9 @@ function distance(alpha) {
         if (x < W - 1) d[i] = Math.min(d[i], d[i - W + 1] + D);
       }
     }
-  for (let y = H - 1; y >= 0; y--)
+  }
+  for (let y = H - 1; y >= 0; y--) {
+    if (y % ROWS === 0) await pause();
     for (let x = W - 1; x >= 0; x--) {
       const i = y * W + x;
       if (x < W - 1) d[i] = Math.min(d[i], d[i + 1] + 1);
@@ -150,5 +160,6 @@ function distance(alpha) {
         if (x > 0) d[i] = Math.min(d[i], d[i + W - 1] + D);
       }
     }
+  }
   return d;
 }

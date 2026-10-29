@@ -56,7 +56,7 @@ export default function Home() {
   return (
     <>
       <header className="site-header">
-        <a className="wordmark" href="#hook" aria-label="Alhadad">A.</a>
+        <a className="wordmark" href="#hook" aria-label="A. Alhadad">A.</a>
       </header>
       <RunningHead chapters={CHAPTERS} />
 
