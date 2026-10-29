@@ -1,11 +1,14 @@
 :root {
-  --bg: #0e0e0e;
-  --fg: #f2efe9;
+  /* Paper and ink. Hero chrome stays cream under mix-blend-mode: difference, which turns it to ink here. */
+  --bg: #f2efe9;
+  --fg: #0e0e0e;
   --muted: #8a867f;
   --accent: #ff5a1f;
   --cream: #ede4dd;
   --font: system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: var(--font-newsreader), Georgia, serif;
+  --font-display: var(--font-bodoni), "Didot", Georgia, serif;
+  /* Chrome text: preloader, issue line, eyebrows, cover-line numbers. */
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -41,7 +44,7 @@ body {
 .wordmark {
   display: inline-block;
   color: var(--cream);
-  font: 600 1.25rem/1 var(--font-display);
+  font: 700 2rem/1 var(--font-display);
   letter-spacing: -0.01em;
   text-transform: uppercase;
   text-decoration: none;
@@ -60,8 +63,8 @@ html:not(.is-loading) .preloader { display: none; }
   z-index: 50;
   display: grid;
   place-items: center;
-  color: var(--cream);
-  font: 500 .75rem/1.2 var(--font);
+  color: var(--fg);
+  font: 500 .75rem/1.2 var(--font-mono);
   letter-spacing: .04em;
   text-transform: uppercase;
   contain: layout paint style;
@@ -128,8 +131,10 @@ html:not(.is-loading) .preloader { display: none; }
   .preloader__meta { left: 32px; right: 32px; bottom: 28px; gap: 6rem; }
 }
 
-/* Hero: photo bottom-anchored, name in front with difference so it reads on dark and on paint */
+/* Hero: photo bottom-anchored over the masthead; the chrome in front uses difference so it reads on paper and on the photo */
 .hero {
+  /* Just under the masthead: its top plus Bodoni's cap height (~.8em of the 19vw size) and a gap. */
+  --below-mast: calc(56px + min(17vw, 18rem));
   position: relative;
   height: 100svh;
   min-height: 32rem;
@@ -150,33 +155,32 @@ html:not(.is-loading) .preloader { display: none; }
 /* The canvas draws the photo itself once WebGL is up; the <img> stays for layout and fallback. */
 .hero__portrait.is-gl .hero__photo { visibility: hidden; }
 
-/* Magazine cover: masthead across the top, the head breaking into it, cover lines down the sides. */
+/* Magazine cover: masthead across the top behind the head, cover lines down the sides. */
 .hero__name {
   position: absolute;
   left: 0;
   right: 0;
   top: 56px;
-  color: var(--cream);
+  color: var(--fg);
   font-size: clamp(4rem, 19vw, 20rem);
   line-height: .8;
   letter-spacing: -0.04em;
   text-align: center;
   text-transform: uppercase;
-  mix-blend-mode: difference;
   pointer-events: none;
 }
 .hero__issue, .hero__lead, .hero__lines { position: absolute; margin: 0; color: var(--cream); mix-blend-mode: difference; }
 .hero__issue { top: 20px; right: 16px; }
 .hero__lead {
   right: 16px;
-  top: calc(56px + min(15vw, 16rem));
+  top: var(--below-mast);
   max-width: 11ch;
   font: italic 400 clamp(1.5rem, 3vw, 2.75rem)/1.05 var(--font-display);
   text-align: right;
   text-wrap: balance;
 }
 /* Cover lines face the lead from the left, in the dark above the head. */
-.hero__lines { left: 16px; top: calc(56px + min(15vw, 16rem)); }
+.hero__lines { left: 16px; top: var(--below-mast); }
 .hero__lines ol { display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none; }
 .hero__lines a {
   display: block;
@@ -186,7 +190,7 @@ html:not(.is-loading) .preloader { display: none; }
 }
 .hero__lines span {
   margin-right: .5em;
-  font: 500 .7rem/1 var(--font);
+  font: 500 .7rem/1 var(--font-mono);
   letter-spacing: .04em;
   font-variant-numeric: tabular-nums;
 }
@@ -199,14 +203,15 @@ html:not(.is-loading) .preloader { display: none; }
   mix-blend-mode: difference;
 }
 /* Same type as the preloader chrome, in the same slots: the bottom row swaps its text in place. */
-.hero .eyebrow { color: var(--cream); font: 500 .75rem/1.2 var(--font); letter-spacing: .04em; }
+.hero .eyebrow { color: var(--cream); font: 500 .75rem/1.2 var(--font-mono); letter-spacing: .04em; }
 .hero__eyebrow { left: 16px; right: 16px; }
 .hero__hint { right: 16px; display: none; }
 @media (min-width: 768px) {
   .hero__name { top: 72px; }
   .hero__issue { top: 28px; right: 32px; }
-  .hero__lead { right: 32px; top: calc(72px + min(15vw, 16rem)); }
-  .hero__lines { left: 32px; top: calc(72px + min(15vw, 16rem)); }
+  .hero { --below-mast: calc(72px + min(17vw, 18rem)); }
+  .hero__lead { right: 32px; }
+  .hero__lines { left: 32px; }
   .hero__lines ol { gap: 1.1rem; }
   .hero__lines a { font-size: clamp(1.25rem, 1.8vw, 1.75rem); }
   .hero__lines span { display: block; margin: 0 0 .2em; }
@@ -216,7 +221,7 @@ html:not(.is-loading) .preloader { display: none; }
   .hero__hint { display: block; right: 32px; bottom: 28px; }
 }
 
-.eyebrow { color: var(--muted); text-transform: uppercase; letter-spacing: .1em; font-size: .8rem; }
+.eyebrow { color: var(--muted); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .1em; font-size: .8rem; }
 h1, h2 { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.02em; text-wrap: balance; }
 h1 { font-size: clamp(2.5rem, 8vw, 6rem); line-height: 1; margin: 0; }
 h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }

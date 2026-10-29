@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <>
       <header className="site-header">
-        <a className="wordmark" href="#hook">Alhadad</a>
+        <a className="wordmark" href="#hook" aria-label="Alhadad">A.</a>
       </header>
 
       <div className="preloader">
@@ -64,9 +64,10 @@ export default function Home() {
 
       <main>
         <section className="hero" id="hook">
+          {/* Masthead first so the cut-out portrait paints over it. */}
+          <h1 className="hero__name">Alhadad</h1>
           <Portrait />
           <p className="eyebrow hero__issue">Issue 001 — Autumn 2026</p>
-          <h1 className="hero__name">Alhadad</h1>
           <p className="hero__lead">One line that says who you are.</p>
           <nav className="hero__lines" aria-label="Chapters">
             <ol>

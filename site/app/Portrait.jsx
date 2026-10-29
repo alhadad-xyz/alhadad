@@ -15,9 +15,10 @@ export default function Portrait() {
   useEffect(() => {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return markReady();
     let cleanup, cancelled = false;
-    img.current.decode().then(() => paintSheet(img.current)).then((paint) => {
+    // Fonts too: the liquid redraws the masthead from its live type.
+    Promise.all([img.current.decode(), document.fonts.ready]).then(() => paintSheet(img.current)).then((paint) => {
       if (cancelled) return;
-      cleanup = mountLiquid(canvas.current, img.current, paint);
+      cleanup = mountLiquid(canvas.current, img.current, paint, document.querySelector('.hero__name'));
       if (cleanup) canvas.current.parentElement.classList.add('is-gl');
       markReady();
     }).catch(markReady);

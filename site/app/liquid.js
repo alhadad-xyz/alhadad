@@ -46,7 +46,7 @@ const SHOW = `#version 300 es
 precision highp float;
 in vec2 vUv;
 out vec4 o;
-uniform sampler2D uSim, uPhoto, uPaint, uDist;
+uniform sampler2D uSim, uPhoto, uPaint, uDist, uTitle;
 uniform vec4 uRect, uSheet;
 uniform float uTime;
 
@@ -77,11 +77,15 @@ void main() {
   float ring = floor(w / 13.0);
   float line = (1.0 - smoothstep(0.7, 1.7, abs(fract(w / 13.0) - 0.5) * 13.0))
              * smoothstep(9.0, 14.0, d) * (1.0 - smoothstep(380.0, 510.0, d)) * step(hash(ring), 0.85);
-  vec3 back = mix(vec3(0.949, 0.937, 0.914), vec3(mix(0.12, 0.6, hash(ring + 7.0))), line);
-  back = mix(back, vec3(0.1), max(pt.g, smoothstep(2.0, 3.0, d) * (1.0 - smoothstep(4.5, 5.5, d)) * 0.85));
+  // Inverse of the page: ink paper, light rings, cream outline and doodles.
+  vec3 back = mix(vec3(0.055), vec3(mix(0.4, 0.88, hash(ring + 7.0))), line);
+  back = mix(back, vec3(0.949, 0.937, 0.914), max(pt.g, smoothstep(2.0, 3.0, d) * (1.0 - smoothstep(4.5, 5.5, d)) * 0.85));
+  // The masthead sits under this canvas, so paint would bury it: redraw it here, difference-blended
+  // like the page's chrome, before the person goes on top.
+  back = mix(back, abs(vec3(0.949, 0.937, 0.914) - back), texture(uTitle, vUv).a);
   vec3 c = clamp((ph.rgb - 0.5 * ph.a) * 1.2 + 0.5 * ph.a, 0.0, ph.a);
   vec3 under = back * (1.0 - ph.a) + c;
-  // Marks on the person switch pen: white on hair and knit, black on skin and paper.
+  // Marks on the person switch pen: white on hair, knit and paper, black on skin.
   vec3 pen = vec3(mix(0.08, 0.96, 1.0 - smoothstep(0.45, 0.55, dot(under, vec3(0.333)))));
   vec4 painted = vec4(mix(under, pen, pt.b), 1.0);
   o = mix(ph, painted, m);
@@ -95,7 +99,7 @@ const STEP = 1000 / 60;
 const IDLE_MS = 2000;
 
 // Returns a cleanup function, or null when WebGL2 float targets are missing (the <img> stays).
-export function mountLiquid(canvas, img, paint) {
+export function mountLiquid(canvas, img, paint, title) {
   const gl = canvas.getContext('webgl2', { antialias: false });
   if (!gl || !gl.getExtension('EXT_color_buffer_float')) return null;
 
@@ -117,6 +121,27 @@ export function mountLiquid(canvas, img, paint) {
   const sheet = texture(gl, paint.width, paint.height, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, paint.data);
   const dist = texture(gl, paint.width, paint.height, gl.R16F, gl.RED, gl.FLOAT, paint.dist);
 
+  // Masthead mask in canvas pixels, drawn from the live <h1> so it lines up with the page's copy.
+  const ink = document.createElement('canvas');
+  const titleTex = texture(gl, 1, 1, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  const drawTitle = (c) => {
+    ink.width = canvas.width;
+    ink.height = canvas.height;
+    const ctx = ink.getContext('2d');
+    const s = getComputedStyle(title);
+    const range = document.createRange();
+    range.selectNodeContents(title);
+    const r = range.getBoundingClientRect();
+    const text = s.textTransform === 'uppercase' ? title.textContent.toUpperCase() : title.textContent;
+    ctx.scale(ink.width / c.width, ink.height / c.height);
+    ctx.font = `${s.fontStyle} ${s.fontWeight} ${s.fontSize} ${s.fontFamily}`;
+    ctx.letterSpacing = s.letterSpacing;
+    // The text range's box is the font's content area, so its top sits one ascent above the baseline.
+    ctx.fillText(text, r.left - c.left, r.top - c.top + ctx.measureText(text).fontBoundingBoxAscent);
+    gl.bindTexture(gl.TEXTURE_2D, titleTex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, ink);
+  };
+
   const rect = [0, 0, 1, 1];
   const sheetRect = [0, 0, 1, 1];
   let aspect = 1;
@@ -137,6 +162,7 @@ export function mountLiquid(canvas, img, paint) {
     sheetRect[1] = rect[1];
     sheetRect[2] = sw;
     sheetRect[3] = rect[3];
+    drawTitle(c);
   };
   const ro = new ResizeObserver(resize);
   ro.observe(canvas);
@@ -202,6 +228,9 @@ export function mountLiquid(canvas, img, paint) {
     gl.activeTexture(gl.TEXTURE3);
     gl.bindTexture(gl.TEXTURE_2D, dist);
     gl.uniform1i(show.u.uDist, 3);
+    gl.activeTexture(gl.TEXTURE4);
+    gl.bindTexture(gl.TEXTURE_2D, titleTex);
+    gl.uniform1i(show.u.uTitle, 4);
     gl.uniform1f(show.u.uTime, (t % 1000) / 1000);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
