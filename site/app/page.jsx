@@ -1,9 +1,49 @@
 import Intro from './Intro';
 import Portrait from './Portrait';
 import RunningHead from './RunningHead';
+import CopyEmail from './CopyEmail';
+import WorkIndex from './WorkIndex';
 import { HEART, SPARK } from './doodles';
 
 // Cover lines on the hero and the running header's index, one per chapter section below.
+// Back-cover barcode: bar and gap widths, alternating, starting with a bar.
+const BARCODE = [2, 1, 1, 2, 3, 1, 1, 1, 2, 2, 1, 3, 1, 1, 3, 2, 1, 1, 2, 1, 1, 2, 2, 1, 3];
+
+// Fine-liner shapes for the margin doodles. Each path is pathLength 1 so Intro can draw it in.
+const CIRCLE = { box: '0 0 100 40', paths: ['M58 4C30 1 4 9 3 21c-1 13 30 17 55 16 26-1 40-8 39-18C96 8 70 2 42 5'] };
+const UNDERLINE = { box: '0 0 100 10', paths: ['M2 6C20 3 38 8 55 5s30-2 43 1'] };
+const ARROW = { box: '0 0 80 50', paths: ['M76 4C58 2 30 12 8 42', 'M8 42l1-12M8 42l11-4'] };
+
+function Doodle({ shape, className = '' }) {
+  return (
+    <svg className={`doodle ${className}`} viewBox={shape.box} preserveAspectRatio="none" aria-hidden="true">
+      {shape.paths.map((d) => <path key={d} d={d} pathLength="1" />)}
+    </svg>
+  );
+}
+
+// A margin aside: a short handwritten line with an arrow pointing down-left at what it annotates.
+function Note({ children, className = '' }) {
+  return (
+    <span className={`note ${className}`} aria-hidden="true">
+      <span>{children}</span>
+      <Doodle shape={ARROW} />
+    </span>
+  );
+}
+
+// Chapter 3. shortcut: dummy entries and placeholder images until the real projects land (task 3).
+const PROJECTS = [1, 2, 3, 4, 5].map((n) => ({
+  title: `Placeholder project ${['one', 'two', 'three', 'four', 'five'][n - 1]}`,
+  role: ['Design, front end', 'Front end', 'Product design', 'Design, build', 'Creative direction'][n - 1],
+  year: 2027 - n,
+  img: `/work/0${n}.svg`,
+  alt: `Placeholder image for project ${n}`,
+  problem: 'Placeholder copy: the problem, in one or two sentences.',
+  did: 'Placeholder copy: what you did about it.',
+  result: 'Placeholder copy: the result, ideally with a number.',
+}));
+
 const CHAPTERS = [
   ['origin', 'Origin'],
   ['turning-point', 'Turning point'],
@@ -64,6 +104,16 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Looping line boil for the margin doodles and back cover; the preloader's #boil stops once the intro ends. */}
+      <svg className="svg-defs" aria-hidden="true">
+        <filter id="boil-loop" x="-10%" y="-50%" width="120%" height="200%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="1">
+            <animate attributeName="seed" values="0;1;2;3;4;5;6;7" dur="1s" calcMode="discrete" repeatCount="indefinite" />
+          </feTurbulence>
+          <feDisplacementMap in="SourceGraphic" scale="2" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </svg>
+
       <main>
         <section className="hero" id="hook">
           {/* Masthead first so the cut-out portrait paints over it. */}
@@ -82,38 +132,80 @@ export default function Home() {
           <p className="eyebrow hero__hint" aria-hidden="true">Move to pour</p>
         </section>
 
-        <section className="chapter" id="origin">
-          <p className="eyebrow">Chapter 1 — Origin</p>
-          <h2 className="reveal">Where it started.</h2>
-          <p className="reveal">Placeholder copy.</p>
+        {/* Opening pages: huge number, title, drop cap, and a pull quote set over the number. */}
+        <section className="chapter opener" id="origin">
+          <p className="opener__num" aria-hidden="true">01</p>
+          <header className="opener__head">
+            <p className="eyebrow">Chapter 1 — Origin</p>
+            <h2 className="reveal">Where it <span className="circled">started<Doodle shape={CIRCLE} /></span>.</h2>
+          </header>
+          <div className="opener__body">
+            <p className="reveal dropcap">Placeholder copy. The first paragraph of the origin story goes here: where you grew up, what you were doing, and the first thing you made that mattered to you.</p>
+            <p className="reveal">Placeholder copy. A second paragraph that carries the story to the edge of the turning point.</p>
+          </div>
+          <blockquote className="pull reveal">
+            <p>“Placeholder pull quote: the one line from this chapter worth reading twice.”</p>
+            <Note className="note--pull">the line to remember</Note>
+          </blockquote>
         </section>
 
-        <section className="chapter" id="turning-point">
+        {/* The page flips: ink pours down over it (Intro scrubs the drips), then one sentence lights up word by word.
+            Without motion the ink is simply there. */}
+        <section className="chapter flip" id="turning-point">
+          <div className="flip__paint" aria-hidden="true"></div>
+          <svg className="svg-defs" aria-hidden="true">
+            <clipPath id="flip" clipPathUnits="objectBoundingBox"><path d="M0 0Z" /></clipPath>
+          </svg>
           <p className="eyebrow">Chapter 2 — Turning point</p>
-          <h2 className="reveal">The moment that shaped the work.</h2>
-          <p className="reveal">Placeholder copy.</p>
+          <h2>The <span className="underlined">moment<Doodle shape={UNDERLINE} /></span> that shaped the work.</h2>
+          <p className="flip__sentence">Placeholder copy: one big sentence about the moment everything changed, lighting up word by word as you read.</p>
         </section>
 
         <section className="chapter" id="work">
           <p className="eyebrow">Chapter 3 — The work</p>
           <h2 className="reveal">Selected projects.</h2>
-          <ol className="projects">
-            <li className="reveal">Project one — problem, what I did, result.</li>
-            <li className="reveal">Project two — problem, what I did, result.</li>
-            <li className="reveal">Project three — problem, what I did, result.</li>
-          </ol>
+          <div className="work">
+            <WorkIndex projects={PROJECTS} />
+            <Note className="note--work">hover, then open one</Note>
+          </div>
         </section>
 
-        <section className="chapter" id="values">
-          <p className="eyebrow">Chapter 4 — What I stand for</p>
-          <h2 className="reveal">How I work.</h2>
-          <p className="reveal">Placeholder copy.</p>
+        <section className="chapter opener" id="values">
+          <p className="opener__num" aria-hidden="true">04</p>
+          <header className="opener__head">
+            <p className="eyebrow">Chapter 4 — What I stand for</p>
+            <h2 className="reveal">How I <span className="circled">work<Doodle shape={CIRCLE} /></span>.</h2>
+          </header>
+          <div className="opener__body">
+            <p className="reveal dropcap">Placeholder copy. One paragraph on how you approach the work, leading into the principles below.</p>
+            <ol className="principles">
+              <li className="reveal"><h3>Principle one, set as a headline.</h3><p>Placeholder copy: one sentence on what it means in practice.</p></li>
+              <li className="reveal"><h3>Principle two, set as a headline.</h3><p>Placeholder copy: one sentence on what it means in practice.</p></li>
+              <li className="reveal"><h3>Principle three, set as a headline.</h3><p>Placeholder copy: one sentence on what it means in practice.</p></li>
+            </ol>
+          </div>
+          <blockquote className="pull reveal">
+            <p>“Placeholder pull quote: the belief everything else follows from.”</p>
+            <Note className="note--pull">in this order</Note>
+          </blockquote>
         </section>
 
-        <section className="chapter" id="contact">
-          <p className="eyebrow">Chapter 5</p>
+        <section className="chapter back-cover" id="contact">
+          <p className="eyebrow">Chapter 5 — Let’s talk</p>
           <h2 className="reveal">Let&apos;s talk.</h2>
-          <a className="reveal cta" href="mailto:alhadad.xyz@gmail.com">alhadad.xyz@gmail.com</a>
+          <CopyEmail address="alhadad.xyz@gmail.com">
+            <Note className="note--mail">say hi</Note>
+          </CopyEmail>
+          <div className="back-cover__barcode" aria-hidden="true">
+            <svg viewBox={`0 0 ${BARCODE.reduce((a, b) => a + b * 3, 0)} 40`} preserveAspectRatio="none">
+              {BARCODE.map((w, i, all) => {
+                if (i % 2) return null;
+                const x = all.slice(0, i).reduce((a, b) => a + b * 3, 0) + w * 1.5;
+                return <path key={i} d={`M${x} 2V38`} strokeWidth={w * 2} />;
+              })}
+            </svg>
+            <p>Issue 001 · V-001</p>
+          </div>
         </section>
       </main>
 

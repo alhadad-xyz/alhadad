@@ -5,6 +5,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 import { portraitReady } from './Portrait';
+import { drips } from './drips';
 
 // Strict mode mounts effects twice in dev; the intro must run once per page load.
 let started = false;
@@ -40,6 +41,8 @@ function init() {
     } else {
       runPreloader();
     }
+    // Before the other triggers: its pin pushes everything below it down.
+    turningPoint();
     revealChapters();
   });
 
@@ -173,23 +176,10 @@ function pour(gate) {
   });
 }
 
-// Each column of the panel falls on its own clock under gravity, so the top edge
-// hangs back in strands like the hero's drips.
+// The panel drains off the page, its top edge hanging back in strands like the hero's drips.
 function drain(panel) {
-  const path = document.querySelector("#drain path");
-  const cols = Array.from({ length: 24 }, () => ({ y: 0 }));
-  const dx = 1 / (cols.length - 1);
-  const draw = () => {
-    let d = `M0 2V${cols[0].y}`;
-    for (let i = 1; i < cols.length; i++)
-      d += `C${(i - 0.5) * dx} ${cols[i - 1].y} ${(i - 0.5) * dx} ${cols[i].y} ${i * dx} ${cols[i].y}`;
-    path.setAttribute("d", `${d}V2Z`);
-  };
-  draw();
   gsap.set(panel, { clipPath: "url(#drain)" });
-  const tl = gsap.timeline({ onUpdate: draw });
-  cols.forEach((c) => tl.to(c, { y: 1.2, duration: gsap.utils.random(0.8, 1.2), ease: "power2.in" }, gsap.utils.random(0, 0.3)));
-  return tl;
+  return drips(document.querySelector("#drain path"), 2);
 }
 
 // 5-7 rising stops that always land on 100, so every visit counts differently.
@@ -225,6 +215,24 @@ function hook() {
     .from(lines(".hero .eyebrow"), { ...rise, stagger: 0.06 }, 0.45);
 }
 
+// Chapter 2: ink pours down the section as it scrolls in, the reverse of the preloader's drain,
+// then the section pins while its sentence lights up word by word.
+function turningPoint() {
+  const section = document.querySelector("#turning-point");
+  const paint = section.querySelector(".flip__paint");
+  gsap.set(paint, { clipPath: "url(#flip)" });
+  const pour = drips(section.querySelector("#flip path"), -1).pause();
+  ScrollTrigger.create({ trigger: section, start: "top 70%", end: "top top", scrub: 0.5, animation: pour });
+
+  const words = SplitText.create(section.querySelector(".flip__sentence"), { type: "words" }).words;
+  gsap.fromTo(words, { opacity: 0.15 }, {
+    opacity: 1,
+    stagger: 0.1,
+    ease: "none",
+    scrollTrigger: { trigger: section, start: "top top", end: "+=120%", scrub: true, pin: true },
+  });
+}
+
 function revealChapters() {
   gsap.utils.toArray(".chapter:not(#hook)").forEach((chapter) => {
     gsap.from(chapter.querySelectorAll(".reveal"), {
@@ -233,6 +241,15 @@ function revealChapters() {
       duration: 0.8,
       stagger: 0.12,
       ease: "power2.out",
+      scrollTrigger: { trigger: chapter, start: "top 70%" },
+    });
+    // Margin doodles draw themselves in after the copy lands.
+    gsap.from(chapter.querySelectorAll(".doodle path"), {
+      strokeDashoffset: 1,
+      duration: 0.9,
+      stagger: 0.2,
+      delay: 0.4,
+      ease: "power2.inOut",
       scrollTrigger: { trigger: chapter, start: "top 70%" },
     });
   });
