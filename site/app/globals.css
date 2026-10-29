@@ -277,6 +277,8 @@ h1, h2 { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.
 h1 { font-size: clamp(2.5rem, 8vw, 6rem); line-height: 1; margin: 0; }
 h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }
 
+.not-found a { color: inherit; }
+
 /* Chapter 2: the page flips to ink. Text is cream + difference, so it reads on paper and on the pour.
    The paper background keeps that blend right while GSAP pins the section (a fixed pin is its own stacking context). */
 .flip { position: relative; max-width: none; padding-left: max(16px, (100% - 64rem) / 2 + 16px); padding-right: max(16px, (100% - 64rem) / 2 + 16px); background: var(--bg); }

@@ -6,6 +6,11 @@ alhadad.dev {
 	root * /srv/alhadad-site
 	try_files {path} {path}.html
 	file_server
+	# Unknown paths get Next's 404 page with a real 404 status, not the home page.
+	handle_errors {
+		rewrite * /404.html
+		file_server
+	}
 }
 
 www.alhadad.dev {

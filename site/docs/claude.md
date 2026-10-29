@@ -13,7 +13,7 @@ npm run build            # static export to out/
 
 Deploy only when asked. Run `npm run deploy` from `site/`. `deploy/deploy.sh` builds, lists what the sync would delete (expect only old build hashes), asks for a `y`, then syncs and prints the live Last-Modified.
 
-Caddy serves `/srv/alhadad-site`, and its config lives in `deploy/Caddyfile`. The SSH alias `alhadad-vps` points at 103.150.92.93 as user `khalid`.
+Caddy serves `/srv/alhadad-site`, and its config lives in `deploy/Caddyfile`. Keep that file in sync with the `alhadad.dev` block of the server's `/etc/caddy/Caddyfile`; the server file also runs other sites, so back it up, run `caddy validate`, then `sudo systemctl reload caddy`. The SSH alias `alhadad-vps` points at 103.150.92.93 as user `khalid`.
 
 ## Map
 

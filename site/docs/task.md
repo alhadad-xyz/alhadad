@@ -15,11 +15,11 @@ Last updated: 2026-10-29 (statuses checked against the code and the live site). 
 - [x] Running header past the cover (`app/RunningHead.jsx`, commit `174923d`). It shows the current chapter and page number, opens the chapter index on tap, and marks the current chapter with `aria-current`.
 - [x] `npm run deploy` (`deploy/deploy.sh`): build, dry run, confirm, sync. Committed in `4465783`.
 - [x] `agentRules: false` in `next.config.mjs`, so `next dev` no longer writes `AGENTS.md`. Committed in `4465783`.
-- [x] Deployed to https://alhadad.dev. The latest deploy is 2026-10-29 09:53 GMT and includes every chapter layout (placeholder content). *That chapter work is live but not committed.*
+- [x] Deployed to https://alhadad.dev. The latest deploy is 2026-10-29 10:18 GMT and includes every chapter layout (placeholder content), the share image, robots.txt and sitemap.xml.
 
 ## Now
 
-1. [ ] **Commit the chapter work**, which is live but not in git: `CopyEmail.jsx`, `WorkIndex.jsx`, `drips.js`, `public/work/`, and the changes to `Intro.jsx`, `page.jsx`, `globals.css` and `docs/`.
+1. [x] **Commit the chapter work** (`4e91c99`), which is live but not in git: `CopyEmail.jsx`, `WorkIndex.jsx`, `drips.js`, `public/work/`, and the changes to `Intro.jsx`, `page.jsx`, `globals.css` and `docs/`.
 2. [ ] **Write the real copy:**
    - The hero lead line, which is still "One line that says who you are."
    - Chapters 1, 2 and 4, which are still "Placeholder copy."
@@ -71,12 +71,12 @@ These items are small and finish the frame around the content.
     - Keyboard path through the gate, the cover lines and the running header.
     - Screen-reader reading order.
 11. [ ] **Performance:** Lighthouse on mobile, size of `hero.webp`, font payload (Bodoni variable `opsz`), and the 8s preloader cap.
-12. [ ] **Check the favicon at 16px**, since the period may disappear.
-13. [ ] **SEO and sharing:**
+12. [x] **Check the favicon at 16px.** The period survives at about 2px; no change needed.
+13. [x] **SEO and sharing:** `app/opengraph-image.jpg` (the cover, shot with reduced motion so the paint is off), `app/robots.js`, `app/sitemap.js`, and a drafted description in `layout.jsx`. Re-shoot the image and rewrite the description once the hero line is real (task 2).
     - An Open Graph image (the cover).
     - A real `description` to replace "Personal site of Alhadad."
     - `robots.txt` and `sitemap.xml`. Today both URLs return the home page with a 200.
-14. [ ] **Real 404s:** Caddy answers unknown paths with the home page and a 200. Serve `404.html` with a 404 status instead (in `deploy/Caddyfile`).
+14. [x] **Real 404s:** `app/not-found.jsx` plus `handle_errors` in `deploy/Caddyfile`, applied on the server 2026-10-29 (backup: `/etc/caddy/Caddyfile.bak-20261029171906`). `/nope` now returns 404.
 
 ## Dropped
 
