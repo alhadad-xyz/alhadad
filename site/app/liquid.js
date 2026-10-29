@@ -124,20 +124,27 @@ export function mountLiquid(canvas, img, paint, title) {
   // Masthead mask in canvas pixels, drawn from the live <h1> so it lines up with the page's copy.
   const ink = document.createElement('canvas');
   const titleTex = texture(gl, 1, 1, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, null);
-  const drawTitle = (c) => {
+  const drawTitle = () => {
     ink.width = canvas.width;
     ink.height = canvas.height;
     const ctx = ink.getContext('2d');
     const s = getComputedStyle(title);
+    // A resize can land mid-entrance (the scrollbar returns as the preloader leaves), with the portrait
+    // scaled and the SplitText lines still rising. So take the text's place inside its own wrapper, then
+    // add layout offsets, which ignore transforms, up to .hero: the canvas fills it exactly.
+    const node = document.createTreeWalker(title, NodeFilter.SHOW_TEXT).nextNode();
     const range = document.createRange();
-    range.selectNodeContents(title);
+    range.selectNodeContents(node);
     const r = range.getBoundingClientRect();
+    const box = node.parentElement.getBoundingClientRect();
+    let x = r.left - box.left, y = r.top - box.top;
+    for (let el = node.parentElement; el !== title.offsetParent; el = el.offsetParent) (x += el.offsetLeft), (y += el.offsetTop);
     const text = s.textTransform === 'uppercase' ? title.textContent.toUpperCase() : title.textContent;
-    ctx.scale(ink.width / c.width, ink.height / c.height);
+    ctx.scale(ink.width / canvas.clientWidth, ink.height / canvas.clientHeight);
     ctx.font = `${s.fontStyle} ${s.fontWeight} ${s.fontSize} ${s.fontFamily}`;
     ctx.letterSpacing = s.letterSpacing;
     // The text range's box is the font's content area, so its top sits one ascent above the baseline.
-    ctx.fillText(text, r.left - c.left, r.top - c.top + ctx.measureText(text).fontBoundingBoxAscent);
+    ctx.fillText(text, x, y + ctx.measureText(text).fontBoundingBoxAscent);
     gl.bindTexture(gl.TEXTURE_2D, titleTex);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, ink);
   };
@@ -162,7 +169,7 @@ export function mountLiquid(canvas, img, paint, title) {
     sheetRect[1] = rect[1];
     sheetRect[2] = sw;
     sheetRect[3] = rect[3];
-    drawTitle(c);
+    drawTitle();
   };
   const ro = new ResizeObserver(resize);
   ro.observe(canvas);
