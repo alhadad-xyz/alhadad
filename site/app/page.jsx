@@ -120,7 +120,7 @@ export default function Home() {
           <h1 className="hero__name">Alhadad</h1>
           <Portrait />
           <p className="eyebrow hero__issue">Issue 001 — Autumn 2026</p>
-          <p className="hero__lead">One line that says who you are.</p>
+          <p className="hero__lead">An AI engineer who turns complex ideas into lean, working products.</p>
           <nav className="hero__lines" aria-label="Chapters">
             <ol>
               {CHAPTERS.map(([id, title], i) => (
@@ -140,11 +140,11 @@ export default function Home() {
             <h2 className="reveal">Where it <span className="circled">started<Doodle shape={CIRCLE} /></span>.</h2>
           </header>
           <div className="opener__body">
-            <p className="reveal dropcap">Placeholder copy. The first paragraph of the origin story goes here: where you grew up, what you were doing, and the first thing you made that mattered to you.</p>
-            <p className="reveal">Placeholder copy. A second paragraph that carries the story to the edge of the turning point.</p>
+            <p className="reveal dropcap">It started with games. I played them as a kid, and by junior high I wanted to make one. So I opened an old, slow ASUS laptop, found Sandhika Galih’s tutorials, and started typing.</p>
+            <p className="reveal">The first thing I built was a sprite adventurer game that ran in the browser. It was small and rough, but it worked. Somewhere between the game loop and the sprite sheets, I stopped caring about the game and fell for the code.</p>
           </div>
           <blockquote className="pull reveal">
-            <p>“Placeholder pull quote: the one line from this chapter worth reading twice.”</p>
+            <p>“He came for the games and stayed for the code.”</p>
             <Note className="note--pull">the line to remember</Note>
           </blockquote>
         </section>
@@ -158,7 +158,7 @@ export default function Home() {
           </svg>
           <p className="eyebrow">Chapter 2 — Turning point</p>
           <h2>The <span className="underlined">moment<Doodle shape={UNDERLINE} /></span> that shaped the work.</h2>
-          <p className="flip__sentence">Placeholder copy: one big sentence about the moment everything changed, lighting up word by word as you read.</p>
+          <p className="flip__sentence">In 2020, AI turned “can I build this?” into “what should I build next?”</p>
         </section>
 
         <section className="chapter" id="work">

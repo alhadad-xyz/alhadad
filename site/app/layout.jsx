@@ -4,8 +4,7 @@ import './globals.css';
 const bodoni = Bodoni_Moda({ subsets: ['latin'], style: ['normal', 'italic'], axes: ['opsz'], variable: '--font-bodoni' });
 const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains' });
 
-// shortcut: description drafted from the PRD; rewrite it with the real hero line (task 2).
-const description = 'Alhadad’s personal site, set as a magazine issue: where it started, the turning point, selected work, what I stand for, and how to get in touch.';
+const description = 'Alhadad is an AI engineer who turns complex ideas into lean, working products. A personal site, set as a magazine issue.';
 
 export const metadata = {
   metadataBase: new URL('https://alhadad.dev'),
