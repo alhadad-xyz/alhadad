@@ -246,8 +246,10 @@ function revealChapters() {
       scrollTrigger: { trigger: chapter, start: "top 70%" },
     });
     // Margin doodles draw themselves in after the copy lands.
+    // autoRound off: GSAP rounds px to whole numbers, which snaps the 1-to-0 draw (pathLength 1) instead of drawing it.
     gsap.from(chapter.querySelectorAll(".doodle path"), {
       strokeDashoffset: 1,
+      autoRound: false,
       duration: 0.9,
       stagger: 0.2,
       delay: 0.4,

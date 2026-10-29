@@ -391,7 +391,8 @@ h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }
   filter: url(#boil-loop);
   pointer-events: none;
 }
-.doodle path { stroke-dasharray: 1; }
+/* Gap of 2: the hidden start sits fully in the gap, not on a zero-length dash a round cap draws as a dot. */
+.doodle path { stroke-dasharray: 1 2; }
 .circled, .underlined { position: relative; white-space: nowrap; }
 .circled .doodle { left: -10%; top: -8%; width: 122%; height: 120%; }
 .underlined .doodle { left: 0; bottom: -.12em; width: 100%; height: .25em; }
