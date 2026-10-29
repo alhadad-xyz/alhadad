@@ -11,14 +11,7 @@ npm run build            # static export to out/
 
 ## Deploy
 
-Deploy only when asked. Run from `site/`:
-
-```bash
-npm run build
-rsync -an --delete --itemize-changes out/ alhadad-vps:/srv/alhadad-site/ | grep deleting   # dry run: expect only old build hashes
-rsync -a --delete out/ alhadad-vps:/srv/alhadad-site/
-curl -sI https://alhadad.dev/ | grep -i last-modified
-```
+Deploy only when asked. Run `npm run deploy` from `site/`. `deploy/deploy.sh` builds, lists what the sync would delete (expect only old build hashes), asks for a `y`, then syncs and prints the live Last-Modified.
 
 Caddy serves `/srv/alhadad-site`, and its config lives in `deploy/Caddyfile`. The SSH alias `alhadad-vps` points at 103.150.92.93 as user `khalid`.
 
@@ -42,8 +35,7 @@ Caddy serves `/srv/alhadad-site`, and its config lives in `deploy/Caddyfile`. Th
 - **The masthead is drawn twice.** Once in the DOM (`.hero__name`, behind the canvas) and once in the shader, from a 2D canvas that copies the h1's computed font, size, letter-spacing and position. Keep the h1 to a single line. Style changes carry over on the next resize.
 - **Chrome text depends on `--cream` plus `mix-blend-mode: difference`.** That is what turns it to ink on paper and light on the photo or paint. Don't set those elements to `--fg`.
 - **The layering comes from DOM order.** The h1 comes before `<Portrait />` in `page.jsx`, so the cut-out photo paints over it. Don't reorder them.
-- **`next dev` writes `AGENTS.md`** into `site/`. Delete it, or set `agentRules: false` in `next.config.mjs`.
-- **Headless screenshots get stuck on the preloader.** Either set `sessionStorage.intro-seen = '1'` and reload, or pass `--force-prefers-reduced-motion`. WebGL in headless Chrome needs `--use-angle=swiftshader --enable-unsafe-swiftshader`.
+- **Headless screenshots get stuck on the preloader.** Set `sessionStorage.intro-seen = '1'` and reload (`--force-prefers-reduced-motion` alone doesn't skip it). WebGL in headless Chrome needs `--use-angle=swiftshader --enable-unsafe-swiftshader`.
 
 ## Conventions
 
