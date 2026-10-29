@@ -70,7 +70,10 @@ These items are small and finish the frame around the content.
     - Contrast of the difference-blended text over the photo and the paint.
     - Keyboard path through the gate, the cover lines and the running header.
     - Screen-reader reading order.
-    - 2026-10-29: Lighthouse a11y 91 → 95–96. `--muted` darkened to `#6e6a63` (3.2 → 4.7:1), SplitText uses `aria: "none"` (its default put `aria-label` on `<p>`s), wordmark label is "A. Alhadad". Still flagged: the chapter 2 words at 0.15 opacity before they light up (intentional). Keyboard and screen-reader passes not done yet.
+    - 2026-10-29: Lighthouse a11y 91 → 95–96. `--muted` darkened to `#6e6a63` (3.2 → 4.7:1), SplitText uses `aria: "none"` (its default put `aria-label` on `<p>`s), wordmark label is "A. Alhadad". Still flagged: the chapter 2 words at 0.15 opacity before they light up (intentional).
+    - 2026-10-30 keyboard pass (headless Chrome): the gate takes focus once armed, Enter opens the site, then Tab runs cover lines → work rows → email, all with the accent focus ring. Fixed: Tab during the counter reached the page behind the curtain; `Intro.jsx` now keeps everything but `.preloader` `inert` until `finishLoading()`.
+    - 2026-10-30 screen-reader order (Chrome accessibility tree): it matches the visual order, with one h1 and an h2 per chapter. Fixed: the cover lines and the chapter index read their number twice ("1. 01Origin"), because they're `<ol>`s; the visible number is now `aria-hidden`.
+    - Not done: a real screen reader (VoiceOver), and the contrast of difference-blended text over the paint.
 11. [ ] **Performance:** Lighthouse on mobile, size of `hero.webp`, font payload (Bodoni variable `opsz`), and the 8s preloader cap.
     - 2026-10-29, local build, Lighthouse 12 mobile, real GPU: perf 53–67 → 69–91 (noisy), TBT 1.4–4.9 s → 0.17–0.4 s. `paintSheet()` was one ~620 ms task at 4× throttle; it now yields between steps and every 100 rows of the distance passes.
     - LCP was ~3.3 s: the preloader in the HTML hid the hero until JS ran, even on return visits. Now an inline `<head>` script in `layout.jsx` drops `is-loading` before first paint when `intro-seen` is set, and return visits skip the `hook()` entrance. First run gave LCP 2.1 s; not re-measured cleanly (machine load ~230). First visits are unchanged.

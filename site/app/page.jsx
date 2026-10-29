@@ -124,7 +124,7 @@ export default function Home() {
           <nav className="hero__lines" aria-label="Chapters">
             <ol>
               {CHAPTERS.map(([id, title], i) => (
-                <li key={id}><a href={`#${id}`}><span>0{i + 1}</span>{title}</a></li>
+                <li key={id}><a href={`#${id}`}><span aria-hidden="true">0{i + 1}</span>{title}</a></li>
               ))}
             </ol>
           </nav>

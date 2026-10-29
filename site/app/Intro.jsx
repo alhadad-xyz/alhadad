@@ -23,6 +23,12 @@ let root, preloader;
 
 function finishLoading() {
   root.classList.remove("is-loading");
+  inertBehind(false);
+}
+
+// While the curtain is up, the page behind it stays out of the Tab order and the accessibility tree.
+function inertBehind(on) {
+  document.querySelectorAll("body > :not(.preloader)").forEach((el) => (el.inert = on));
 }
 
 function init() {
@@ -32,6 +38,7 @@ function init() {
 
   // ?intro replays the preloader while prototyping.
   const seen = readSeen() && !new URLSearchParams(location.search).has("intro");
+  if (!seen) inertBehind(true);
   const mm = gsap.matchMedia();
 
   mm.add("(prefers-reduced-motion: no-preference)", () => {

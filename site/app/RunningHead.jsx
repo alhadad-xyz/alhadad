@@ -42,7 +42,7 @@ export default function RunningHead({ chapters }) {
           {chapters.map(([id, t], i) => (
             <li key={id}>
               <a href={`#${id}`} onClick={close} aria-current={i === current ? 'page' : undefined}>
-                <span>{pad(i + 1)}</span>{t}
+                <span aria-hidden="true">{pad(i + 1)}</span>{t}
               </a>
             </li>
           ))}
