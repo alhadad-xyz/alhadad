@@ -1,8 +1,9 @@
 import Intro from './Intro';
 import Portrait from './Portrait';
+import RunningHead from './RunningHead';
 import { HEART, SPARK } from './doodles';
 
-// Cover lines on the hero, one per chapter section below.
+// Cover lines on the hero and the running header's index, one per chapter section below.
 const CHAPTERS = [
   ['origin', 'Origin'],
   ['turning-point', 'Turning point'],
@@ -17,6 +18,7 @@ export default function Home() {
       <header className="site-header">
         <a className="wordmark" href="#hook" aria-label="Alhadad">A.</a>
       </header>
+      <RunningHead chapters={CHAPTERS} />
 
       <div className="preloader">
         <div className="preloader__panel"></div>

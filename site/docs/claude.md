@@ -28,6 +28,7 @@ Caddy serves `/srv/alhadad-site`, and its config lives in `deploy/Caddyfile`. Th
 |------|--------------|
 | `app/page.jsx` | All markup: preloader, hero cover and chapters. `CHAPTERS` drives the cover lines. |
 | `app/globals.css` | Tokens on `:root`, the preloader, the hero cover and the chapters |
+| `app/RunningHead.jsx` | Running header past the cover: scroll observer for the current chapter, `<details>` chapter index |
 | `app/Intro.jsx` | GSAP: preloader beats, the pour, the drain, the hero entrance (`hook()`) and chapter reveals |
 | `app/Portrait.jsx` | Mounts the liquid once the photo and fonts are ready, and exports `portraitReady` |
 | `app/liquid.js` | WebGL2 fluid simulation, plus the display shader (photo, painted layer, masthead redraw) |

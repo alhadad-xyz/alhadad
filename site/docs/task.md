@@ -29,7 +29,7 @@ Last updated: 2026-10-29. See `prd.md` for the why behind each item.
    - What I stand for: a short list of principles set as headlines.
    - Let's talk: a back-cover layout with the email address as the masthead.
 6. [ ] **Project content for chapter 3:** pick 3 to 5 projects and gather images and results.
-7. [ ] **Navigation after the hero.** The header shows only "A.", so a reader has no way to jump between chapters once past the cover. Options are a small chapter index in the header or a progress indicator.
+7. [x] **Navigation after the hero.** Running header (`app/RunningHead.jsx`): current chapter and page number once past the cover; tap it for the chapter index.
 8. [ ] **Active cover line:** mark the chapter currently in view.
 
 ## Quality
