@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
+import { portraitReady } from './Portrait';
 
 // Strict mode mounts effects twice in dev; the intro must run once per page load.
 let started = false;
@@ -35,7 +36,7 @@ function init() {
   mm.add("(prefers-reduced-motion: no-preference)", () => {
     if (seen) {
       finishLoading();
-      playHook();
+      hook();
     } else {
       runPreloader();
     }
@@ -63,10 +64,14 @@ function runPreloader() {
   const enterText = preloader.querySelector(".preloader__enter");
   const welcome = preloader.querySelector(".preloader__welcome");
   const ring = preloader.querySelector(".preloader__ring");
+  const panel = preloader.querySelector(".preloader__panel");
   const [track, bar] = ring.querySelectorAll("circle");
-  const blocks = gsap.utils.shuffle(gsap.utils.toArray(".preloader__blocks span"));
+  const blocks = gsap.utils.shuffle(gsap.utils.toArray(".preloader__blocks svg"));
   const assets = waitForAssets();
   let blink;
+
+  const turbulence = preloader.querySelector("feTurbulence");
+  const boil = setInterval(() => turbulence.setAttribute("seed", gsap.utils.random(0, 99, 1)), 125);
 
   window.scrollTo(0, 0);
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
@@ -129,19 +134,62 @@ function runPreloader() {
     gate.addEventListener("click", enter, { once: true });
   }
 
-  // Beat 4: the whole screen shrinks to a card and wipes off to the left.
+  // Beat 4: the ring opens and pours paint onto the hero, the chrome swaps its text in place,
+  // and the panel drains down off the page.
   function enter() {
     gate.disabled = true;
     blink?.kill();
-    gsap.timeline({ onComplete: finishLoading })
-      .to(ring, { autoAlpha: 0, duration: 0.3, ease: "power2.out" }, 0)
-      .to(enterText, { yPercent: -110, autoAlpha: 1, duration: 0.6, ease: "power3.inOut" }, 0)
-      .to(welcome, { yPercent: 0, duration: 1.4, ease: "expo.out" }, 0.4)
-      .to([".preloader__top", ".preloader__meta"], { opacity: 0.3, duration: 1.4, ease: "expo.out" }, 0.1)
-      .to(preloader, { scale: 0.8, duration: 1.4, ease: "expo.out" }, 0.1)
-      .to(preloader, { clipPath: "inset(0% 100% 0% 0%)", duration: 1.8, ease: "expo.inOut" }, 1)
-      .add(playHook, 1.6);
+    const out = { yPercent: -110, duration: 0.6, ease: "power3.inOut" };
+    gsap.timeline({ onComplete: () => (clearInterval(boil), finishLoading()) })
+      .to(ring, { scale: 1.6, autoAlpha: 0, duration: 0.9, ease: "expo.out" }, 0)
+      .to(enterText, { ...out, autoAlpha: 1 }, 0)
+      .to(welcome, { yPercent: 0, duration: 1, ease: "expo.out" }, 0.3)
+      .to([welcome, ready], out, 1.1)
+      .to(".preloader__meta .mask > span", { ...out, stagger: 0.04 }, 1.1)
+      .to(blocks, { autoAlpha: 0, duration: 0, stagger: 0.06 }, 1.1)
+      .add(pour(gate), 1)
+      .add(drain(panel), 1.2)
+      .add(hook(), 1.6);
   }
+}
+
+// A spiral of synthetic pointer moves out from the gate, fed through the liquid's own input,
+// so the hero opens with paint already running down it.
+function pour(gate) {
+  const { left, top, width, height } = gate.getBoundingClientRect();
+  const r = Math.min(innerWidth, innerHeight) * 0.22;
+  const s = { t: 0 };
+  return gsap.to(s, {
+    t: 1,
+    duration: 0.8,
+    ease: "power1.in",
+    onUpdate: () => {
+      const a = s.t * Math.PI * 3;
+      dispatchEvent(new PointerEvent("pointermove", {
+        clientX: left + width / 2 + Math.cos(a) * r * s.t,
+        clientY: top + height / 2 + Math.sin(a) * r * s.t,
+      }));
+    },
+  });
+}
+
+// Each column of the panel falls on its own clock under gravity, so the top edge
+// hangs back in strands like the hero's drips.
+function drain(panel) {
+  const path = document.querySelector("#drain path");
+  const cols = Array.from({ length: 24 }, () => ({ y: 0 }));
+  const dx = 1 / (cols.length - 1);
+  const draw = () => {
+    let d = `M0 2V${cols[0].y}`;
+    for (let i = 1; i < cols.length; i++)
+      d += `C${(i - 0.5) * dx} ${cols[i - 1].y} ${(i - 0.5) * dx} ${cols[i].y} ${i * dx} ${cols[i].y}`;
+    path.setAttribute("d", `${d}V2Z`);
+  };
+  draw();
+  gsap.set(panel, { clipPath: "url(#drain)" });
+  const tl = gsap.timeline({ onUpdate: draw });
+  cols.forEach((c) => tl.to(c, { y: 1.2, duration: gsap.utils.random(0.8, 1.2), ease: "power2.in" }, gsap.utils.random(0, 0.3)));
+  return tl;
 }
 
 // 5-7 rising stops that always land on 100, so every visit counts differently.
@@ -160,10 +208,21 @@ function flicker(el, times = 3, step = 0.08) {
   return tl.set(el, { autoAlpha: 1 }, times * step * 1.7);
 }
 
-function playHook() {
-  const split = SplitText.create("#hook h1", { type: "lines", mask: "lines" });
-  gsap.from(split.lines, { yPercent: 105, duration: 1.1, ease: "expo.out", stagger: 0.09 });
-  gsap.from(".hero__portrait", { autoAlpha: 0, scale: 1.04, duration: 1.6, ease: "expo.out" });
+// The hero's entrance: name and chrome rise into the slots the preloader just vacated.
+function hook() {
+  // Hidden elements (the hint on touch screens) can't be measured into lines.
+  const lines = (sel) =>
+    gsap.utils.toArray(sel).filter((el) => el.offsetParent)
+      .flatMap((el) => SplitText.create(el, { type: "lines", mask: "lines" }).lines);
+  const rise = { yPercent: 105, duration: 1.1, ease: "expo.out" };
+  return gsap.timeline()
+    .from(".hero__portrait", { autoAlpha: 0, scale: 1.04, duration: 1.6, ease: "expo.out" }, 0)
+    .from(lines(".wordmark"), rise, 0)
+    .from(lines("#hook h1"), { ...rise, stagger: 0.09 }, 0.35)
+    .from(lines(".hero__lead"), rise, 0.4)
+    // Links aren't masked: a mask would clip their focus ring.
+    .from(".hero__lines a", { y: 24, autoAlpha: 0, duration: 1.1, ease: "expo.out", stagger: 0.06 }, 0.5)
+    .from(lines(".hero .eyebrow"), { ...rise, stagger: 0.06 }, 0.45);
 }
 
 function revealChapters() {
@@ -179,10 +238,11 @@ function revealChapters() {
   });
 }
 
-// Resolves when fonts and page images are ready; failed images count as done.
+// Resolves when fonts, page images and the liquid portrait are ready; failures count as done.
 function waitForAssets() {
   const jobs = [
     document.fonts.ready,
+    portraitReady,
     ...[...document.images].map((img) => img.decode().catch(() => {})),
   ];
   // shortcut: hard 8s cap so a hung request can't trap the visitor; tune once real assets exist.

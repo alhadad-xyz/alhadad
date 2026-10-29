@@ -116,7 +116,11 @@ html:not(.is-loading) .preloader { display: none; }
   gap: 2rem;
 }
 .preloader__meta > :last-child { margin-left: auto; text-align: right; }
-.preloader__blocks { display: block; letter-spacing: .1em; }
+.preloader__defs { position: absolute; width: 0; height: 0; }
+.preloader__ring, .preloader__mark, .preloader__blocks { filter: url(#boil); }
+.preloader__blocks { display: flex; justify-content: flex-end; gap: .5em; margin-bottom: .3em; }
+.preloader__blocks svg { width: 1.2em; height: 1.2em; overflow: visible; fill: none; stroke: currentColor; stroke-width: 1.25; stroke-linecap: round; stroke-linejoin: round; }
+.preloader__blocks path { vector-effect: non-scaling-stroke; }
 
 @media (min-width: 768px) {
   .site-header { padding: 28px 32px; }
@@ -146,28 +150,67 @@ html:not(.is-loading) .preloader { display: none; }
 /* The canvas draws the photo itself once WebGL is up; the <img> stays for layout and fallback. */
 .hero__portrait.is-gl .hero__photo { visibility: hidden; }
 
+/* Magazine cover: masthead across the top, the head breaking into it, cover lines down the sides. */
 .hero__name {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 9%;
+  top: 56px;
   color: var(--cream);
-  font-size: clamp(4.5rem, 21vw, 22rem);
+  font-size: clamp(4rem, 19vw, 20rem);
   line-height: .8;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.04em;
   text-align: center;
+  text-transform: uppercase;
   mix-blend-mode: difference;
   pointer-events: none;
 }
+.hero__issue, .hero__lead, .hero__lines { position: absolute; margin: 0; color: var(--cream); mix-blend-mode: difference; }
+.hero__issue { top: 20px; right: 16px; }
+.hero__lead {
+  right: 16px;
+  top: calc(56px + min(15vw, 16rem));
+  max-width: 11ch;
+  font: italic 400 clamp(1.5rem, 3vw, 2.75rem)/1.05 var(--font-display);
+  text-align: right;
+  text-wrap: balance;
+}
+/* Cover lines face the lead from the left, in the dark above the head. */
+.hero__lines { left: 16px; top: calc(56px + min(15vw, 16rem)); }
+.hero__lines ol { display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none; }
+.hero__lines a {
+  display: block;
+  color: inherit;
+  font: 400 1.05rem/1.1 var(--font-display);
+  text-decoration: none;
+}
+.hero__lines span {
+  margin-right: .5em;
+  font: 500 .7rem/1 var(--font);
+  letter-spacing: .04em;
+  font-variant-numeric: tabular-nums;
+}
+.hero__lines a:hover, .hero__lines a:focus-visible { font-style: italic; }
+.hero__lines a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 .hero__eyebrow, .hero__hint {
   position: absolute;
   bottom: 20px;
   margin: 0;
-  color: var(--cream);
   mix-blend-mode: difference;
 }
+/* Same type as the preloader chrome, in the same slots: the bottom row swaps its text in place. */
+.hero .eyebrow { color: var(--cream); font: 500 .75rem/1.2 var(--font); letter-spacing: .04em; }
 .hero__eyebrow { left: 16px; right: 16px; }
 .hero__hint { right: 16px; display: none; }
+@media (min-width: 768px) {
+  .hero__name { top: 72px; }
+  .hero__issue { top: 28px; right: 32px; }
+  .hero__lead { right: 32px; top: calc(72px + min(15vw, 16rem)); }
+  .hero__lines { left: 32px; top: calc(72px + min(15vw, 16rem)); }
+  .hero__lines ol { gap: 1.1rem; }
+  .hero__lines a { font-size: clamp(1.25rem, 1.8vw, 1.75rem); }
+  .hero__lines span { display: block; margin: 0 0 .2em; }
+}
 @media (hover: hover) and (min-width: 768px) {
   .hero__eyebrow { right: auto; left: 32px; bottom: 28px; }
   .hero__hint { display: block; right: 32px; bottom: 28px; }

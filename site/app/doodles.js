@@ -11,9 +11,12 @@ const H = 600;
 const HAND = `font-family="'Marker Felt','Comic Sans MS','Segoe Print',cursive"`;
 const svg = (body) =>
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2200 1000" width="${W}" height="${H}" fill="none" stroke="#000" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`;
+// Shared with the preloader's chrome doodles.
+export const HEART = 'M0 18C-30-2-26-26-10-26-3-26 0-20 0-16 0-20 3-26 10-26 26-26 30-2 0 18Z';
+export const SPARK = 'M0-14V14M-14 0H14M-8-8 8 8M8-8-8 8';
 const heart = (x, y, s, fill) =>
-  `<path transform="translate(${x} ${y}) scale(${s})" ${fill ? 'fill="#000"' : ''} d="M0 18C-30-2-26-26-10-26-3-26 0-20 0-16 0-20 3-26 10-26 26-26 30-2 0 18Z"/>`;
-const spark = (x, y, s) => `<path transform="translate(${x} ${y}) scale(${s})" d="M0-14V14M-14 0H14M-8-8 8 8M8-8-8 8" stroke-width="4"/>`;
+  `<path transform="translate(${x} ${y}) scale(${s})" ${fill ? 'fill="#000"' : ''} d="${HEART}"/>`;
+const spark = (x, y, s) => `<path transform="translate(${x} ${y}) scale(${s})" d="${SPARK}" stroke-width="4"/>`;
 const ask = (x, y, size, r) => `<text x="${x}" y="${y}" font-size="${size}" transform="rotate(${r} ${x} ${y})" fill="#000" stroke="none" ${HAND}>?</text>`;
 
 // Photo spans x 601-1599 of the 2200-wide sheet; doodles stay clear of the figure.

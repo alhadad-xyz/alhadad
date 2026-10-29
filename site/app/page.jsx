@@ -1,5 +1,15 @@
 import Intro from './Intro';
 import Portrait from './Portrait';
+import { HEART, SPARK } from './doodles';
+
+// Cover lines on the hero, one per chapter section below.
+const CHAPTERS = [
+  ['origin', 'Origin'],
+  ['turning-point', 'Turning point'],
+  ['work', 'The work'],
+  ['values', 'What I stand for'],
+  ['contact', 'Let’s talk'],
+];
 
 export default function Home() {
   return (
@@ -10,6 +20,15 @@ export default function Home() {
 
       <div className="preloader">
         <div className="preloader__panel"></div>
+        {/* Line boil for the ring, mark and doodles (Intro re-seeds it 8 times a second like the hero's drawing),
+            and the drain mask Intro redraws as the panel falls off the hero. */}
+        <svg className="preloader__defs" aria-hidden="true">
+          <filter id="boil" x="-10%" y="-10%" width="120%" height="120%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="1" seed="0" />
+            <feDisplacementMap in="SourceGraphic" scale="3" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+          <clipPath id="drain" clipPathUnits="objectBoundingBox"><path d="M0 0H1V1H0Z" /></clipPath>
+        </svg>
         <p className="preloader__top invisible" aria-hidden="true">
           <span className="mask"><span className="preloader__count">00</span></span>
           <span className="mask"><span className="preloader__ready">Ready</span></span>
@@ -33,7 +52,11 @@ export default function Home() {
             <span className="mask"><span>05 Chapters</span></span>
           </p>
           <p>
-            <span className="preloader__blocks"><span>▊</span><span>▊</span><span>▊</span></span>
+            <span className="preloader__blocks">
+              <svg viewBox="-16 -16 32 32"><path d={SPARK} /></svg>
+              <svg viewBox="-32 -30 64 52"><path d={HEART} /></svg>
+              <svg viewBox="250 595 124 115"><path d="M260 640C300 600 360 610 362 650 364 690 310 700 300 668 292 642 330 636 334 652" /></svg>
+            </span>
             <span className="mask"><span>V-001</span></span>
           </p>
         </div>
@@ -42,8 +65,17 @@ export default function Home() {
       <main>
         <section className="hero" id="hook">
           <Portrait />
+          <p className="eyebrow hero__issue">Issue 001 — Autumn 2026</p>
           <h1 className="hero__name">Alhadad</h1>
-          <p className="eyebrow hero__eyebrow">Chapter 0 — One line that says who you are.</p>
+          <p className="hero__lead">One line that says who you are.</p>
+          <nav className="hero__lines" aria-label="Chapters">
+            <ol>
+              {CHAPTERS.map(([id, title], i) => (
+                <li key={id}><a href={`#${id}`}><span>0{i + 1}</span>{title}</a></li>
+              ))}
+            </ol>
+          </nav>
+          <p className="eyebrow hero__eyebrow">Chapter 0 — The cover</p>
           <p className="eyebrow hero__hint" aria-hidden="true">Move to pour</p>
         </section>
 
