@@ -302,6 +302,27 @@ html:not(.is-loading) .preloader { display: none; }
 .hero .eyebrow { color: var(--cream); font: 500 .75rem/1.2 var(--font-mono); letter-spacing: .04em; }
 .hero__eyebrow { left: 16px; right: 16px; }
 .hero__hint { right: 16px; display: none; }
+/* Phone cover: the head rises into the masthead, the face stays clear, and the cover lines
+   and lead sit along the foot like a printed cover's. */
+@media (max-width: 767px) {
+  .hero__name { top: 76px; }
+  /* The hair starts ~7% down the photo: size it so the hair lands ~7rem from the top, across the
+     masthead's lower third, on every phone height. The sides crop. */
+  .hero__photo { height: calc((100% - 7rem) * 1.07); }
+  /* Ink fade at the foot: on the mid-grey sweater the difference-blended text is ~2:1 without it. */
+  .hero__portrait::after {
+    content: "";
+    position: absolute;
+    inset: 62% 0 0;
+    background: linear-gradient(transparent, rgb(14 14 14 / .6) 45%);
+    pointer-events: none;
+  }
+  .hero__lead, .hero__lines { top: auto; bottom: 52px; }
+  .hero__lead { max-width: 9ch; font-size: clamp(1.75rem, 8vw, 2.25rem); }
+  .hero__lines ol { gap: 0; }
+  /* 24px+ touch targets. */
+  .hero__lines a { padding: .3rem 0; }
+}
 @media (min-width: 768px) {
   .hero__name { top: 72px; }
   .hero__issue { top: 28px; right: 32px; }
