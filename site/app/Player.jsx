@@ -4,12 +4,13 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 
 let audio;
+const VOLUME = 0.4;
 
 // Intro calls this from the preloader's Play click: browsers only allow sound after a gesture.
 export function startMusic() {
   if (!audio || readPaused()) return;
   audio.volume = 0;
-  audio.play().then(() => gsap.to(audio, { volume: 1, duration: 2, ease: 'power1.in' })).catch(() => {});
+  audio.play().then(() => gsap.to(audio, { volume: VOLUME, duration: 2, ease: 'power1.in' })).catch(() => {});
 }
 
 // The record's stand-in once the preloader is gone: a chrome caption that pauses and plays the song.
@@ -21,7 +22,7 @@ export default function Player() {
   const toggle = () => {
     const a = ref.current;
     gsap.killTweensOf(a);
-    a.volume = 1;
+    a.volume = VOLUME;
     if (a.paused) a.play().catch(() => {});
     else a.pause();
     // A pause is remembered, so the next visit's Play click doesn't start it again.
