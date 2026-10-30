@@ -63,7 +63,6 @@ export default function Home() {
         <a className="wordmark" href="#hook" aria-label="A. Alhadad">A.</a>
       </header>
       <RunningHead chapters={CHAPTERS} />
-      <Player />
       <Riso />
 
       <div className="preloader">
@@ -151,6 +150,8 @@ export default function Home() {
           </nav>
           <p className="eyebrow hero__eyebrow">Chapter 0 — The cover</p>
           <p className="eyebrow hero__hint" aria-hidden="true">Move to pour</p>
+          {/* In the cover, so it sinks back under the veil with it when chapter 1 slides over. */}
+          <Player />
         </section>
 
         {/* A junior-high notebook page: ruled paper, a polaroid of the first game and a sticky note taped in. */}

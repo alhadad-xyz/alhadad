@@ -239,10 +239,12 @@ html:not(.is-loading) .preloader { display: none; }
   height: 100svh;
   min-height: 32rem;
   overflow: hidden;
+  /* coverTurn()'s transform isolates the difference-blended chrome inside the hero: it needs paper to blend against. */
+  background: var(--bg);
 }
 .hero__portrait { position: absolute; inset: 0; }
-/* Ink veil, raised by coverTurn() in Intro as chapter 1 slides over the cover. */
-.hero::after { content: ""; position: absolute; inset: 0; background: var(--fg); opacity: var(--dim, 0); pointer-events: none; }
+/* Ink veil, raised by coverTurn() in Intro as chapter 1 slides over the cover. Above .player (40), so the caption darkens too. */
+.hero::after { content: ""; position: absolute; inset: 0; z-index: 41; background: var(--fg); opacity: var(--dim, 0); pointer-events: none; }
 .hero__photo {
   position: absolute;
   bottom: 0;
