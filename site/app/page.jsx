@@ -5,6 +5,7 @@ import Player from './Player';
 import Riso from './Riso';
 import CopyEmail from './CopyEmail';
 import Crate from './Crate';
+import Taped from './Taped';
 import LinerNotes from './LinerNotes';
 import { HEART, SPARK } from './doodles';
 
@@ -152,21 +153,35 @@ export default function Home() {
           <p className="eyebrow hero__hint" aria-hidden="true">Move to pour</p>
         </section>
 
-        {/* Opening pages: huge number, title, drop cap, and a pull quote set over the number. */}
-        <section className="chapter opener" id="origin">
-          <p className="opener__num" aria-hidden="true">01</p>
-          <header className="opener__head">
+        {/* A junior-high notebook page: ruled paper, a polaroid of the first game and a sticky note taped in. */}
+        <section className="chapter notebook" id="origin">
+          <header className="notebook__head">
             <p className="eyebrow">Chapter 1 — Origin</p>
             <h2 className="reveal">Where it <span className="circled">started<Doodle shape={CIRCLE} /></span>.</h2>
           </header>
-          <div className="opener__body">
-            <p className="reveal dropcap">Every builder has a first door. Mine was a game. In junior high I wanted to make one instead of playing one, so I taught myself to code.</p>
+          <div className="notebook__body">
+            <p className="reveal">Every builder has a first door. Mine was a game. In junior high I wanted to make one instead of playing one, so I taught myself to code.</p>
             <p className="reveal">My first project was a tiny browser adventure. It barely held together, but it ran, and that was enough. The game was the excuse. The code was the point.</p>
           </div>
-          <blockquote className="pull reveal">
-            <p>“He came for the games and stayed for the code.”</p>
-            <Note className="note--pull">the line to remember</Note>
-          </blockquote>
+          <div className="notebook__taped">
+            <Taped className="polaroid reveal">
+              <svg viewBox="0 0 32 24" shapeRendering="crispEdges" role="img" aria-label="A pixel-art game scene: a small hero on a platform next to a coin">
+                <rect width="32" height="24" className="px-sky" />
+                <rect y="20" width="32" height="4" className="px-ground" />
+                <rect x="17" y="13" width="9" height="2" className="px-ground" />
+                <rect x="21" y="9" width="2" height="2" className="px-coin" />
+                <rect x="7" y="14" width="3" height="3" className="px-hero" />
+                <rect x="6" y="17" width="5" height="3" className="px-hero" />
+                <rect x="4" y="3" width="1" height="1" className="px-star" />
+                <rect x="13" y="5" width="1" height="1" className="px-star" />
+                <rect x="28" y="2" width="1" height="1" className="px-star" />
+              </svg>
+              <figcaption>first game, junior high</figcaption>
+            </Taped>
+            <Taped as="blockquote" className="sticky reveal">
+              <p>“He came for the games and stayed for the code.”</p>
+            </Taped>
+          </div>
         </section>
 
         {/* The page flips: ink pours down over it (Intro scrubs the drips), then one sentence lights up word by word.
@@ -190,23 +205,24 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="chapter opener" id="values">
-          <p className="opener__num" aria-hidden="true">04</p>
-          <header className="opener__head">
+        {/* Wheat-pasted manifesto: each principle is a riso-printed sheet whose accent plate lands off register,
+            then settles into register as it scrolls up the wall (Intro's pasteUp). */}
+        <section className="chapter manifesto" id="values">
+          <header>
             <p className="eyebrow">Chapter 4 — What I stand for</p>
             <h2 className="reveal">How I <span className="circled">work<Doodle shape={CIRCLE} /></span>.</h2>
           </header>
-          <div className="opener__body">
-            <p className="reveal dropcap">Placeholder copy. One paragraph on how you approach the work, leading into the principles below.</p>
-            <ol className="principles">
-              <li className="reveal"><h3>Principle one, set as a headline.</h3><p>Placeholder copy: one sentence on what it means in practice.</p></li>
-              <li className="reveal"><h3>Principle two, set as a headline.</h3><p>Placeholder copy: one sentence on what it means in practice.</p></li>
-              <li className="reveal"><h3>Principle three, set as a headline.</h3><p>Placeholder copy: one sentence on what it means in practice.</p></li>
+          <p className="reveal manifesto__lede">Placeholder copy. One paragraph on how you approach the work, leading into the principles below.</p>
+          <div className="manifesto__wall">
+            <ol className="manifesto__sheets">
+              <li className="sheet"><h3>Principle one, set as a headline.</h3><p>Placeholder copy: one sentence on what it means in practice.</p></li>
+              <li className="sheet"><h3>Principle two, set as a headline.</h3><p>Placeholder copy: one sentence on what it means in practice.</p></li>
+              <li className="sheet"><h3>Principle three, set as a headline.</h3><p>Placeholder copy: one sentence on what it means in practice.</p></li>
             </ol>
+            <Note className="note--wall">in this order</Note>
           </div>
-          <blockquote className="pull reveal">
+          <blockquote className="manifesto__slogan reveal">
             <p>“Placeholder pull quote: the belief everything else follows from.”</p>
-            <Note className="note--pull">in this order</Note>
           </blockquote>
         </section>
 

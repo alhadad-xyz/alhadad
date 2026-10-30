@@ -55,6 +55,7 @@ function init() {
     turningPoint();
     crate();
     revealChapters();
+    pasteUp();
   });
 
   mm.add("(prefers-reduced-motion: reduce)", () => {
@@ -283,6 +284,15 @@ function revealChapters() {
       ease: "power2.inOut",
       scrollTrigger: { trigger: chapter, start: "top 70%" },
     });
+  });
+}
+
+// Chapter 4: each principle is slapped onto the wall as it scrolls in, its accent plate printed off register,
+// and the plate settles into register as the sheet rises. Without motion the sheets are simply in register.
+function pasteUp() {
+  gsap.utils.toArray(".sheet").forEach((sheet) => {
+    gsap.from(sheet, { scale: 1.06, y: -24, opacity: 0, duration: 0.5, ease: "back.out(2)", scrollTrigger: { trigger: sheet, start: "top 85%" } });
+    gsap.fromTo(sheet, { "--plate": 10 }, { "--plate": 0, ease: "none", scrollTrigger: { trigger: sheet, start: "top bottom", end: "center 55%", scrub: true } });
   });
 }
 

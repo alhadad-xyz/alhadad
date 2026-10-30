@@ -5,6 +5,9 @@
   --muted: #6e6a63;
   --accent: #ff5a1f;
   --cream: #ede4dd;
+  --sheet: #fbf9f4;
+  --coin: #f5c542;
+  --rule-ink: color-mix(in srgb, #3b6ea5 22%, transparent);
   --font: system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: var(--font-bodoni), "Didot", Georgia, serif;
   /* Chrome text: preloader, issue line, eyebrows, cover-line numbers. */
@@ -345,6 +348,18 @@ h1 { font-size: clamp(2.5rem, 8vw, 6rem); line-height: 1; margin: 0; }
 h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }
 
 .not-found a { color: inherit; }
+/* 404: a record stuck in a groove. It turns, jumps back a few degrees at the scratch, and turns again. */
+.skip { width: min(14rem, 50vw); margin-bottom: 2rem; overflow: visible; }
+.skip__disc { transform-origin: 110px 110px; animation: skip 1.2s linear infinite; }
+.skip__disc circle { fill: var(--fg); }
+.skip__disc .skip__groove { fill: none; stroke: var(--cream); stroke-width: .6; opacity: .25; }
+.skip__disc .skip__label { fill: var(--accent); }
+.skip__scratch { fill: none; stroke: var(--cream); stroke-width: 2; stroke-linecap: round; }
+.skip__arm path { fill: none; stroke: var(--fg); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.skip__arm circle { fill: var(--fg); }
+@keyframes skip { 0% { rotate: 0deg; } 85% { rotate: 70deg; } 86%, 100% { rotate: 0deg; } }
+.skip__echo { color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { .skip__disc { animation: none; } }
 
 /* Chapter 2: the page flips to ink. Text is cream + difference, so it reads on paper and on the pour.
    The paper background keeps that blend right while GSAP pins the section (a fixed pin is its own stacking context). */
@@ -401,41 +416,82 @@ h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }
 .crate__now { font: 500 .75rem/1.2 var(--font-mono); letter-spacing: .04em; text-transform: uppercase; }
 .crate__count { font: 400 clamp(3rem, 7vw, 6rem)/.8 var(--font-display); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 
-/* Chapter opening pages: huge number, title, drop cap, pull quote. */
-.opener__num {
-  margin: 0;
-  font: 500 clamp(9rem, 45vw, 22rem)/.75 var(--font-display);
-  letter-spacing: -0.06em;
+/* Chapter 1: a junior-high notebook page. Every line box and gap is a multiple of --rule, so the copy sits on the lines. */
+.notebook {
+  --rule: 2rem;
+  max-width: none;
+  padding: calc(var(--rule) * 3) max(16px, (100% - 64rem) / 2 + 16px);
+  background:
+    linear-gradient(to right, transparent calc(max(16px, (100% - 64rem) / 2 + 16px) - 1.25rem), color-mix(in srgb, var(--accent) 55%, transparent) 0 calc(max(16px, (100% - 64rem) / 2 + 16px) - 1.25rem + 1px), transparent 0),
+    repeating-linear-gradient(to bottom, transparent 0 calc(var(--rule) - 1px), var(--rule-ink) 0 var(--rule)) 0 .3rem,
+    var(--bg);
 }
-.opener__head { margin-top: 1.5rem; }
-.opener__body { max-width: 34rem; }
-.dropcap::first-letter {
-  float: left;
-  margin: .08em .1em 0 0;
-  font: 500 4.4em/.8 var(--font-display);
+.notebook .eyebrow { margin: 0; line-height: var(--rule); }
+.notebook h2 { margin: 0 0 var(--rule); line-height: calc(var(--rule) * 2); }
+.notebook__body { max-width: 34rem; }
+.notebook__body p { margin: 0 0 var(--rule); line-height: var(--rule); }
+.notebook__taped { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--rule) 2rem; margin-top: var(--rule); }
+.taped { position: relative; margin: 0; user-select: none; transition: scale .25s var(--ease-out), box-shadow .25s var(--ease-out); }
+.taped::before { content: ""; position: absolute; top: -.7rem; left: 50%; width: 5rem; height: 1.4rem; margin-left: -2.5rem; background: color-mix(in srgb, var(--cream) 70%, transparent); box-shadow: 0 0 0 1px rgb(14 14 14 / .06); rotate: -4deg; }
+@media (hover: hover) {
+  .taped { touch-action: none; cursor: grab; }
+  .taped.is-lifted { z-index: 2; cursor: grabbing; scale: 1.04; box-shadow: 0 1.5rem 2.5rem -1rem rgb(14 14 14 / .4); }
 }
-/* Cream plus difference, like the cover chrome: ink on paper, paper where it crosses the number. */
-.pull {
-  position: relative;
-  z-index: 1;
-  margin: 2.5rem 0 0;
-  color: var(--cream);
-  mix-blend-mode: difference;
-}
-.pull p { margin: 0; font: italic 400 clamp(1.75rem, 3.6vw, 3rem)/1.05 var(--font-display); text-wrap: balance; }
-.principles { display: grid; gap: 1.5rem; margin: 2rem 0 0; padding: 0; list-style: none; counter-reset: principle; }
-.principles li { counter-increment: principle; }
-.principles h3 { margin: 0; font: 500 clamp(1.5rem, 2.6vw, 2.1rem)/1.1 var(--font-display); letter-spacing: -0.01em; }
-.principles h3::before { content: counter(principle, decimal-leading-zero); margin-right: .75em; font: 500 .75rem/1 var(--font-mono); letter-spacing: .04em; vertical-align: .4em; }
-.principles p { margin: .35rem 0 0; color: var(--muted); }
+.polaroid { width: min(17rem, 100%); padding: .75rem .75rem 0; background: var(--sheet); box-shadow: 0 .75rem 1.5rem -1rem rgb(14 14 14 / .45); rotate: 3deg; }
+.polaroid svg { display: block; width: 100%; height: auto; }
+.polaroid figcaption { padding: .5rem 0 .75rem; font: italic 400 1.25rem/1.2 var(--font-display); text-align: center; }
+.px-sky { fill: var(--fg); }
+.px-ground { fill: var(--accent); }
+.px-coin { fill: var(--coin); }
+.px-hero, .px-star { fill: var(--cream); }
+.sticky { width: min(17rem, 100%); padding: 1.5rem 1.25rem; background: color-mix(in srgb, var(--accent) 22%, var(--bg)); box-shadow: 0 .75rem 1.5rem -1rem rgb(14 14 14 / .45); rotate: -3deg; }
+.sticky::before { left: 1.5rem; margin: 0; rotate: 6deg; }
+.sticky p { margin: 0; font: italic 400 1.6rem/1.15 var(--font-display); text-wrap: balance; }
 @media (min-width: 900px) {
-  .opener { display: grid; grid-template-columns: 5fr 7fr; column-gap: 4rem; align-content: center; }
-  .opener__num { grid-column: 1; grid-row: 1 / span 2; font-size: clamp(9rem, 22vw, 20rem); }
-  .opener__head { grid-column: 2; align-self: end; margin: 0; }
-  .opener__body { grid-column: 2; grid-row: 2; }
-  /* The number runs past the head into row 2, so starting the quote there sets it across the number for the blend. */
-  .opener__num { align-self: start; }
-  .pull { grid-column: 1; grid-row: 2; align-self: start; margin: 2rem -4rem 0 0; }
+  .notebook { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: 4rem; align-content: center; }
+  .notebook__head { grid-column: 1; }
+  .notebook__body { grid-column: 1; }
+  .notebook__taped { grid-column: 2; grid-row: 1 / span 2; flex-direction: column; align-items: center; margin: 0; }
+  .sticky { margin: -1rem 0 0 -4rem; }
+}
+
+/* Chapter 4: a wheat-pasted manifesto. Riso sheets with an accent plate; pasteUp() scrubs --plate from off to on register. */
+.manifesto { max-width: 72rem; }
+.manifesto header { margin-bottom: 1rem; }
+.manifesto__lede { max-width: 34rem; margin: 0; }
+.manifesto__wall { position: relative; margin-top: 3rem; }
+.manifesto__sheets { display: grid; gap: 1.25rem; margin: 0; padding: 0; list-style: none; counter-reset: principle; }
+.sheet {
+  --plate: 0;
+  counter-increment: principle;
+  position: relative;
+  padding: 1.5rem 1.5rem 1.75rem;
+  background:
+    linear-gradient(100deg, transparent 38%, rgb(14 14 14 / .05) 41%, transparent 44%),
+    linear-gradient(172deg, transparent 62%, rgb(14 14 14 / .04) 64%, transparent 67%),
+    var(--sheet);
+  box-shadow: 0 1px 0 rgb(14 14 14 / .12), 0 .75rem 1.5rem -1rem rgb(14 14 14 / .35);
+}
+.sheet:nth-child(1) { rotate: -1.2deg; }
+.sheet:nth-child(2) { rotate: .8deg; }
+.sheet:nth-child(3) { rotate: -.4deg; }
+.sheet h3 {
+  margin: 0;
+  font: 500 clamp(2rem, 4.6vw, 3.75rem)/.95 var(--font-display);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-wrap: balance;
+  text-shadow: calc(var(--plate) * 1px) calc(var(--plate) * .4px) 0 color-mix(in srgb, var(--accent) 85%, transparent);
+}
+.sheet h3::before { content: counter(principle, decimal-leading-zero); display: block; margin-bottom: .9rem; color: var(--accent); font: 500 .75rem/1 var(--font-mono); letter-spacing: .04em; text-shadow: none; }
+.sheet p { max-width: 32rem; margin: .9rem 0 0; color: var(--muted); }
+.manifesto__slogan { margin: 4rem 0 0; }
+.manifesto__slogan p { max-width: 20ch; margin: 0; font: italic 400 clamp(2.25rem, 6vw, 5.5rem)/.95 var(--font-display); letter-spacing: -0.02em; text-wrap: balance; }
+@media (min-width: 900px) {
+  .manifesto__sheets { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 0; }
+  .sheet:nth-child(1) { grid-column: 1 / 8; }
+  .sheet:nth-child(2) { grid-column: 5 / 13; margin-top: -1.5rem; }
+  .sheet:nth-child(3) { grid-column: 2 / 9; margin-top: -1rem; }
 }
 
 /* Margin doodles: fine-liner strokes that boil, drawn in by Intro on scroll. */
@@ -470,12 +526,9 @@ h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }
 .note .doodle { position: relative; display: block; width: 4.5rem; height: 2.8rem; margin-top: .2rem; stroke-width: 1.5; }
 @media (min-width: 900px) {
   .note { display: block; }
-  /* Under the quote, arrow flipped to point up-left at it. Cream because the quote's difference blend covers it. */
-  /* Under what they annotate, arrow flipped to point up-left. */
-  .note--pull { display: flex; flex-direction: column-reverse; }
-  .note--pull .doodle { scale: 1 -1; margin: 0 0 .2rem; }
-  /* Cream because the quote's difference blend covers the note too. */
-  .note--pull { left: 100%; top: 100%; margin: -.5rem 0 0 -12rem; color: var(--cream); }
+  /* Under the sheets, arrow flipped to point up-left at them. */
+  .note--wall { display: flex; flex-direction: column-reverse; right: 0; top: 100%; margin-top: .5rem; }
+  .note--wall .doodle { scale: 1 -1; margin: 0 0 .2rem; }
   .note--work { right: 0; bottom: 100%; margin-bottom: .25rem; }
   .note--mail { left: 52%; top: -6rem; }
 }
@@ -684,7 +737,7 @@ body:has(.player[aria-pressed="true"]) .liner__spin {
 }
 
 /* Riso misregistration: on fast scroll, an accent plate slips off the ink and snaps back (Riso.jsx sets --riso). */
-h2, .opener__num {
+h2 {
   text-shadow: calc(var(--riso, 0) * 1px) calc(var(--riso, 0) * .35px) 0 color-mix(in srgb, var(--accent) 80%, transparent);
 }
 

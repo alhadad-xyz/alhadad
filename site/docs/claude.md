@@ -24,8 +24,9 @@ Caddy serves `/srv/alhadad-site`, and its config lives in `deploy/Caddyfile`. Ke
 | `app/RunningHead.jsx` | Running header past the cover: scroll observer for the current chapter, `<details>` chapter index |
 | `app/CopyEmail.jsx` | Back-cover email: click copies, hand-drawn "copied" boils, `mailto:` fallback |
 | `app/Crate.jsx` | Chapter 3 record crate: a tracklist of `<details>` sleeves; `crate()` (called from Intro between the chapter 2 pin and the reveals) pins it from 1024px with hover and flips through the sleeves on scroll; opening one slides the record out beside its notes |
+| `app/Taped.jsx` | Chapter 1 notebook: a taped-in item (polaroid, sticky note) that a mouse or pen can peel up and drag |
 | `app/drips.js` | `drips()`: the strand-y clip-path edge shared by the preloader drain and the chapter 2 pour |
-| `app/Intro.jsx` | GSAP: preloader beats (the record spins, the tonearm swings in, Play drops the needle), the pour, the drain, the hero entrance (`hook()`) and chapter reveals |
+| `app/Intro.jsx` | GSAP: preloader beats (the record spins, the tonearm swings in, Play drops the needle), the pour, the drain, the hero entrance (`hook()`), chapter reveals and the chapter 4 paste-up (`pasteUp()`) |
 | `app/Player.jsx` | The music caption: `<audio>` for `public/audio/adela-nicole-kidman.m4a`, play/pause, a remembered pause in `localStorage`. `startMusic()` is called from the preloader's Play click, the gesture browsers need before sound |
 | `app/Portrait.jsx` | Mounts the liquid once the photo and fonts are ready, and exports `portraitReady` |
 | `app/liquid.js` | WebGL2 fluid simulation, plus the display shader (photo, painted layer, masthead redraw) |
@@ -38,7 +39,6 @@ Caddy serves `/srv/alhadad-site`, and its config lives in `deploy/Caddyfile`. Ke
 - **Shader colours mirror the CSS tokens.** `liquid.js` hard-codes paper `0.949, 0.937, 0.914` (= `#f2efe9`) and ink `0.055`. Change them together with `--bg` and `--fg`.
 - **The masthead is drawn twice.** Once in the DOM (`.hero__name`, behind the canvas) and once in the shader, from a 2D canvas that copies the h1's computed font, size, letter-spacing and position. Keep the h1 to a single line. Style changes carry over on the next resize.
 - **Chrome text depends on `--cream` plus `mix-blend-mode: difference`.** That is what turns it to ink on paper and light on the photo or paint. Don't set those elements to `--fg`.
-- **A note inside a `.pull` is blended with it.** The pull quote is cream + `difference`, so its note must be cream too, or it disappears.
 - **Doodles must not use `vector-effect: non-scaling-stroke`.** With `pathLength` and a stretched viewBox, Chrome then draws only part of the dash. Their stroke width is in viewBox units instead.
 - **Chapter 2 pins.** `turningPoint()` must run before `revealChapters()` so later triggers account for the pin spacing, and `.flip` keeps a paper background so its difference-blended text stays right while pinned.
 - **The layering comes from DOM order.** The h1 comes before `<Portrait />` in `page.jsx`, so the cut-out photo paints over it. Don't reorder them.

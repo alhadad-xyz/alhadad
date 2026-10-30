@@ -91,11 +91,11 @@ Brainstormed 2026-10-31. Today chapters 1 and 4 share the `.opener` layout, and 
 
 | # | Chapter | Format | Status |
 |---|---------|--------|--------|
-| 1 | Origin | Junior-high notebook or scrapbook page: ruled paper, taped polaroid of the first game, draggable items | Idea |
+| 1 | Origin | Junior-high notebook page: ruled paper, a taped polaroid of the first game and a sticky note, both draggable | Done (task 23) |
 | 3 | The work | Record crate: flip through the projects as sleeves, then pull the record out to read its notes | Done (task 22) |
-| 4 | What I stand for | Wheat-paste manifesto poster: risograph layers out of register that line up as each principle is pasted on | Idea |
+| 4 | What I stand for | Wheat-paste manifesto poster: risograph layers out of register that line up as each principle is pasted on | Done (task 24) |
 | 5 | Let's talk | Optional: a tear-off reply card that opens the email | Idea |
-| — | 404 | A skipping record, "Out of print" | Idea |
+| — | 404 | A skipping record, "Out of print" | Done (task 25) |
 
 Research refs: [Mr. Pandas Paper Portfolio](https://www.awwwards.com/sites/mr-pandas-paper-portfolio), [Polaroid I-2](https://www.awwwards.com/inspiration/photo-gallery-polaroid-i-2), [Skizophonic albums](https://www.awwwards.com/inspiration/albums-skizophonic), [Vinyl artwork gallery, Meinhard Taxer](https://www.awwwards.com/inspiration/vinyl-artwork-gallery-meinhard-taxer), [Mad Manifiesto List](https://www.awwwards.com/inspiration/mad-manifiesto-list), [Help Humans manifesto](https://www.awwwards.com/inspiration/manifesto-help-humans).
 
@@ -107,6 +107,17 @@ Research refs: [Mr. Pandas Paper Portfolio](https://www.awwwards.com/sites/mr-pa
     - REA recon, 2026-10-31: captured meinhardtaxer.com's album world with a headless scenario. It's a sticky scroll section in which the centre cover sits flat and its neighbours tilt in 3D, with the caption bottom left and a `/01` counter bottom right. Its page transition is a clip-path `inset()` curtain, 0.55s, `cubic-bezier(0.7, 0, 0.18, 1)`. The main module that drives the album world wasn't retained, so its exact motion is unknown. jams.basicagency.com showed only a bot check. Nothing was copied: the crate is our own code, built from the observed layout.
     - Verified 2026-10-31 in headless Chrome: 1440×900 and 1280×800 (stack, PageDown snaps to the next sleeve, a click pulls the record out beside the notes) and 390×844 (tracklist opens into the notes). No page errors.
     - Still to do: real sleeve art from task 3 (the placeholders are 4:3 and get cropped to square), and a check in Safari, where `preserve-3d` sorts depth differently.
+
+23. [x] **Origin as a notebook page (chapter 1).** `.notebook` in `page.jsx` and `globals.css`, with `app/Taped.jsx`.
+    - The section is ruled paper with a red margin line. Line boxes and gaps are multiples of `--rule`, so the copy sits on the lines.
+    - A polaroid of the first game (a pixel scene in inline SVG) and the pull quote as a sticky note are taped in. With a mouse or pen, either can be peeled up and dragged; touch keeps scrolling.
+    - Cut for now: the first game playable for a few seconds.
+24. [x] **Values as a wheat-pasted manifesto (chapter 4).** `.manifesto` in `page.jsx` and `globals.css`, plus `pasteUp()` in `Intro.jsx`.
+    - Each principle is a riso sheet pasted at a slight angle, overlapping its neighbour from 900px up. Each slaps on as it enters, and its accent plate (`--plate`, a text-shadow) is scrubbed from 10px off register to 0 as the sheet rises.
+    - The pull quote becomes a large italic slogan below the wall. Without motion the sheets are simply in register.
+25. [x] **404 as a skipping record.** `app/not-found.jsx`: the record turns 70°, jumps back at the scratch, and repeats, while the headline repeats "Not in this— not in this— not in this issue." Screen readers get the plain line. It holds still with reduced motion.
+    - Verified 2026-10-31 in headless Chrome at 1440×900 and 390×844, with no page errors.
+    - Not done: the optional chapter 5 tear-off reply card.
 
 ## Next version: Issue 002
 
