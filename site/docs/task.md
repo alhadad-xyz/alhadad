@@ -15,7 +15,7 @@ Last updated: 2026-10-29 (statuses checked against the code and the live site). 
 - [x] Running header past the cover (`app/RunningHead.jsx`, commit `174923d`). It shows the current chapter and page number, opens the chapter index on tap, and marks the current chapter with `aria-current`.
 - [x] `npm run deploy` (`deploy/deploy.sh`): build, dry run, confirm, sync. Committed in `4465783`.
 - [x] `agentRules: false` in `next.config.mjs`, so `next dev` no longer writes `AGENTS.md`. Committed in `4465783`.
-- [x] Deployed to https://alhadad.dev. The latest deploy is 2026-10-29 10:18 GMT and includes every chapter layout (placeholder content), the share image, robots.txt and sitemap.xml.
+- [x] Deployed to https://alhadad.dev. The latest deploy is 2026-10-30 19:08 GMT (`0877fc1`). It adds the record crate, the notebook origin, the wheat-paste manifesto and the skipping-record 404 (tasks 22 to 25), still with placeholder content.
 
 ## Now
 
