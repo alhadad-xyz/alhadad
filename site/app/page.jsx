@@ -4,6 +4,7 @@ import RunningHead from './RunningHead';
 import Player from './Player';
 import CopyEmail from './CopyEmail';
 import WorkIndex from './WorkIndex';
+import LinerNotes from './LinerNotes';
 import { HEART, SPARK } from './doodles';
 
 // Cover lines on the hero and the running header's index, one per chapter section below.
@@ -213,6 +214,7 @@ export default function Home() {
           <CopyEmail address="alhadad.xyz@gmail.com">
             <Note className="note--mail">say hi</Note>
           </CopyEmail>
+          <LinerNotes />
           <div className="back-cover__barcode" aria-hidden="true">
             <svg viewBox={`0 0 ${BARCODE.reduce((a, b) => a + b * 3, 0)} 40`} preserveAspectRatio="none">
               {BARCODE.map((w, i, all) => {

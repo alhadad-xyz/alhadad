@@ -521,14 +521,171 @@ h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }
 }
 .back-cover__copied text { fill: currentColor; stroke: none; font: italic 500 34px var(--font-display); }
 @keyframes copied-in { from { opacity: 0; scale: .8; } }
-.back-cover__barcode { position: absolute; right: 16px; bottom: 20px; width: 8.5rem; color: var(--fg); }
+/* Phones keep the barcode bottom-left: the fixed player caption owns bottom-right there. */
+.back-cover__barcode { position: absolute; left: 16px; bottom: 20px; width: 8.5rem; color: var(--fg); }
 .back-cover__barcode svg { display: block; width: 100%; height: 2.5rem; overflow: visible; filter: url(#boil-loop); }
 .back-cover__barcode path { stroke: currentColor; stroke-linecap: round; }
 .back-cover__barcode p { margin: .4rem 0 0; font: 500 .65rem/1 var(--font-mono); letter-spacing: .04em; text-transform: uppercase; text-align: justify; text-align-last: justify; }
 @media (min-width: 768px) {
   .back-cover { padding-left: 32px; padding-right: 32px; }
-  .back-cover__barcode { right: 32px; bottom: 28px; }
+  .back-cover__barcode { left: auto; right: 32px; bottom: 28px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .back-cover__copied, .back-cover__barcode svg { filter: none; animation: none; }
 }
+
+/* Liner notes */
+.liner {
+  margin: 3rem 0 6rem;
+  max-width: 56rem;
+}
+.liner__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.liner__toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+}
+.liner__toggle:hover .eyebrow {
+  color: var(--fg);
+}
+.liner__disc {
+  position: relative;
+  display: block;
+  width: 6.5rem;
+  height: 6.5rem;
+  perspective: 600px;
+  flex: none;
+}
+.liner__flip {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  transition: transform 0.8s var(--ease-out);
+}
+.liner__toggle[aria-expanded="true"] .liner__flip {
+  transform: rotateY(180deg);
+}
+.liner__face {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.liner__face--a {
+  transform: rotateY(0deg);
+}
+.liner__face--b {
+  transform: rotateY(180deg);
+}
+.liner__face circle {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  opacity: .55;
+}
+.liner__face--a .liner__center {
+  fill: var(--accent);
+  stroke: none;
+  opacity: 1;
+}
+.liner__face--b .liner__center {
+  fill: var(--fg);
+  stroke: none;
+  opacity: 1;
+}
+.liner__face text {
+  font: 500 6.5px/1 var(--font-mono);
+}
+.liner__face--a text {
+  fill: currentColor;
+}
+.liner__face--b text {
+  fill: var(--bg);
+}
+.liner__spin {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform-origin: center;
+  animation: liner-spin 8s linear infinite;
+  animation-play-state: paused;
+}
+body:has(.player[aria-pressed="true"]) .liner__spin {
+  animation-play-state: running;
+}
+@keyframes liner-spin {
+  to { transform: rotate(360deg); }
+}
+.liner__notes {
+  margin-top: 2rem;
+  display: grid;
+  gap: 2.5rem;
+  grid-template-columns: 1fr;
+}
+.liner__notes[hidden] {
+  display: none;
+}
+.liner__heading {
+  margin: 0 0 1rem;
+  font-weight: 500;
+}
+.liner__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .85rem;
+}
+.liner__item {
+  display: grid;
+  grid-template-columns: 1.8rem 1fr;
+  align-items: baseline;
+  gap: .4rem;
+  font: 400 1rem/1.5 var(--font);
+  color: var(--muted);
+}
+.liner__track {
+  font: 500 .75rem/1 var(--font-mono);
+  color: var(--fg);
+  letter-spacing: .04em;
+  font-variant-numeric: tabular-nums;
+}
+.liner__title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--fg);
+}
+@media (min-width: 768px) {
+  .liner__notes {
+    grid-template-columns: 1fr 1fr;
+    gap: 3.5rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .liner__flip {
+    transition: none;
+  }
+  .liner__spin {
+    animation: none;
+  }
+}
+
