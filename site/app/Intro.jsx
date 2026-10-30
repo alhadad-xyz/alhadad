@@ -7,6 +7,7 @@ import { SplitText } from 'gsap/SplitText';
 import { portraitReady } from './Portrait';
 import { drips } from './drips';
 import { startMusic } from './Player';
+import { crate } from './Crate';
 
 // Strict mode mounts effects twice in dev; the intro must run once per page load.
 let started = false;
@@ -50,8 +51,9 @@ function init() {
     } else {
       runPreloader();
     }
-    // Before the other triggers: its pin pushes everything below it down.
+    // Pins first, in page order: each pushes everything below it down.
     turningPoint();
+    crate();
     revealChapters();
   });
 
@@ -261,7 +263,8 @@ function turningPoint() {
 
 function revealChapters() {
   gsap.utils.toArray(".chapter:not(#hook)").forEach((chapter) => {
-    gsap.from(chapter.querySelectorAll(".reveal"), {
+    // The flipping crate places its own sleeves.
+    gsap.from(chapter.querySelectorAll(".reveal:not(.is-flipping *)"), {
       y: 40,
       opacity: 0,
       duration: 0.8,

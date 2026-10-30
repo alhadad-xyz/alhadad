@@ -39,7 +39,7 @@ These items are small and finish the frame around the content.
 
 ## Next: chapters
 
-5. [x] **The work as an editorial index (chapter 3).** Built in `app/WorkIndex.jsx` with dummy `PROJECTS` in `page.jsx` and placeholder images in `public/work/`; swap in the real ones from task 3. The hover image pours in through the preloader's drip clip-path (`app/drips.js`) instead of the liquid shader: same drips, far lighter.
+5. [x] **The work as an editorial index (chapter 3).** Replaced by the record crate (task 22). Built in `app/WorkIndex.jsx` with dummy `PROJECTS` in `page.jsx` and placeholder images in `public/work/`; swap in the real ones from task 3. The hover image pours in through the preloader's drip clip-path (`app/drips.js`) instead of the liquid shader: same drips, far lighter.
    - Lay the projects out as a table with the columns No. / Project / Role / Year, set in Bodoni with mono.
    - Hovering a row reveals the project image next to the cursor, pouring in with drips (a clip-path, not the liquid shader).
    - On phones, and from the keyboard, rows open into cards.
@@ -84,6 +84,29 @@ These items are small and finish the frame around the content.
     - A real `description` to replace "Personal site of Alhadad."
     - `robots.txt` and `sitemap.xml`. Today both URLs return the home page with a 200.
 14. [x] **Real 404s:** `app/not-found.jsx` plus `handle_errors` in `deploy/Caddyfile`, applied on the server 2026-10-29 (backup: `/etc/caddy/Caddyfile.bak-20261029171906`). `/nope` now returns 404.
+
+## In progress: every chapter its own format
+
+Brainstormed 2026-10-31. Today chapters 1 and 4 share the `.opener` layout, and chapter 3 is the common hover list. The goal is for each chapter to borrow a different printed or music object, all within the paper, ink and doodle system. Chapters 0, 2 and 5 already have their own formats and stay as they are.
+
+| # | Chapter | Format | Status |
+|---|---------|--------|--------|
+| 1 | Origin | Junior-high notebook or scrapbook page: ruled paper, taped polaroid of the first game, draggable items | Idea |
+| 3 | The work | Record crate: flip through the projects as sleeves, then pull the record out to read its notes | Done (task 22) |
+| 4 | What I stand for | Wheat-paste manifesto poster: risograph layers out of register that line up as each principle is pasted on | Idea |
+| 5 | Let's talk | Optional: a tear-off reply card that opens the email | Idea |
+| — | 404 | A skipping record, "Out of print" | Idea |
+
+Research refs: [Mr. Pandas Paper Portfolio](https://www.awwwards.com/sites/mr-pandas-paper-portfolio), [Polaroid I-2](https://www.awwwards.com/inspiration/photo-gallery-polaroid-i-2), [Skizophonic albums](https://www.awwwards.com/inspiration/albums-skizophonic), [Vinyl artwork gallery, Meinhard Taxer](https://www.awwwards.com/inspiration/vinyl-artwork-gallery-meinhard-taxer), [Mad Manifiesto List](https://www.awwwards.com/inspiration/mad-manifiesto-list), [Help Humans manifesto](https://www.awwwards.com/inspiration/manifesto-help-humans).
+
+22. [x] **The work as a record crate (chapter 3).** `app/Crate.jsx` replaces `app/WorkIndex.jsx`.
+    - From 1024px wide, with motion allowed: the section pins and scrolling flips through the sleeves, snapping one per project. The sleeve in front stands upright, the ones still to come lean back behind it, and each flipped sleeve falls forward and fades. A caption in the bottom left shows the title, role and year, with a large Bodoni `/01` counter in the bottom right.
+    - Opening a sleeve (click, Enter or Space; it's still a `<details>`) slides the record out to the right, and the problem, what I did and the result appear beside it as liner notes. Flipping to another sleeve closes it.
+    - Tabbing to a sleeve that's further back scrolls the crate to it.
+    - On phones, without hover, or with reduced motion: no pin. It's a plain tracklist of small sleeves that open into the notes.
+    - REA recon, 2026-10-31: captured meinhardtaxer.com's album world with a headless scenario. It's a sticky scroll section in which the centre cover sits flat and its neighbours tilt in 3D, with the caption bottom left and a `/01` counter bottom right. Its page transition is a clip-path `inset()` curtain, 0.55s, `cubic-bezier(0.7, 0, 0.18, 1)`. The main module that drives the album world wasn't retained, so its exact motion is unknown. jams.basicagency.com showed only a bot check. Nothing was copied: the crate is our own code, built from the observed layout.
+    - Verified 2026-10-31 in headless Chrome: 1440×900 and 1280×800 (stack, PageDown snaps to the next sleeve, a click pulls the record out beside the notes) and 390×844 (tracklist opens into the notes). No page errors.
+    - Still to do: real sleeve art from task 3 (the placeholders are 4:3 and get cropped to square), and a check in Safari, where `preserve-3d` sorts depth differently.
 
 ## Next version: Issue 002
 

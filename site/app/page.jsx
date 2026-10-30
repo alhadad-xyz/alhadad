@@ -4,7 +4,7 @@ import RunningHead from './RunningHead';
 import Player from './Player';
 import Riso from './Riso';
 import CopyEmail from './CopyEmail';
-import WorkIndex from './WorkIndex';
+import Crate from './Crate';
 import LinerNotes from './LinerNotes';
 import { HEART, SPARK } from './doodles';
 
@@ -185,8 +185,8 @@ export default function Home() {
           <p className="eyebrow">Chapter 3 — The work</p>
           <h2 className="reveal">Selected projects.</h2>
           <div className="work">
-            <WorkIndex projects={PROJECTS} />
-            <Note className="note--work">hover, then open one</Note>
+            <Crate projects={PROJECTS} />
+            <Note className="note--work">flip through, pull one out</Note>
           </div>
         </section>
 
