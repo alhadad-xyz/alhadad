@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 
 let audio;
-const VOLUME = 0.4;
+const VOLUME = 0.2;
 
 // Intro calls this from the preloader's Play click: browsers only allow sound after a gesture.
 export function startMusic() {
