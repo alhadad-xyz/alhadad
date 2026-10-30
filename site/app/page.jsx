@@ -1,6 +1,7 @@
 import Intro from './Intro';
 import Portrait from './Portrait';
 import RunningHead from './RunningHead';
+import Player from './Player';
 import CopyEmail from './CopyEmail';
 import WorkIndex from './WorkIndex';
 import { HEART, SPARK } from './doodles';
@@ -59,6 +60,7 @@ export default function Home() {
         <a className="wordmark" href="#hook" aria-label="A. Alhadad">A.</a>
       </header>
       <RunningHead chapters={CHAPTERS} />
+      <Player />
 
       <div className="preloader">
         <div className="preloader__panel"></div>
@@ -75,13 +77,28 @@ export default function Home() {
           <span className="mask"><span className="preloader__count">00</span></span>
           <span className="mask"><span className="preloader__ready">Ready</span></span>
         </p>
-        <button className="preloader__gate invisible" type="button" aria-label="Enter site" disabled>
+        <button className="preloader__gate invisible" type="button" aria-label="Enter site and play music" disabled>
+          {/* The record: grooves and a label that spins while the page loads. First, so the mark sits on the label. */}
+          <svg className="preloader__disc" viewBox="0 0 220 220" aria-hidden="true">
+            {[74, 66, 58, 50].map((r) => <circle key={r} cx="110" cy="110" r={r} />)}
+            <circle className="preloader__label" cx="110" cy="110" r="40" />
+            <path id="label-text" d="M110 77a33 33 0 1 1 0 66a33 33 0 1 1 0-66" fill="none" />
+            <text textLength="207" lengthAdjust="spacing"><textPath href="#label-text">SIDE A · ALHADAD · ISSUE 001 ·</textPath></text>
+          </svg>
           <span className="preloader__mark" aria-hidden="true">A</span>
-          <span className="mask" aria-hidden="true"><span className="preloader__enter">Enter</span></span>
+          <span className="mask" aria-hidden="true"><span className="preloader__enter">Play</span></span>
           <span className="mask" aria-hidden="true"><span className="preloader__welcome">Welcome</span></span>
           <svg className="preloader__ring" viewBox="0 0 220 220" aria-hidden="true">
             <circle cx="110" cy="110" r="108" pathLength="100" />
             <circle cx="110" cy="110" r="108" pathLength="100" />
+          </svg>
+          {/* Tonearm, pivoting from the top-right corner. Intro swings it to the edge on Ready and drops the needle on Play. */}
+          <svg className="preloader__arm" viewBox="0 0 220 220" aria-hidden="true">
+            <g>
+              <circle cx="205" cy="20" r="7" />
+              <path d="M209 6L205 20L197 112L172 148" />
+              <path className="preloader__needle" d="M166 143L177 152" />
+            </g>
           </svg>
         </button>
         <div className="preloader__meta invisible" aria-hidden="true">

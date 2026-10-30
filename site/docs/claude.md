@@ -25,7 +25,8 @@ Caddy serves `/srv/alhadad-site`, and its config lives in `deploy/Caddyfile`. Ke
 | `app/CopyEmail.jsx` | Back-cover email: click copies, hand-drawn "copied" boils, `mailto:` fallback |
 | `app/WorkIndex.jsx` | Chapter 3 project index: rows open into cards; hover pours the image in beside the cursor |
 | `app/drips.js` | `drips()`: the strand-y clip-path edge shared by the preloader drain, the work hover and the chapter 2 pour |
-| `app/Intro.jsx` | GSAP: preloader beats, the pour, the drain, the hero entrance (`hook()`) and chapter reveals |
+| `app/Intro.jsx` | GSAP: preloader beats (the record spins, the tonearm swings in, Play drops the needle), the pour, the drain, the hero entrance (`hook()`) and chapter reveals |
+| `app/Player.jsx` | The music caption: `<audio>` for `public/audio/adela-nicole-kidman.m4a`, play/pause, a remembered pause in `localStorage`. `startMusic()` is called from the preloader's Play click, the gesture browsers need before sound |
 | `app/Portrait.jsx` | Mounts the liquid once the photo and fonts are ready, and exports `portraitReady` |
 | `app/liquid.js` | WebGL2 fluid simulation, plus the display shader (photo, painted layer, masthead redraw) |
 | `app/doodles.js` | Builds the painted sheet (doodles, distance field). Also exports `HEART` and `SPARK`. |

@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 import { portraitReady } from './Portrait';
 import { drips } from './drips';
+import { startMusic } from './Player';
 
 // Strict mode mounts effects twice in dev; the intro must run once per page load.
 let started = false;
@@ -57,7 +58,7 @@ function init() {
   mm.add("(prefers-reduced-motion: reduce)", () => {
     if (seen) return finishLoading();
     // No ring, counter or gate: the mark holds, then the curtain fades.
-    gsap.set(".preloader__ready, .preloader__enter, .preloader__welcome, .preloader__ring", { autoAlpha: 0 });
+    gsap.set(".preloader__ready, .preloader__enter, .preloader__welcome, .preloader__ring, .preloader__arm", { autoAlpha: 0 });
     gsap.utils.toArray(".preloader .invisible").forEach((el) => el.classList.remove("invisible"));
     waitForAssets().then(() =>
       gsap.to(preloader, { autoAlpha: 0, duration: 0.4, delay: 0.3, onComplete: finishLoading })
@@ -77,6 +78,9 @@ function runPreloader() {
   const ring = preloader.querySelector(".preloader__ring");
   const panel = preloader.querySelector(".preloader__panel");
   const [track, bar] = ring.querySelectorAll("circle");
+  const disc = preloader.querySelector(".preloader__disc");
+  const armSvg = preloader.querySelector(".preloader__arm");
+  const tonearm = armSvg.querySelector("g");
   const blocks = gsap.utils.shuffle(gsap.utils.toArray(".preloader__blocks svg"));
   const assets = waitForAssets();
   let blink;
@@ -90,12 +94,19 @@ function runPreloader() {
   gsap.set(masked, { yPercent: 110 });
   gsap.set(blocks, { autoAlpha: 0 });
   gsap.set([track, bar], { transformOrigin: "50% 50%" });
+  gsap.set(disc, { autoAlpha: 0, scale: 0.6 });
+  // Swung off the record to the right; svgOrigin is the pivot in the arm's viewBox.
+  gsap.set(tonearm, { rotate: -30, svgOrigin: "205 20" });
+  gsap.set(armSvg, { autoAlpha: 0 });
+  // The record idles slowly while loading; Play spins it up to speed.
+  const spin = gsap.to(disc, { rotate: 360, duration: 8, ease: "none", repeat: -1 });
   gsap.utils.toArray(".preloader .invisible").forEach((el) => el.classList.remove("invisible"));
 
   // Beat 1: the faint track draws in while the ring spins to its 12 o'clock start.
   const intro = gsap.timeline({ delay: 0.2, onComplete: count })
     .fromTo(ring, { rotate: -360 }, { rotate: -90, duration: 1.6, ease: "expo.inOut" }, 0)
     .to(track, { strokeDashoffset: 0, duration: 1.6, ease: "expo.inOut" }, 0)
+    .to(disc, { autoAlpha: 1, scale: 1, duration: 1.4, ease: "expo.out" }, 0.6)
     .to(counter, { yPercent: 0, duration: 1.4, ease: "expo.out" }, 1.4)
     .to(".preloader__meta .mask > span", { yPercent: 0, duration: 1.4, ease: "expo.out", stagger: 0.08 }, 0.4);
   blocks.forEach((b, i) => intro.add(flicker(b), 0.7 + i * 0.05));
@@ -117,7 +128,7 @@ function runPreloader() {
     tl.addPause((values.length - 1) * dt, () => assets.then(() => tl.resume()));
   }
 
-  // Beat 3: loading is done, the ring becomes a button and waits for the visitor.
+  // Beat 3: loading is done, the tonearm swings in to the record's edge and the ring becomes a button.
   function arm() {
     markSeen();
     gsap.timeline()
@@ -128,6 +139,8 @@ function runPreloader() {
       .to(enterText, { yPercent: 0, duration: 1.2, ease: "expo.out" }, 0.6)
       .to(track, { scale: 0.8, duration: 1.6, ease: "expo.out" }, 0.3)
       .to(bar, { scale: 0.88, duration: 1.6, ease: "expo.out" }, 0.5)
+      .to(armSvg, { autoAlpha: 1, duration: 0.3, ease: "power2.out" }, 0.4)
+      .to(tonearm, { rotate: -8, duration: 1.4, ease: "expo.out" }, 0.4)
       .call(() => {
         gate.disabled = false;
         gate.focus({ preventScroll: true });
@@ -145,14 +158,17 @@ function runPreloader() {
     gate.addEventListener("click", enter, { once: true });
   }
 
-  // Beat 4: the ring opens and pours paint onto the hero, the chrome swaps its text in place,
-  // and the panel drains down off the page.
+  // Beat 4: the needle drops and the song starts, the record spins up and flies off pouring paint onto
+  // the hero, the chrome swaps its text in place, and the panel drains down off the page.
   function enter() {
     gate.disabled = true;
     blink?.kill();
+    startMusic();
     const out = { yPercent: -110, duration: 0.6, ease: "power3.inOut" };
-    gsap.timeline({ onComplete: () => (clearInterval(boil), finishLoading()) })
-      .to(ring, { scale: 1.6, autoAlpha: 0, duration: 0.9, ease: "expo.out" }, 0)
+    gsap.timeline({ onComplete: () => (clearInterval(boil), spin.kill(), finishLoading()) })
+      .to(tonearm, { rotate: 0, duration: 0.3, ease: "power2.in" }, 0)
+      .to(spin, { timeScale: 6, duration: 1, ease: "power2.in" }, 0.2)
+      .to([ring, disc, armSvg], { scale: 1.6, autoAlpha: 0, duration: 0.9, ease: "expo.out" }, 0.35)
       .to(enterText, { ...out, autoAlpha: 1 }, 0)
       .to(welcome, { yPercent: 0, duration: 1, ease: "expo.out" }, 0.3)
       .to([welcome, ready], out, 1.1)
@@ -221,7 +237,8 @@ function hook() {
     .from(lines(".hero__lead"), rise, 0.4)
     // Links aren't masked: a mask would clip their focus ring.
     .from(".hero__lines a", { y: 24, autoAlpha: 0, duration: 1.1, ease: "expo.out", stagger: 0.06 }, 0.5)
-    .from(lines(".hero .eyebrow"), { ...rise, stagger: 0.06 }, 0.45);
+    .from(lines(".hero .eyebrow"), { ...rise, stagger: 0.06 }, 0.45)
+    .from(".player", { y: 24, autoAlpha: 0, duration: 1.1, ease: "expo.out" }, 0.6);
 }
 
 // Chapter 2: ink pours down the section as it scrolls in, the reverse of the preloader's drain,
