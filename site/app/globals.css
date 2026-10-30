@@ -241,6 +241,8 @@ html:not(.is-loading) .preloader { display: none; }
   overflow: hidden;
 }
 .hero__portrait { position: absolute; inset: 0; }
+/* Ink veil, raised by coverTurn() in Intro as chapter 1 slides over the cover. */
+.hero::after { content: ""; position: absolute; inset: 0; background: var(--fg); opacity: var(--dim, 0); pointer-events: none; }
 .hero__photo {
   position: absolute;
   bottom: 0;
@@ -426,6 +428,8 @@ h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }
     repeating-linear-gradient(to bottom, transparent 0 calc(var(--rule) - 1px), var(--rule-ink) 0 var(--rule)) 0 .3rem,
     var(--bg);
 }
+/* Above the pinned cover it slides over; the page edge casts a soft shadow onto the cover. */
+.notebook { position: relative; z-index: 1; box-shadow: 0 -1rem 2rem -1rem rgb(14 14 14 / .3); }
 .notebook .eyebrow { margin: 0; line-height: var(--rule); }
 .notebook h2 { margin: 0 0 var(--rule); line-height: calc(var(--rule) * 2); }
 .notebook__body { max-width: 34rem; }

@@ -52,6 +52,7 @@ function init() {
       runPreloader();
     }
     // Pins first, in page order: each pushes everything below it down.
+    coverTurn();
     turningPoint();
     crate();
     revealChapters();
@@ -242,6 +243,18 @@ function hook() {
     .from(".hero__lines a", { y: 24, autoAlpha: 0, duration: 1.1, ease: "expo.out", stagger: 0.06 }, 0.5)
     .from(lines(".hero .eyebrow"), { ...rise, stagger: 0.06 }, 0.45)
     .from(".player", { y: 24, autoAlpha: 0, duration: 1.1, ease: "expo.out" }, 0.6);
+}
+
+// The cover holds still and sinks back while chapter 1 slides up over it, like turning to page one.
+// No pin spacing: the slide happens over chapter 1's own scroll, so nothing below moves. Once the cover
+// unpins it's off screen, and the liquid's IntersectionObserver stops rendering it.
+function coverTurn() {
+  gsap.to("#hook", {
+    scale: 0.94,
+    "--dim": 0.45,
+    ease: "none",
+    scrollTrigger: { trigger: "#hook", start: "top top", end: "bottom top", scrub: true, pin: true, pinSpacing: false },
+  });
 }
 
 // Chapter 2: ink pours down the section as it scrolls in, the reverse of the preloader's drain,
