@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import { react } from './reactive';
 
 let audio;
 const VOLUME = 0.2;
@@ -10,6 +11,7 @@ const VOLUME = 0.2;
 export function startMusic() {
   if (!audio || readPaused()) return;
   audio.volume = 0;
+  react(audio);
   audio.play().then(() => gsap.to(audio, { volume: VOLUME, duration: 2, ease: 'power1.in' })).catch(() => {});
 }
 
@@ -23,7 +25,10 @@ export default function Player() {
     const a = ref.current;
     gsap.killTweensOf(a);
     a.volume = VOLUME;
-    if (a.paused) a.play().catch(() => {});
+    if (a.paused) {
+      react(a);
+      a.play().catch(() => {});
+    }
     else a.pause();
     // A pause is remembered, so the next visit's Play click doesn't start it again.
     savePaused(a.paused);
