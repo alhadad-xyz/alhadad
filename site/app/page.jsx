@@ -140,8 +140,8 @@ export default function Home() {
             <h2 className="reveal">Where it <span className="circled">started<Doodle shape={CIRCLE} /></span>.</h2>
           </header>
           <div className="opener__body">
-            <p className="reveal dropcap">It started with games. I played them as a kid, and by junior high I wanted to make one. So I opened an old, slow ASUS laptop, found Sandhika Galih’s tutorials, and started typing.</p>
-            <p className="reveal">The first thing I built was a sprite adventurer game that ran in the browser. It was small and rough, but it worked. Somewhere between the game loop and the sprite sheets, I stopped caring about the game and fell for the code.</p>
+            <p className="reveal dropcap">Every builder has a first door. Mine was a game. In junior high I wanted to make one instead of playing one, so I taught myself to code.</p>
+            <p className="reveal">My first project was a tiny browser adventure. It barely held together, but it ran, and that was enough. The game was the excuse. The code was the point.</p>
           </div>
           <blockquote className="pull reveal">
             <p>“He came for the games and stayed for the code.”</p>
