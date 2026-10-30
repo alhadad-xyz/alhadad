@@ -182,8 +182,9 @@ html:not(.is-loading) .preloader { display: none; }
 
 /* Music: chrome type, cream + difference like the hero's eyebrows, so it reads on paper, photo and ink.
    Phones: bottom right, beside the cover's eyebrow. Desktop: stacked above that eyebrow, on paper clear of the photo. */
+/* Absolute with no positioned ancestor pins it to the first screen, so it stays on the cover and scrolls away with it. */
 .player {
-  position: fixed;
+  position: absolute;
   right: 16px;
   bottom: 20px;
   z-index: 40;
@@ -521,14 +522,13 @@ h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }
 }
 .back-cover__copied text { fill: currentColor; stroke: none; font: italic 500 34px var(--font-display); }
 @keyframes copied-in { from { opacity: 0; scale: .8; } }
-/* Phones keep the barcode bottom-left: the fixed player caption owns bottom-right there. */
-.back-cover__barcode { position: absolute; left: 16px; bottom: 20px; width: 8.5rem; color: var(--fg); }
+.back-cover__barcode { position: absolute; right: 16px; bottom: 20px; width: 8.5rem; color: var(--fg); }
 .back-cover__barcode svg { display: block; width: 100%; height: 2.5rem; overflow: visible; filter: url(#boil-loop); }
 .back-cover__barcode path { stroke: currentColor; stroke-linecap: round; }
 .back-cover__barcode p { margin: .4rem 0 0; font: 500 .65rem/1 var(--font-mono); letter-spacing: .04em; text-transform: uppercase; text-align: justify; text-align-last: justify; }
 @media (min-width: 768px) {
   .back-cover { padding-left: 32px; padding-right: 32px; }
-  .back-cover__barcode { left: auto; right: 32px; bottom: 28px; }
+  .back-cover__barcode { right: 32px; bottom: 28px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .back-cover__copied, .back-cover__barcode svg { filter: none; animation: none; }
