@@ -5,6 +5,8 @@ let target;
 let wired = false;
 let rafId = 0;
 let level = 0;
+let avg = 0;
+const GAIN = 4;
 
 export function react(audio) {
   if (!audio) return;
@@ -55,12 +57,14 @@ export function react(audio) {
       }
 
       analyser.getByteFrequencyData(data);
-      let sum = 0;
-      for (let i = 1; i <= 6; i++) sum += data[i];
-      const v = sum / (6 * 255);
+      // Bins 0-1 at fftSize 256 are roughly 0-375 Hz: the kick, not the vocals.
+      const v = (data[0] + data[1]) / (2 * 255);
+      // The song's low end is always loud, so react to the jump above its running average, not the level.
+      avg = avg * 0.95 + v * 0.05;
+      const hit = Math.min(1, Math.max(0, v - avg) * GAIN);
 
       // Fast attack hits on kicks while slow release keeps the displacement decay organic.
-      level = v > level ? v : level * 0.92;
+      level = hit > level ? hit : level * 0.92;
       const scale = 2 + level * 5;
       if (!target) target = document.querySelector('#boil-loop feDisplacementMap');
       if (target) target.setAttribute('scale', scale.toFixed(2));
