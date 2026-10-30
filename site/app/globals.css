@@ -367,8 +367,31 @@ h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }
 
 /* Chapter 2: the page flips to ink. Text is cream + difference, so it reads on paper and on the pour.
    The paper background keeps that blend right while GSAP pins the section (a fixed pin is its own stacking context). */
-.flip { position: relative; max-width: none; padding-left: max(16px, (100% - 64rem) / 2 + 16px); padding-right: max(16px, (100% - 64rem) / 2 + 16px); background: var(--bg); }
-.flip__paint { position: absolute; inset: 0; background: var(--fg); }
+/* The notebook's ruled page runs on under chapter 2, so there's no seam before the ink arrives. --rule-from (set in
+   Intro) lines the rules up with the notebook's; inside the ink they show faintly in cream. Above .notebook (z 1),
+   so the spill can run down over its foot. */
+.flip {
+  --rule: 2rem;
+  --margin: calc(max(16px, (100% - 64rem) / 2 + 16px) - 1.25rem);
+  position: relative;
+  z-index: 2;
+  max-width: none;
+  padding-left: max(16px, (100% - 64rem) / 2 + 16px);
+  padding-right: max(16px, (100% - 64rem) / 2 + 16px);
+  background:
+    linear-gradient(to right, transparent var(--margin), color-mix(in srgb, var(--accent) 55%, transparent) 0 calc(var(--margin) + 1px), transparent 0),
+    repeating-linear-gradient(to bottom, transparent 0 calc(var(--rule) - 1px), var(--rule-ink) 0 var(--rule)) 0 calc(.3rem - var(--rule-from, 0px)),
+    var(--bg);
+}
+/* --spill (set in Intro) starts the ink a screen above the section, over the notebook's foot. */
+.flip__paint {
+  position: absolute;
+  inset: var(--spill, 0) 0 0;
+  background:
+    linear-gradient(to right, transparent var(--margin), color-mix(in srgb, var(--accent) 35%, transparent) 0 calc(var(--margin) + 1px), transparent 0),
+    repeating-linear-gradient(to bottom, transparent 0 calc(var(--rule) - 1px), color-mix(in srgb, var(--cream) 10%, transparent) 0 var(--rule)) 0 calc(.3rem - var(--rule-from, 0px) - var(--spill, 0px)),
+    var(--fg);
+}
 .flip > :not(.flip__paint, .svg-defs) { position: relative; color: var(--cream); mix-blend-mode: difference; }
 .flip__sentence { max-width: 22ch; margin: 2rem 0 0; font: italic 400 clamp(2.25rem, 6vw, 5rem)/1.02 var(--font-display); letter-spacing: -0.02em; text-wrap: balance; }
 

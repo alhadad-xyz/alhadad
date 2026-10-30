@@ -262,9 +262,16 @@ function coverTurn() {
 function turningPoint() {
   const section = document.querySelector("#turning-point");
   const paint = section.querySelector(".flip__paint");
+  // The ink spills from a screen above the section, so it runs down over the notebook's foot before flooding the chapter.
+  section.style.setProperty("--spill", "-100vh");
+  // The ruled page runs on from the notebook's, as if one sheet: offset its rules by the notebook's height.
+  const notebook = document.querySelector(".notebook");
+  const align = () => section.style.setProperty("--rule-from", `${notebook.offsetHeight}px`);
+  align();
+  ScrollTrigger.addEventListener("refreshInit", align);
   gsap.set(paint, { clipPath: "url(#flip)" });
   const pour = drips(section.querySelector("#flip path"), -1).pause();
-  ScrollTrigger.create({ trigger: section, start: "top 70%", end: "top top", scrub: 0.5, animation: pour });
+  ScrollTrigger.create({ trigger: section, start: "top bottom", end: "top top", scrub: 0.5, animation: pour });
 
   const words = SplitText.create(section.querySelector(".flip__sentence"), { type: "words", aria: "none" }).words;
   gsap.fromTo(words, { opacity: 0.15 }, {
