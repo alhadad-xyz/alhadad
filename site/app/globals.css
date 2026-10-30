@@ -694,3 +694,18 @@ h2, .opener__num {
   text-shadow: calc(var(--riso, 0) * 1px) calc(var(--riso, 0) * .35px) 0 color-mix(in srgb, var(--accent) 80%, transparent);
 }
 
+/* Dog-ear bookmark */
+.dog-ear { position: fixed; top: 0; right: 0; z-index: 41; width: 28px; height: 28px; padding: 0; border: 0; background: none; cursor: pointer; --fold: 10px; }
+.dog-ear:hover, .dog-ear:focus-visible { --fold: 20px; }
+.dog-ear[aria-pressed="true"] { --fold: 28px; }
+/* Phones: 28px keeps the corner clear of the page number below it. */
+@media (min-width: 768px) { .dog-ear { width: 44px; height: 44px; } .dog-ear[aria-pressed="true"] { --fold: 36px; } }
+.dog-ear[hidden] { display: none; }
+.dog-ear::before, .dog-ear::after { content: ""; position: absolute; top: 0; right: 0; width: var(--fold); height: var(--fold); transition: width .35s var(--ease-out), height .35s var(--ease-out); }
+.dog-ear::before { background: var(--fg); clip-path: polygon(0 0, 100% 0, 100% 100%); }
+.dog-ear::after { background: var(--cream); clip-path: polygon(0 0, 100% 100%, 0 100%); filter: drop-shadow(-1px 1px 1px rgb(0 0 0 / .25)); }
+.dog-ear:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; }
+.dog-ear__mark { display: inline-block; width: .6em; height: .6em; margin-left: .4em; background: var(--accent); clip-path: polygon(0 0, 100% 0, 100% 100%); vertical-align: .5em; }
+@media (prefers-reduced-motion: reduce) { .dog-ear::before, .dog-ear::after { transition: none; } }
+
+
