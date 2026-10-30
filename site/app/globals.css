@@ -689,3 +689,8 @@ body:has(.player[aria-pressed="true"]) .liner__spin {
   }
 }
 
+/* Riso misregistration: on fast scroll, an accent plate slips off the ink and snaps back (Riso.jsx sets --riso). */
+h2, .opener__num {
+  text-shadow: calc(var(--riso, 0) * 1px) calc(var(--riso, 0) * .35px) 0 color-mix(in srgb, var(--accent) 80%, transparent);
+}
+

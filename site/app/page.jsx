@@ -2,6 +2,7 @@ import Intro from './Intro';
 import Portrait from './Portrait';
 import RunningHead from './RunningHead';
 import Player from './Player';
+import Riso from './Riso';
 import CopyEmail from './CopyEmail';
 import WorkIndex from './WorkIndex';
 import LinerNotes from './LinerNotes';
@@ -62,6 +63,7 @@ export default function Home() {
       </header>
       <RunningHead chapters={CHAPTERS} />
       <Player />
+      <Riso />
 
       <div className="preloader">
         <div className="preloader__panel"></div>
