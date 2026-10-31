@@ -185,13 +185,14 @@ export default function Home() {
           </div>
         </section>
 
-        {/* The page flips: ink pours down over it (Intro scrubs the drips), then one sentence lights up word by word.
+        {/* The page flips: ink pours down over it (Intro scrubs 24 drip strips, transform only, so nothing repaints), then one sentence lights up word by word.
             Without motion the ink is simply there. */}
         <section className="chapter flip" id="turning-point">
-          <div className="flip__paint" aria-hidden="true"></div>
-          <svg className="svg-defs" aria-hidden="true">
-            <clipPath id="flip" clipPathUnits="objectBoundingBox"><path d="M0 0Z" /></clipPath>
-          </svg>
+          <div className="flip__paint" aria-hidden="true">
+            {Array.from({ length: 24 }, (_, i) => (
+              <span key={i} className="flip__strip" style={{ "--i": i }} />
+            ))}
+          </div>
           <p className="eyebrow">Chapter 2 — Turning point</p>
           <h2>The <span className="underlined">moment<Doodle shape={UNDERLINE} /></span> that shaped the work.</h2>
           <p className="flip__sentence">In 2020, AI turned “can I build this?” into “what should I build next?”</p>

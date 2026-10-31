@@ -286,8 +286,10 @@ function turningPoint() {
   const align = () => section.style.setProperty("--rule-from", `${notebook.offsetHeight}px`);
   align();
   ScrollTrigger.addEventListener("refreshInit", align);
-  gsap.set(paint, { clipPath: "url(#flip)" });
-  const pour = drips(section.querySelector("#flip path"), -1).pause();
+  // Each strip falls on its own clock, like drips(), but by transform: an SVG clip repainted the whole ink every frame.
+  const pour = gsap.timeline({ paused: true });
+  paint.querySelectorAll(".flip__strip").forEach((strip) =>
+    pour.fromTo(strip, { yPercent: -100 }, { yPercent: 0, duration: gsap.utils.random(0.8, 1.2), ease: "power2.in" }, gsap.utils.random(0, 0.3)));
   ScrollTrigger.create({ trigger: section, start: "top bottom", end: "top top", scrub: 0.5, animation: pour });
 
   const words = SplitText.create(section.querySelector(".flip__sentence"), { type: "words", aria: "none" }).words;

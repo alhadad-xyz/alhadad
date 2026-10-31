@@ -388,12 +388,34 @@ h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }
 .flip__paint {
   position: absolute;
   inset: var(--spill, 0) 0 0;
+  overflow: hidden;
+}
+/* The ink is 24 plain strips that only move by transform, so the pour never repaints. Each is 1.5 columns wide and
+   overlaps its neighbours; its 12rem tip tapers to a point, so neighbours at different heights read as drips.
+   The tip hangs below the paint and is clipped once the strip has landed. */
+.flip__strip {
+  --tip: 12rem;
+  position: absolute;
+  top: 0;
+  left: calc((var(--i) - .25) * 100% / 24);
+  width: calc(1.5 * 100% / 24);
+  height: calc(100% + var(--tip));
+  /* A background, not a mask: Chrome repainted the masked strips every frame. The tip's fill is --fg's value. */
+  background:
+    linear-gradient(var(--fg) 0 0) top / 100% calc(100% - var(--tip) + 1px) no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Cpath fill='%230e0e0e' d='M0 0H1C1 .45.62.55.57.88Q.5 1.04.43.88C.38.55 0 .45 0 0Z'/%3E%3C/svg%3E") bottom / 100% var(--tip) no-repeat;
+  will-change: transform;
+}
+/* The rules sit still above the strips, so they don't slide with the ink. Cream on cream, they vanish on the paper. */
+.flip__paint::after {
+  content: "";
+  position: absolute;
+  inset: 0;
   background:
     linear-gradient(to right, transparent var(--margin), color-mix(in srgb, var(--accent) 35%, transparent) 0 calc(var(--margin) + 1px), transparent 0),
-    repeating-linear-gradient(to bottom, transparent 0 calc(var(--rule) - 1px), color-mix(in srgb, var(--cream) 10%, transparent) 0 var(--rule)) 0 calc(.3rem - var(--rule-from, 0px) - var(--spill, 0px)),
-    var(--fg);
+    repeating-linear-gradient(to bottom, transparent 0 calc(var(--rule) - 1px), color-mix(in srgb, var(--cream) 10%, transparent) 0 var(--rule)) 0 calc(.3rem - var(--rule-from, 0px) - var(--spill, 0px));
 }
-.flip > :not(.flip__paint, .svg-defs) { position: relative; color: var(--cream); mix-blend-mode: difference; }
+.flip > :not(.flip__paint) { position: relative; color: var(--cream); mix-blend-mode: difference; }
 .flip__sentence { max-width: 22ch; margin: 2rem 0 0; font: italic 400 clamp(2.25rem, 6vw, 5rem)/1.02 var(--font-display); letter-spacing: -0.02em; text-wrap: balance; }
 
 /* Chapter 3: a record crate. A tracklist of small sleeves by default; from 1024px with a mouse,

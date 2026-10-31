@@ -58,6 +58,9 @@ These items are small and finish the frame around the content.
    - Scrolling in pours paint down until it covers the screen, and the chapter is set in ink.
    - One big sentence then lights up word by word as you scroll.
    - Reuse the pour and drain from the preloader.
+   - 2026-11-01: The pour was reported laggy. The SVG clip path redrew the drip edge every frame and repainted the whole ink, which is the section plus a screen of spill. It is now 24 overlapping `.flip__strip`s with tapered drip tips that move only by transform. The ruled lines sit on a fixed `::after` above them. `drips()` still drives the preloader drain.
+     - Not proven faster. Headless Chrome (DPR 2, CPU 4×) doesn't reproduce the lag: the old pour held 60 fps, and the strips averaged 20–24 ms per frame. Check it on a real machine; if it is no better, suspect the difference-blended text, the pin or the boil filter, and profile it in the browser.
+     - Seen while testing, on both builds: in about 1 in 4 headless loads the chapter steps never ran (no `--spill`, no ScrollTriggers). Not investigated.
    - With reduced motion, simply switch the colors.
 
 ## Quality
