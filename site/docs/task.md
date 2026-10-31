@@ -66,6 +66,7 @@ These items are small and finish the frame around the content.
    - Safari 16, which lacks `ctx.letterSpacing`: the masthead redrawn in the paint may be misaligned.
    - iOS WebGL float support.
    - Firefox.
+   - 2026-10-31, Playwright WebKit (Safari 27.2 engine, macOS) on the perf build, at 1440×900 and 390×844: WebGL2 and `DecompressionStream` are there; the liquid mounts with the baked sheet (rings, outline and doodles look right); `hero.avif` loads; the first-visit pour paints; every reveal plays; no page errors. Not checked: real iOS, Safari 16, Firefox (Playwright's Firefox isn't installed).
 10. [ ] **Accessibility pass:**
     - Contrast of the difference-blended text over the photo and the paint.
     - Keyboard path through the gate, the cover lines and the running header.
