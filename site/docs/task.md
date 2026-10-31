@@ -59,6 +59,10 @@ These items are small and finish the frame around the content.
    - Only stroke draws, opacity and transforms are animated, so nothing large repaints. Screen readers get the plain sentence. Without motion, it shows fully marked up.
    - References, captured with REA: framecn's Strikethrough Replace on 21st.dev (a strike line drawn over the old text, with the new text in its place), and Fable&Co's typography scroll for Wordstone on Awwwards (a mixed upright/italic headline, with the italic line set larger and indented).
    - Checked in headless Chrome at 1440×900 and 390×844: every stage renders, with no page errors.
+   - Then the page is torn out on the way to chapter 3. The pin is `+=250%`: the edit takes the first 150 and the tear the last 100. `#work` gets `margin-top: -innerHeight`, so it scrolls in under the pinned page, and its own pin starts as the tear ends.
+     - Intro cuts the ragged edge once per refresh, as clip paths on `.proof__sheet` and `.proof__stub` just right of the margin line; the stub reaches 4px under the sheet, so there's no seam at rest.
+     - `.proof__lift` tugs against the binding, then swings up and away from its top-left corner. The static blurred `.proof__shade` under it only fades in, and the stub fades out at the end.
+     - Checked in headless Chrome at 1440×900 and 390×844, with no page errors. Not profiled.
    - Old notes on the ink pour:
    - Scrolling in pours paint down until it covers the screen, and the chapter is set in ink.
    - One big sentence then lights up word by word as you scroll.

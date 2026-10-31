@@ -192,13 +192,20 @@ export default function Home() {
             is written in its place (Intro scrubs it while the section pins). Without motion it is simply marked up.
             Screen readers get the plain sentence. */}
         <section className="chapter proof" id="turning-point">
-          <p className="eyebrow">Chapter 2 — Turning point</p>
-          <h2>The <span className="underlined">moment<Doodle shape={UNDERLINE} /></span> that shaped the work.</h2>
-          <p className="visually-hidden">In 2020, AI turned “can I build this?” into “what should I build next?”</p>
-          <div className="proof__page" aria-hidden="true">
-            <p className="proof__old"><span>Can I build this?</span><Doodle shape={STRIKE} className="proof__mark proof__strike" /></p>
-            <p className="proof__new"><Doodle shape={CARET} className="proof__mark proof__caret" /><span className="proof__words">What should I build next?</span></p>
-            <span className="proof__stamp">Edited 2020 · by AI</span>
+          {/* Then the page is torn out along its margin: the sheet lifts away over chapter 3, leaving the stub. */}
+          <div className="proof__stub" aria-hidden="true"></div>
+          <div className="proof__lift">
+            <div className="proof__shade" aria-hidden="true"></div>
+            <div className="proof__sheet">
+              <p className="eyebrow">Chapter 2 — Turning point</p>
+              <h2>The <span className="underlined">moment<Doodle shape={UNDERLINE} /></span> that shaped the work.</h2>
+              <p className="visually-hidden">In 2020, AI turned “can I build this?” into “what should I build next?”</p>
+              <div className="proof__page" aria-hidden="true">
+                <p className="proof__old"><span>Can I build this?</span><Doodle shape={STRIKE} className="proof__mark proof__strike" /></p>
+                <p className="proof__new"><Doodle shape={CARET} className="proof__mark proof__caret" /><span className="proof__words">What should I build next?</span></p>
+                <span className="proof__stamp">Edited 2020 · by AI</span>
+              </div>
+            </div>
           </div>
         </section>
 

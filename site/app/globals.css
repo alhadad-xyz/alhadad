@@ -372,13 +372,31 @@ h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }
 .proof {
   --rule: 2rem;
   --margin: calc(max(16px, (100% - 64rem) / 2 + 16px) - 1.25rem);
+  position: relative;
+  z-index: 2;
+  display: block;
   max-width: none;
-  padding-left: max(16px, (100% - 64rem) / 2 + 16px);
-  padding-right: max(16px, (100% - 64rem) / 2 + 16px);
+  padding: 0;
+}
+/* The sheet carries the chapter; the stub is the strip a torn-out page leaves at the margin. Both are the same ruled
+   paper. Intro cuts the torn edge into them as clip paths (the stub reaching a little under the sheet, so no seam). */
+.proof__sheet, .proof__stub {
   background:
     linear-gradient(to right, transparent var(--margin), color-mix(in srgb, var(--accent) 55%, transparent) 0 calc(var(--margin) + 1px), transparent 0),
     repeating-linear-gradient(to bottom, transparent 0 calc(var(--rule) - 1px), var(--rule-ink) 0 var(--rule)) 0 calc(.3rem - var(--rule-from, 0px)),
     var(--bg);
+}
+.proof__stub { position: absolute; inset: 0; }
+/* The lift moves the torn page; the shade under it is a static blur whose opacity Intro raises as the page comes away. */
+.proof__lift { position: relative; transform-origin: 0 0; }
+.proof__shade { position: absolute; inset: 2% 0 0 3%; /* left: set by Intro at the torn edge */ background: var(--fg); filter: blur(24px); opacity: 0; }
+.proof__sheet {
+  position: relative;
+  min-height: 100vh;
+  padding: 10vh max(16px, (100% - 64rem) / 2 + 16px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .proof__page { position: relative; margin-top: clamp(2rem, 6vh, 4rem); }
 .proof__old, .proof__new { position: relative; width: fit-content; margin: 0; font-family: var(--font-display); letter-spacing: -0.02em; }

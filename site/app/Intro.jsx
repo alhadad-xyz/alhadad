@@ -275,24 +275,54 @@ function coverTurn() {
 }
 
 // Chapter 2: a proof edit, scrubbed while the section pins. The pen strikes the old question through twice, it
-// greys out, a caret goes in, and the new question rises in word by word. Strokes and transforms only.
+// greys out, a caret goes in, and the new question rises in word by word. Then the page is torn out along its
+// margin and lifts away while chapter 3 scrolls up under it. Strokes, opacity and transforms only; the torn edge
+// is cut once per refresh.
 function turningPoint() {
   const section = document.querySelector("#turning-point");
-  // The ruled page runs on from the notebook's, as if one sheet: offset its rules by the notebook's height.
+  const sheet = section.querySelector(".proof__sheet");
+  const lift = section.querySelector(".proof__lift");
+  const shade = section.querySelector(".proof__shade");
+  const stub = section.querySelector(".proof__stub");
+  const work = document.querySelector("#work");
   const notebook = document.querySelector(".notebook");
-  const align = () => section.style.setProperty("--rule-from", `${notebook.offsetHeight}px`);
-  align();
-  ScrollTrigger.addEventListener("refreshInit", align);
+  const cut = () => {
+    // The ruled page runs on from the notebook's, as if one sheet: offset its rules by the notebook's height.
+    section.style.setProperty("--rule-from", `${notebook.offsetHeight}px`);
+    // Chapter 3 tucks under the pin's last screen, so it scrolls in beneath the page as it tears away.
+    work.style.marginTop = `${-innerHeight}px`;
+    // A ragged edge just right of the margin line.
+    const x = Math.max(12, parseFloat(getComputedStyle(sheet).paddingLeft) - 8);
+    const edge = Array.from({ length: 81 }, (_, i) => [x + gsap.utils.random(-7, 7), i * 1.25]);
+    const pts = (dx) => edge.map(([ex, y]) => `${(ex + dx).toFixed(1)}px ${y}%`);
+    sheet.style.clipPath = `polygon(100% 0, 100% 100%, ${pts(0).reverse().join(",")})`;
+    stub.style.clipPath = `polygon(0 0, ${pts(4).join(",")}, 0 100%)`;
+    // The shadow starts at the torn edge, so none falls on the stub.
+    shade.style.left = `${x + 12}px`;
+  };
+  cut();
+  ScrollTrigger.addEventListener("refreshInit", cut);
 
   const words = SplitText.create(section.querySelector(".proof__words"), { type: "words", mask: "words", aria: "none" }).words;
   // autoRound off, as in revealChapters: rounding snaps the 1-to-0 draw.
   const draw = { strokeDashoffset: 1, autoRound: false, ease: "power1.inOut" };
-  gsap.timeline({ scrollTrigger: { trigger: section, start: "top top", end: "+=150%", scrub: 0.5, pin: true } })
+  // 250%: the edit takes the first 150 (timeline 0–4.5), the tear the last 100 (4.5–7.5), as chapter 3 rises.
+  gsap.timeline({ scrollTrigger: { trigger: section, start: "top top", end: "+=250%", scrub: 0.5, pin: true } })
     .from(section.querySelectorAll(".proof__strike path"), { ...draw, duration: 1, stagger: 0.8 })
     .to(section.querySelector(".proof__old > span"), { opacity: 0.4, duration: 0.6 }, "<")
     .from(section.querySelectorAll(".proof__caret path"), { ...draw, duration: 0.5 })
     .from(words, { yPercent: 110, duration: 0.8, stagger: 0.25, ease: "power3.out" }, "-=0.1")
-    .from(section.querySelector(".proof__stamp"), { opacity: 0, y: 8, duration: 0.5 });
+    .from(section.querySelector(".proof__stamp"), { opacity: 0, y: 8, duration: 0.5 })
+    // The rip: a small tug against the binding, then the page swings up and away from its torn edge.
+    .to(lift, { x: "1.5vw", rotation: 1.2, duration: 0.6, ease: "power1.in" }, 4.5)
+    .to(shade, { opacity: 0.22, duration: 0.6 }, 4.5)
+    .to(lift, { yPercent: -120, xPercent: 6, rotation: -8, duration: 2, ease: "power2.in" }, 5.1)
+    .to(stub, { opacity: 0, duration: 0.4 }, 7.1);
+
+  return () => {
+    ScrollTrigger.removeEventListener("refreshInit", cut);
+    work.style.marginTop = sheet.style.clipPath = stub.style.clipPath = shade.style.left = "";
+  };
 }
 
 function revealChapters() {
