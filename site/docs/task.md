@@ -54,7 +54,12 @@ These items are small and finish the frame around the content.
    - Fine-liner notes beside the copy: arrows, circled words, short asides.
    - They draw in on scroll (stroke-dashoffset) and wobble like the hero's lines, reusing the `#boil-loop` filter (the preloader's `#boil` stops after the intro).
    - Refs: [Its just a portfolio](https://www.awwwards.com/inspiration/freehand-sketches-its-just-a-portfolio), [Mr. Pandas Paper Portfolio](https://www.awwwards.com/sites/mr-pandas-paper-portfolio).
-8. [x] **Turning point: the page flips colors (chapter 2).** `turningPoint()` in `Intro.jsx`: ink pours down with `drips()` scrubbed by scroll, then the section pins while the sentence lights up. The sentence is placeholder until task 2.
+8. [x] **Turning point as a proof edit (chapter 2).** `turningPoint()` in `Intro.jsx`, `.proof` in `page.jsx` and `globals.css`. Redesigned 2026-11-01; it replaces the ink pour described below. The sentence is placeholder until task 2.
+   - The chapter stays on the notebook's ruled page and pins. Scrolling scrubs the edit: the accent pen strikes "Can I build this?" through twice and it greys out, a caret is drawn, and "What should I build next?" rises in word by word (SplitText masks), larger, italic and stepped in. Then the "Edited 2020 · by AI" stamp appears.
+   - Only stroke draws, opacity and transforms are animated, so nothing large repaints. Screen readers get the plain sentence. Without motion, it shows fully marked up.
+   - References, captured with REA: framecn's Strikethrough Replace on 21st.dev (a strike line drawn over the old text, with the new text in its place), and Fable&Co's typography scroll for Wordstone on Awwwards (a mixed upright/italic headline, with the italic line set larger and indented).
+   - Checked in headless Chrome at 1440×900 and 390×844: every stage renders, with no page errors.
+   - Old notes on the ink pour:
    - Scrolling in pours paint down until it covers the screen, and the chapter is set in ink.
    - One big sentence then lights up word by word as you scroll.
    - Reuse the pour and drain from the preloader.

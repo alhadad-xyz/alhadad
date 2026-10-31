@@ -274,31 +274,25 @@ function coverTurn() {
   });
 }
 
-// Chapter 2: ink pours down the section as it scrolls in, the reverse of the preloader's drain,
-// then the section pins while its sentence lights up word by word.
+// Chapter 2: a proof edit, scrubbed while the section pins. The pen strikes the old question through twice, it
+// greys out, a caret goes in, and the new question rises in word by word. Strokes and transforms only.
 function turningPoint() {
   const section = document.querySelector("#turning-point");
-  const paint = section.querySelector(".flip__paint");
-  // The ink spills from a screen above the section, so it runs down over the notebook's foot before flooding the chapter.
-  section.style.setProperty("--spill", "-100vh");
   // The ruled page runs on from the notebook's, as if one sheet: offset its rules by the notebook's height.
   const notebook = document.querySelector(".notebook");
   const align = () => section.style.setProperty("--rule-from", `${notebook.offsetHeight}px`);
   align();
   ScrollTrigger.addEventListener("refreshInit", align);
-  // Each strip falls on its own clock, like drips(), but by transform: an SVG clip repainted the whole ink every frame.
-  const pour = gsap.timeline({ paused: true });
-  paint.querySelectorAll(".flip__strip").forEach((strip) =>
-    pour.fromTo(strip, { yPercent: -100 }, { yPercent: 0, duration: gsap.utils.random(0.8, 1.2), ease: "power2.in" }, gsap.utils.random(0, 0.3)));
-  ScrollTrigger.create({ trigger: section, start: "top bottom", end: "top top", scrub: 0.5, animation: pour });
 
-  const words = SplitText.create(section.querySelector(".flip__sentence"), { type: "words", aria: "none" }).words;
-  gsap.fromTo(words, { opacity: 0.15 }, {
-    opacity: 1,
-    stagger: 0.1,
-    ease: "none",
-    scrollTrigger: { trigger: section, start: "top top", end: "+=120%", scrub: true, pin: true },
-  });
+  const words = SplitText.create(section.querySelector(".proof__words"), { type: "words", mask: "words", aria: "none" }).words;
+  // autoRound off, as in revealChapters: rounding snaps the 1-to-0 draw.
+  const draw = { strokeDashoffset: 1, autoRound: false, ease: "power1.inOut" };
+  gsap.timeline({ scrollTrigger: { trigger: section, start: "top top", end: "+=150%", scrub: 0.5, pin: true } })
+    .from(section.querySelectorAll(".proof__strike path"), { ...draw, duration: 1, stagger: 0.8 })
+    .to(section.querySelector(".proof__old > span"), { opacity: 0.4, duration: 0.6 }, "<")
+    .from(section.querySelectorAll(".proof__caret path"), { ...draw, duration: 0.5 })
+    .from(words, { yPercent: 110, duration: 0.8, stagger: 0.25, ease: "power3.out" }, "-=0.1")
+    .from(section.querySelector(".proof__stamp"), { opacity: 0, y: 8, duration: 0.5 });
 }
 
 function revealChapters() {
@@ -315,7 +309,7 @@ function revealChapters() {
       }),
       // Margin doodles draw themselves in after the copy lands.
       // autoRound off: GSAP rounds px to whole numbers, which snaps the 1-to-0 draw (pathLength 1) instead of drawing it.
-      gsap.from(chapter.querySelectorAll(".doodle path"), {
+      gsap.from(chapter.querySelectorAll(".doodle:not(.proof__mark) path"), {
         strokeDashoffset: 1,
         autoRound: false,
         duration: 0.9,

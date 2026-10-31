@@ -16,6 +16,9 @@ const BARCODE = [2, 1, 1, 2, 3, 1, 1, 1, 2, 2, 1, 3, 1, 1, 3, 2, 1, 1, 2, 1, 1, 
 // Fine-liner shapes for the margin doodles. Each path is pathLength 1 so Intro can draw it in.
 const CIRCLE = { box: '0 0 100 40', paths: ['M58 4C30 1 4 9 3 21c-1 13 30 17 55 16 26-1 40-8 39-18C96 8 70 2 42 5'] };
 const UNDERLINE = { box: '0 0 100 10', paths: ['M2 6C20 3 38 8 55 5s30-2 43 1'] };
+// The pen goes through the old question twice, then a proofreader's caret marks the insert.
+const STRIKE = { box: '0 0 100 20', paths: ['M1 12C18 7 40 13 62 9s30-3 37-2', 'M2 15C26 11 55 16 98 9'] };
+const CARET = { box: '0 0 40 40', paths: ['M4 36L20 6l16 30'] };
 const ARROW = { box: '0 0 80 50', paths: ['M76 4C58 2 30 12 8 42', 'M8 42l1-12M8 42l11-4'] };
 
 function Doodle({ shape, className = '' }) {
@@ -185,17 +188,18 @@ export default function Home() {
           </div>
         </section>
 
-        {/* The page flips: ink pours down over it (Intro scrubs 24 drip strips, transform only, so nothing repaints), then one sentence lights up word by word.
-            Without motion the ink is simply there. */}
-        <section className="chapter flip" id="turning-point">
-          <div className="flip__paint" aria-hidden="true">
-            {Array.from({ length: 24 }, (_, i) => (
-              <span key={i} className="flip__strip" style={{ "--i": i }} />
-            ))}
-          </div>
+        {/* A proof edit: the old question is struck through in the margin pen, a caret goes in, and the new question
+            is written in its place (Intro scrubs it while the section pins). Without motion it is simply marked up.
+            Screen readers get the plain sentence. */}
+        <section className="chapter proof" id="turning-point">
           <p className="eyebrow">Chapter 2 — Turning point</p>
           <h2>The <span className="underlined">moment<Doodle shape={UNDERLINE} /></span> that shaped the work.</h2>
-          <p className="flip__sentence">In 2020, AI turned “can I build this?” into “what should I build next?”</p>
+          <p className="visually-hidden">In 2020, AI turned “can I build this?” into “what should I build next?”</p>
+          <div className="proof__page" aria-hidden="true">
+            <p className="proof__old"><span>Can I build this?</span><Doodle shape={STRIKE} className="proof__mark proof__strike" /></p>
+            <p className="proof__new"><Doodle shape={CARET} className="proof__mark proof__caret" /><span className="proof__words">What should I build next?</span></p>
+            <span className="proof__stamp">Edited 2020 · by AI</span>
+          </div>
         </section>
 
         <section className="chapter" id="work">

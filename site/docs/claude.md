@@ -26,7 +26,7 @@ Caddy serves `/srv/alhadad-site`, and its config lives in `deploy/Caddyfile`. Ke
 | `app/CopyEmail.jsx` | Back-cover email: click copies, hand-drawn "copied" boils, `mailto:` fallback |
 | `app/Crate.jsx` | Chapter 3 record crate: a tracklist of `<details>` sleeves; `crate()` (called from Intro between the chapter 2 pin and the reveals) pins it from 1024px with hover and flips through the sleeves on scroll; opening one slides the record out beside its notes |
 | `app/Taped.jsx` | Chapter 1 notebook: a taped-in item (polaroid, sticky note) that a mouse or pen can peel up and drag |
-| `app/drips.js` | `drips()`: the strand-y clip-path edge of the preloader drain (chapter 2's pour uses transform-only `.flip__strip`s instead) |
+| `app/drips.js` | `drips()`: the strand-y clip-path edge of the preloader drain |
 | `app/Intro.jsx` | GSAP: preloader beats (the record spins, the tonearm swings in, Play drops the needle), the pour, the drain, the hero entrance (`hook()`), chapter reveals and the chapter 4 paste-up (`pasteUp()`) |
 | `app/Player.jsx` | The music caption: `<audio>` for `public/audio/adela-nicole-kidman.m4a`, play/pause, a remembered pause in `localStorage`. `startMusic()` is called from the preloader's Play click, the gesture browsers need before sound |
 | `app/Portrait.jsx` | Mounts the liquid once the photo, fonts and baked sheet are ready. Exports `portraitReady`, and `liftCurtain()`, which Intro calls to start the liquid's loop |
@@ -43,7 +43,7 @@ Caddy serves `/srv/alhadad-site`, and its config lives in `deploy/Caddyfile`. Ke
 - **The masthead is drawn twice.** Once in the DOM (`.hero__name`, behind the canvas) and once in the shader, from a 2D canvas that copies the h1's computed font, size, letter-spacing and position. Keep the h1 to a single line. Style changes carry over on the next resize.
 - **Chrome text depends on `--cream` plus `mix-blend-mode: difference`.** That is what turns it to ink on paper and light on the photo or paint. Don't set those elements to `--fg`.
 - **Doodles must not use `vector-effect: non-scaling-stroke`.** With `pathLength` and a stretched viewBox, Chrome then draws only part of the dash. Their stroke width is in viewBox units instead.
-- **Chapter 2 pins.** `turningPoint()` must run before `crate()` and `pasteUp()` so their ScrollTriggers account for the pin spacing (the play-once reveals use `playAt()`, an IntersectionObserver, and don't care), and `.flip` keeps a paper background so its difference-blended text stays right while pinned.
+- **Chapter 2 pins.** `turningPoint()` must run before `crate()` and `pasteUp()` so their ScrollTriggers account for the pin spacing (the play-once reveals use `playAt()`, an IntersectionObserver, and don't care), and `.proof` keeps its ruled paper background so the page stays opaque while pinned.
 - **The layering comes from DOM order.** The h1 comes before `<Portrait />` in `page.jsx`, so the cut-out photo paints over it. Don't reorder them.
 - **Headless screenshots get stuck on the preloader.** Set `sessionStorage.intro-seen = '1'` and reload (`--force-prefers-reduced-motion` alone doesn't skip it). WebGL in headless Chrome needs `--use-angle=swiftshader --enable-unsafe-swiftshader`.
 
