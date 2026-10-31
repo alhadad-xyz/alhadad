@@ -69,8 +69,8 @@ function init() {
     // Pins first, in page order: each pushes everything below it down.
     coverTurn();
     // The chapters below the cover are built one per idle task, so hydration stays a short task (Lighthouse TBT).
-    // The last refresh stands in for ScrollTrigger's own on window load, which may have passed by then.
-    buildChapters = later(context, [turningPoint, crate, revealChapters, pasteUp, () => ScrollTrigger.refresh()]);
+    // No refresh after: steps built before window load get ScrollTrigger's own, and later ones see final layout.
+    buildChapters = later(context, [turningPoint, crate, revealChapters, pasteUp]);
   });
 
   mm.add("(prefers-reduced-motion: reduce)", () => {
@@ -301,34 +301,47 @@ function turningPoint() {
 
 function revealChapters() {
   gsap.utils.toArray(".chapter:not(#hook)").forEach((chapter) => {
-    // The flipping crate places its own sleeves.
-    gsap.from(chapter.querySelectorAll(".reveal:not(.is-flipping *)"), {
-      y: 40,
-      opacity: 0,
-      duration: 0.8,
-      stagger: 0.12,
-      ease: "power2.out",
-      scrollTrigger: { trigger: chapter, start: "top 70%" },
-    });
-    // Margin doodles draw themselves in after the copy lands.
-    // autoRound off: GSAP rounds px to whole numbers, which snaps the 1-to-0 draw (pathLength 1) instead of drawing it.
-    gsap.from(chapter.querySelectorAll(".doodle path"), {
-      strokeDashoffset: 1,
-      autoRound: false,
-      duration: 0.9,
-      stagger: 0.2,
-      delay: 0.4,
-      ease: "power2.inOut",
-      scrollTrigger: { trigger: chapter, start: "top 70%" },
-    });
+    playAt(0.7, chapter,
+      // The flipping crate places its own sleeves.
+      gsap.from(chapter.querySelectorAll(".reveal:not(.is-flipping *)"), {
+        y: 40,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.12,
+        ease: "power2.out",
+        paused: true,
+      }),
+      // Margin doodles draw themselves in after the copy lands.
+      // autoRound off: GSAP rounds px to whole numbers, which snaps the 1-to-0 draw (pathLength 1) instead of drawing it.
+      gsap.from(chapter.querySelectorAll(".doodle path"), {
+        strokeDashoffset: 1,
+        autoRound: false,
+        duration: 0.9,
+        stagger: 0.2,
+        delay: 0.4,
+        ease: "power2.inOut",
+        paused: true,
+      }),
+    );
   });
+}
+
+// Plays the tweens once the trigger's top is above `line` (a fraction down the viewport), like a play-once
+// ScrollTrigger, but an IntersectionObserver doesn't force a layout for each one as it's built (Lighthouse TBT).
+function playAt(line, trigger, ...tweens) {
+  const io = new IntersectionObserver(([e]) => {
+    if (e.boundingClientRect.top > innerHeight * line) return;
+    io.disconnect();
+    tweens.forEach((t) => t.play());
+  }, { rootMargin: `0px 0px ${-(1 - line) * 100}% 0px` });
+  io.observe(trigger);
 }
 
 // Chapter 4: each principle is slapped onto the wall as it scrolls in, its accent plate printed off register,
 // and the plate settles into register as the sheet rises. Without motion the sheets are simply in register.
 function pasteUp() {
   gsap.utils.toArray(".sheet").forEach((sheet) => {
-    gsap.from(sheet, { scale: 1.06, y: -24, opacity: 0, duration: 0.5, ease: "back.out(2)", scrollTrigger: { trigger: sheet, start: "top 85%" } });
+    playAt(0.85, sheet, gsap.from(sheet, { scale: 1.06, y: -24, opacity: 0, duration: 0.5, ease: "back.out(2)", paused: true }));
     gsap.fromTo(sheet, { "--plate": 10 }, { "--plate": 0, ease: "none", scrollTrigger: { trigger: sheet, start: "top bottom", end: "center 55%", scrub: true } });
   });
 }

@@ -98,8 +98,11 @@ const SIM_W = 320;
 const STEP = 1000 / 60;
 const IDLE_MS = 2000;
 
-// Returns a cleanup function, or null when WebGL2 float targets are missing (the <img> stays).
-export function mountLiquid(canvas, img, paint, title, shown) {
+const pause = () => new Promise((r) => setTimeout(r));
+
+// Resolves to a cleanup function, or null when WebGL2 float targets are missing (the <img> stays).
+// The setup yields between its heavy steps, so none of them blocks the main thread for long (Lighthouse TBT).
+export async function mountLiquid(canvas, img, paint, title, shown) {
   const gl = canvas.getContext('webgl2', { antialias: false });
   if (!gl || !gl.getExtension('EXT_color_buffer_float')) return null;
 
@@ -107,6 +110,7 @@ export function mountLiquid(canvas, img, paint, title, shown) {
   const show = program(gl, SHOW);
   const simH = Math.round((SIM_W * canvas.clientHeight) / Math.max(1, canvas.clientWidth)) || SIM_W;
   const fields = [target(gl, SIM_W, simH), target(gl, SIM_W, simH)];
+  await pause();
 
   const photo = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, photo);
@@ -117,9 +121,11 @@ export function mountLiquid(canvas, img, paint, title, shown) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  await pause();
 
   const sheet = texture(gl, paint.width, paint.height, gl.RG8, gl.RG, gl.UNSIGNED_BYTE, paint.ink);
   const dist = texture(gl, paint.width, paint.height, gl.R16F, gl.RED, gl.FLOAT, paint.dist);
+  await pause();
 
   // Masthead mask in canvas pixels, drawn from the live <h1> so it lines up with the page's copy.
   const ink = document.createElement('canvas');

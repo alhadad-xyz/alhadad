@@ -21,10 +21,13 @@ export default function Portrait() {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return markReady();
     let cleanup, cancelled = false;
     // Fonts too: the liquid redraws the masthead from its live type.
-    Promise.all([loadSheet(), img.current.decode(), document.fonts.ready]).then(([paint]) => {
-      if (cancelled) return;
-      cleanup = mountLiquid(canvas.current, img.current, paint, document.querySelector('.hero__name'), curtainLifted);
-      if (cleanup) canvas.current.parentElement.classList.add('is-gl');
+    Promise.all([loadSheet(), img.current.decode(), document.fonts.ready]).then(([paint]) =>
+      !cancelled && mountLiquid(canvas.current, img.current, paint, document.querySelector('.hero__name'), curtainLifted)
+    ).then((stop) => {
+      cleanup = stop;
+      // Unmounted while the setup yielded: undo it.
+      if (cancelled) return stop?.();
+      if (stop) canvas.current.parentElement.classList.add('is-gl');
       markReady();
     }).catch(markReady);
     return () => {
