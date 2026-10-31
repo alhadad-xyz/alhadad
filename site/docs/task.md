@@ -74,7 +74,7 @@ These items are small and finish the frame around the content.
     - 2026-10-30 keyboard pass (headless Chrome): the gate takes focus once armed, Enter opens the site, then Tab runs cover lines → work rows → email, all with the accent focus ring. Fixed: Tab during the counter reached the page behind the curtain; `Intro.jsx` now keeps everything but `.preloader` `inert` until `finishLoading()`.
     - 2026-10-30 screen-reader order (Chrome accessibility tree): it matches the visual order, with one h1 and an h2 per chapter. Fixed: the cover lines and the chapter index read their number twice ("1. 01Origin"), because they're `<ol>`s; the visible number is now `aria-hidden`.
     - Not done: a real screen reader (VoiceOver), and the contrast of difference-blended text over the paint.
-11. [ ] **Performance:** Lighthouse on mobile, size of `hero.webp`, font payload (Bodoni variable `opsz`), and the 8s preloader cap.
+11. [x] **Performance:** Lighthouse on mobile, size of `hero.webp`, font payload (Bodoni variable `opsz`), and the 8s preloader cap.
     - 2026-10-29, local build, Lighthouse 12 mobile, real GPU: perf 53–67 → 69–91 (noisy), TBT 1.4–4.9 s → 0.17–0.4 s. `paintSheet()` was one ~620 ms task at 4× throttle; it now yields between steps and every 100 rows of the distance passes.
     - LCP was ~3.3 s: the preloader in the HTML hid the hero until JS ran, even on return visits. Now an inline `<head>` script in `layout.jsx` drops `is-loading` before first paint when `intro-seen` is set, and return visits skip the `hook()` entrance. First run gave LCP 2.1 s; not re-measured cleanly (machine load ~230). First visits are unchanged.
     - Swiftshader (software WebGL) runs score far lower (27–47); use a real GPU when measuring.
@@ -110,6 +110,7 @@ These items are small and finish the frame around the content.
       - `mountLiquid` is async and yields between the shader programs, the photo upload, the sheet textures and the rest.
       - Check: on both the old and new builds, after a full scroll every reveal shows except one crate sleeve the crate itself fades out. Reloading mid-page restores the same way on both, at y=3153 instead of 6500 (pre-existing). The liquid on first and return visits is fine.
       - Local estimated TBT at load ~7–20: previous build 264, 223, 250 and 240 ms; new build 185, 154, 148 and 111 ms. The 3 long tasks left are the Next bootstrap, React hydration and the effects pass: framework cost.
+      - Deployed 2026-10-31. Live Lighthouse 12.8, mobile, headless, machine load ~12–17: perf 95, 96, 96 and 92; TBT 180, 140, 100 and 150 ms; LCP 2.6, 2.6, 2.6 and 3.0 s (the hero photo). Three earlier runs during a load spike gave 80, 38 and 79, and named the preloader disc's text as LCP. Real Chrome's own LCP entries put the photo at 328–396 ms (was 452–1012 ms).
     - Not planned: dropping React or Next for a static page (a rewrite). `#boil-loop` on the player bars stays, unless a trace shows it in INP.
 12. [x] **Check the favicon at 16px.** The period survives at about 2px; no change needed.
 13. [x] **SEO and sharing:** `app/opengraph-image.jpg` (the cover, shot with reduced motion so the paint is off), `app/robots.js`, `app/sitemap.js`, and a drafted description in `layout.jsx`. Re-shoot the image and rewrite the description once the hero line is real (task 2).
