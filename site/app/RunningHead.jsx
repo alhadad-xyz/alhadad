@@ -23,8 +23,17 @@ export default function RunningHead({ chapters }) {
     const io = new IntersectionObserver((entries) => {
       for (const e of entries) if (e.isIntersecting) setCurrent(sections.indexOf(e.target) - 1);
     }, { rootMargin: '-50% 0px -50% 0px' });
-    sections.forEach((s) => io.observe(s));
-    return () => io.disconnect();
+    sections.forEach((s) => s && io.observe(s));
+
+    const onScroll = () => {
+      if (window.scrollY < 50) setCurrent(-1);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    return () => {
+      io.disconnect();
+      window.removeEventListener('scroll', onScroll);
+    };
   }, [chapters]);
 
   const onCover = current < 0;
