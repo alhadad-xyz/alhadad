@@ -3,9 +3,18 @@
 #   rsync -a --delete site/out/ server:/srv/alhadad-site/
 alhadad.dev {
 	encode zstd gzip
+	# Next's build files are content-hashed, so they never change; everything else revalidates by ETag.
+	@hashed path /_next/static/*
+	header @hashed Cache-Control "public, max-age=31536000, immutable"
+	header ?Cache-Control "no-cache"
 	root * /srv/alhadad-site
 	try_files {path} {path}.html
 	file_server
+	# Unknown paths get Next's 404 page with a real 404 status, not the home page.
+	handle_errors {
+		rewrite * /404.html
+		file_server
+	}
 }
 
 www.alhadad.dev {

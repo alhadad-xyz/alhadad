@@ -1,3 +1,9 @@
 [submodule "paper"]
 	path = paper
 	url = https://github.com/alhadad-xyz/paper.git
+[submodule "quill"]
+	path = quill
+	url = https://github.com/alhadad-xyz/quill.git
+[submodule "cork"]
+	path = cork
+	url = https://github.com/alhadad-xyz/cork.git

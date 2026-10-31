@@ -1,67 +1,261 @@
 import Intro from './Intro';
+import Portrait from './Portrait';
+import RunningHead from './RunningHead';
+import Player from './Player';
+import Riso from './Riso';
+import CopyEmail from './CopyEmail';
+import Crate from './Crate';
+import Taped from './Taped';
+import LinerNotes from './LinerNotes';
+import { HEART, SPARK } from './doodles';
 
-const images = [1011, 1027, 1035, 1043, 1062, 1074];
+// Cover lines on the hero and the running header's index, one per chapter section below.
+// Back-cover barcode: bar and gap widths, alternating, starting with a bar.
+const BARCODE = [2, 1, 1, 2, 3, 1, 1, 1, 2, 2, 1, 3, 1, 1, 3, 2, 1, 1, 2, 1, 1, 2, 2, 1, 3];
+
+// Fine-liner shapes for the margin doodles. Each path is pathLength 1 so Intro can draw it in.
+const CIRCLE = { box: '0 0 100 40', paths: ['M58 4C30 1 4 9 3 21c-1 13 30 17 55 16 26-1 40-8 39-18C96 8 70 2 42 5'] };
+const UNDERLINE = { box: '0 0 100 10', paths: ['M2 6C20 3 38 8 55 5s30-2 43 1'] };
+// The pen goes through the old question twice, then a proofreader's caret marks the insert.
+const STRIKE = { box: '0 0 100 20', paths: ['M1 12C18 7 40 13 62 9s30-3 37-2', 'M2 15C26 11 55 16 98 9'] };
+const CARET = { box: '0 0 40 40', paths: ['M4 36L20 6l16 30'] };
+const ARROW = { box: '0 0 80 50', paths: ['M76 4C58 2 30 12 8 42', 'M8 42l1-12M8 42l11-4'] };
+
+function Doodle({ shape, className = '' }) {
+  return (
+    <svg className={`doodle ${className}`} viewBox={shape.box} preserveAspectRatio="none" aria-hidden="true">
+      {shape.paths.map((d) => <path key={d} d={d} pathLength="1" />)}
+    </svg>
+  );
+}
+
+// A margin aside: a short handwritten line with an arrow pointing down-left at what it annotates.
+function Note({ children, className = '' }) {
+  return (
+    <span className={`note ${className}`} aria-hidden="true">
+      <span>{children}</span>
+      <Doodle shape={ARROW} />
+    </span>
+  );
+}
+
+// Chapter 3. shortcut: dummy entries and placeholder images until the real projects land (task 3).
+const PROJECTS = [1, 2, 3, 4, 5].map((n) => ({
+  title: `Placeholder project ${['one', 'two', 'three', 'four', 'five'][n - 1]}`,
+  role: ['Design, front end', 'Front end', 'Product design', 'Design, build', 'Creative direction'][n - 1],
+  year: 2027 - n,
+  img: `/work/0${n}.svg`,
+  alt: `Placeholder image for project ${n}`,
+  problem: 'Placeholder copy: the problem, in one or two sentences.',
+  did: 'Placeholder copy: what you did about it.',
+  result: 'Placeholder copy: the result, ideally with a number.',
+}));
+
+const CHAPTERS = [
+  ['origin', 'Origin'],
+  ['turning-point', 'Turning point'],
+  ['work', 'The work'],
+  ['values', 'What I stand for'],
+  ['contact', 'Let’s talk'],
+];
 
 export default function Home() {
   return (
     <>
       <header className="site-header">
-        <a className="wordmark" href="#hook">Alhadad</a>
+        <a className="wordmark" href="#hook" aria-label="A. Alhadad">A.</a>
       </header>
+      <RunningHead chapters={CHAPTERS} />
+      <Riso />
 
-      <div className="preloader" aria-hidden="true">
+      <div className="preloader">
         <div className="preloader__panel"></div>
-        <div className="preloader__images invisible">
-          {images.map((id) => (
-            <img key={id} src={`https://picsum.photos/id/${id}/450/600`} width="450" height="600" alt="" />
-          ))}
-        </div>
-        <div className="preloader__center">
-          <div className="preloader__word invisible">
-            {'ALHADAD'.split('').map((c, i) => <span key={i}>{c}</span>)}
-          </div>
-          <div className="preloader__count"><span>000</span></div>
+        {/* Line boil for the ring, mark and doodles (Intro re-seeds it 8 times a second like the hero's drawing),
+            and the drain mask Intro redraws as the panel falls off the hero. */}
+        <svg className="preloader__defs" aria-hidden="true">
+          <filter id="boil" x="-10%" y="-10%" width="120%" height="120%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="1" seed="0" />
+            <feDisplacementMap in="SourceGraphic" scale="3" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+          <clipPath id="drain" clipPathUnits="objectBoundingBox"><path d="M0 0H1V1H0Z" /></clipPath>
+        </svg>
+        <p className="preloader__top invisible" aria-hidden="true">
+          <span className="mask"><span className="preloader__count">00</span></span>
+          <span className="mask"><span className="preloader__ready">Ready</span></span>
+        </p>
+        <button className="preloader__gate invisible" type="button" aria-label="Enter site and play music" disabled>
+          {/* The record: grooves and a label that spins while the page loads. First, so the mark sits on the label. */}
+          <svg className="preloader__disc" viewBox="0 0 220 220" aria-hidden="true">
+            {[74, 66, 58, 50].map((r) => <circle key={r} cx="110" cy="110" r={r} />)}
+            <circle className="preloader__label" cx="110" cy="110" r="40" />
+            <path id="label-text" d="M110 77a33 33 0 1 1 0 66a33 33 0 1 1 0-66" fill="none" />
+            <text textLength="207" lengthAdjust="spacing"><textPath href="#label-text">SIDE A · ALHADAD · ISSUE 001 ·</textPath></text>
+          </svg>
+          <span className="preloader__mark" aria-hidden="true">A</span>
+          <span className="mask" aria-hidden="true"><span className="preloader__enter">Play</span></span>
+          <span className="mask" aria-hidden="true"><span className="preloader__welcome">Welcome</span></span>
+          <svg className="preloader__ring" viewBox="0 0 220 220" aria-hidden="true">
+            <circle cx="110" cy="110" r="108" pathLength="100" />
+            <circle cx="110" cy="110" r="108" pathLength="100" />
+          </svg>
+          {/* Tonearm, pivoting from the top-right corner. Intro swings it to the edge on Ready and drops the needle on Play. */}
+          <svg className="preloader__arm" viewBox="0 0 220 220" aria-hidden="true">
+            <g>
+              <circle cx="205" cy="20" r="7" />
+              <path d="M209 6L205 20L197 112L172 148" />
+              <path className="preloader__needle" d="M166 143L177 152" />
+            </g>
+          </svg>
+        </button>
+        <div className="preloader__meta invisible" aria-hidden="true">
+          <p>
+            <span className="mask"><span>Alhadad</span></span>
+            <span className="mask"><span>Personal site</span></span>
+          </p>
+          <p>
+            <span className="mask"><span>Index:</span></span>
+            <span className="mask"><span>05 Chapters</span></span>
+          </p>
+          <p>
+            <span className="preloader__blocks">
+              <svg viewBox="-16 -16 32 32"><path d={SPARK} /></svg>
+              <svg viewBox="-32 -30 64 52"><path d={HEART} /></svg>
+              <svg viewBox="250 595 124 115"><path d="M260 640C300 600 360 610 362 650 364 690 310 700 300 668 292 642 330 636 334 652" /></svg>
+            </span>
+            <span className="mask"><span>V-001</span></span>
+          </p>
         </div>
       </div>
 
+      {/* Looping line boil for the margin doodles and back cover; the preloader's #boil stops once the intro ends. */}
+      <svg className="svg-defs" aria-hidden="true">
+        <filter id="boil-loop" x="-10%" y="-50%" width="120%" height="200%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="1">
+            <animate attributeName="seed" values="0;1;2;3;4;5;6;7" dur="1s" calcMode="discrete" repeatCount="indefinite" />
+          </feTurbulence>
+          <feDisplacementMap in="SourceGraphic" scale="2" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </svg>
+
       <main>
-        <section className="chapter" id="hook">
-          <p className="eyebrow">Chapter 0</p>
-          <h1 className="reveal">Your name. One line that says who you are.</h1>
+        <section className="hero" id="hook">
+          {/* Masthead first so the cut-out portrait paints over it. */}
+          <h1 className="hero__name">Alhadad</h1>
+          <Portrait />
+          <p className="eyebrow hero__issue">Issue 001 — Autumn 2026</p>
+          <p className="hero__lead">An AI engineer who turns complex ideas into lean, working products.</p>
+          <nav className="hero__lines" aria-label="Chapters">
+            <ol>
+              {CHAPTERS.map(([id, title], i) => (
+                <li key={id}><a href={`#${id}`}><span aria-hidden="true">0{i + 1}</span>{title}</a></li>
+              ))}
+            </ol>
+          </nav>
+          <p className="eyebrow hero__eyebrow">Chapter 0 — The cover</p>
+          <p className="eyebrow hero__hint" aria-hidden="true">Move to pour</p>
+          {/* In the cover, so it sinks back under the veil with it when chapter 1 slides over. */}
+          <Player />
         </section>
 
-        <section className="chapter" id="origin">
-          <p className="eyebrow">Chapter 1 — Origin</p>
-          <h2 className="reveal">Where it started.</h2>
-          <p className="reveal">Placeholder copy.</p>
+        {/* A junior-high notebook page: ruled paper, a polaroid of the first game and a sticky note taped in. */}
+        <section className="chapter notebook" id="origin">
+          <header className="notebook__head">
+            <p className="eyebrow">Chapter 1 — Origin</p>
+            <h2 className="reveal">Where it <span className="circled">started<Doodle shape={CIRCLE} /></span>.</h2>
+          </header>
+          <div className="notebook__body">
+            <p className="reveal">Every builder has a first door. Mine was a game. In junior high I wanted to make one instead of playing one, so I taught myself to code.</p>
+            <p className="reveal">My first project was a tiny browser adventure. It barely held together, but it ran, and that was enough. The game was the excuse. The code was the point.</p>
+          </div>
+          <div className="notebook__taped">
+            <Taped className="polaroid reveal">
+              <svg viewBox="0 0 32 24" shapeRendering="crispEdges" role="img" aria-label="A pixel-art game scene: a small hero on a platform next to a coin">
+                <rect width="32" height="24" className="px-sky" />
+                <rect y="20" width="32" height="4" className="px-ground" />
+                <rect x="17" y="13" width="9" height="2" className="px-ground" />
+                <rect x="21" y="9" width="2" height="2" className="px-coin" />
+                <rect x="7" y="14" width="3" height="3" className="px-hero" />
+                <rect x="6" y="17" width="5" height="3" className="px-hero" />
+                <rect x="4" y="3" width="1" height="1" className="px-star" />
+                <rect x="13" y="5" width="1" height="1" className="px-star" />
+                <rect x="28" y="2" width="1" height="1" className="px-star" />
+              </svg>
+              <figcaption>first game, junior high</figcaption>
+            </Taped>
+            <Taped as="blockquote" className="sticky reveal">
+              <p>“He came for the games and stayed for the code.”</p>
+            </Taped>
+          </div>
         </section>
 
-        <section className="chapter" id="turning-point">
-          <p className="eyebrow">Chapter 2 — Turning point</p>
-          <h2 className="reveal">The moment that shaped the work.</h2>
-          <p className="reveal">Placeholder copy.</p>
+        {/* A proof edit: the old question is struck through in the margin pen, a caret goes in, and the new question
+            is written in its place (Intro scrubs it while the section pins). Without motion it is simply marked up.
+            Screen readers get the plain sentence. */}
+        <section className="chapter proof" id="turning-point">
+          {/* Then the page is torn out along its margin: the sheet lifts away over chapter 3, leaving the stub. */}
+          <div className="proof__stub" aria-hidden="true"></div>
+          <div className="proof__lift">
+            <div className="proof__shade" aria-hidden="true"></div>
+            <div className="proof__sheet">
+              <p className="eyebrow">Chapter 2 — Turning point</p>
+              <h2>The <span className="underlined">moment<Doodle shape={UNDERLINE} /></span> that shaped the work.</h2>
+              <p className="visually-hidden">In 2020, AI turned “can I build this?” into “what should I build next?”</p>
+              <div className="proof__page" aria-hidden="true">
+                <p className="proof__old"><span>Can I build this?</span><Doodle shape={STRIKE} className="proof__mark proof__strike" /></p>
+                <p className="proof__new"><Doodle shape={CARET} className="proof__mark proof__caret" /><span className="proof__words">What should I build next?</span></p>
+                <span className="proof__stamp">Edited 2020 · by AI</span>
+              </div>
+            </div>
+          </div>
         </section>
 
         <section className="chapter" id="work">
           <p className="eyebrow">Chapter 3 — The work</p>
           <h2 className="reveal">Selected projects.</h2>
-          <ol className="projects">
-            <li className="reveal">Project one — problem, what I did, result.</li>
-            <li className="reveal">Project two — problem, what I did, result.</li>
-            <li className="reveal">Project three — problem, what I did, result.</li>
-          </ol>
+          <div className="work">
+            <Crate projects={PROJECTS} />
+            <Note className="note--work">flip through, pull one out</Note>
+          </div>
         </section>
 
-        <section className="chapter" id="values">
-          <p className="eyebrow">Chapter 4 — What I stand for</p>
-          <h2 className="reveal">How I work.</h2>
-          <p className="reveal">Placeholder copy.</p>
+        {/* Wheat-pasted manifesto: each principle is a riso-printed sheet whose accent plate lands off register,
+            then settles into register as it scrolls up the wall (Intro's pasteUp). */}
+        <section className="chapter manifesto" id="values">
+          <header>
+            <p className="eyebrow">Chapter 4 — What I stand for</p>
+            <h2 className="reveal">How I <span className="circled">work<Doodle shape={CIRCLE} /></span>.</h2>
+          </header>
+          <p className="reveal manifesto__lede">Placeholder copy. One paragraph on how you approach the work, leading into the principles below.</p>
+          <div className="manifesto__wall">
+            <ol className="manifesto__sheets">
+              <li className="sheet"><h3>Principle one, set as a headline.</h3><p>Placeholder copy: one sentence on what it means in practice.</p></li>
+              <li className="sheet"><h3>Principle two, set as a headline.</h3><p>Placeholder copy: one sentence on what it means in practice.</p></li>
+              <li className="sheet"><h3>Principle three, set as a headline.</h3><p>Placeholder copy: one sentence on what it means in practice.</p></li>
+            </ol>
+            <Note className="note--wall">in this order</Note>
+          </div>
+          <blockquote className="manifesto__slogan reveal">
+            <p>“Placeholder pull quote: the belief everything else follows from.”</p>
+          </blockquote>
         </section>
 
-        <section className="chapter" id="contact">
-          <p className="eyebrow">Chapter 5</p>
+        <section className="chapter back-cover" id="contact">
+          <p className="eyebrow">Chapter 5 — Let’s talk</p>
           <h2 className="reveal">Let&apos;s talk.</h2>
-          <a className="reveal cta" href="mailto:alhadad.xyz@gmail.com">alhadad.xyz@gmail.com</a>
+          <CopyEmail address="alhadad.xyz@gmail.com">
+            <Note className="note--mail">say hi</Note>
+          </CopyEmail>
+          <LinerNotes />
+          <div className="back-cover__barcode" aria-hidden="true">
+            <svg viewBox={`0 0 ${BARCODE.reduce((a, b) => a + b * 3, 0)} 40`} preserveAspectRatio="none">
+              {BARCODE.map((w, i, all) => {
+                if (i % 2) return null;
+                const x = all.slice(0, i).reduce((a, b) => a + b * 3, 0) + w * 1.5;
+                return <path key={i} d={`M${x} 2V38`} strokeWidth={w * 2} />;
+              })}
+            </svg>
+            <p>Issue 001 · V-001</p>
+          </div>
         </section>
       </main>
 

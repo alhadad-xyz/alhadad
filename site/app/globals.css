@@ -1,11 +1,17 @@
 :root {
-  --bg: #0e0e0e;
-  --fg: #f2efe9;
-  --muted: #8a867f;
+  /* Paper and ink. Hero chrome stays cream under mix-blend-mode: difference, which turns it to ink here. */
+  --bg: #f2efe9;
+  --fg: #0e0e0e;
+  --muted: #6e6a63;
   --accent: #ff5a1f;
   --cream: #ede4dd;
+  --sheet: #fbf9f4;
+  --coin: #f5c542;
+  --rule-ink: color-mix(in srgb, #3b6ea5 22%, transparent);
   --font: system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: var(--font-newsreader), Georgia, serif;
+  --font-display: var(--font-bodoni), "Didot", Georgia, serif;
+  /* Chrome text: preloader, issue line, eyebrows, cover-line numbers. */
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -15,6 +21,7 @@
 
 body {
   margin: 0;
+  overflow-x: clip;
   background: var(--bg);
   color: var(--fg);
   font: 1.125rem/1.6 var(--font);
@@ -30,7 +37,6 @@ body {
   justify-content: center;
 }
 
-/* Header: the preloader's name docks here */
 .site-header {
   position: fixed;
   top: 0;
@@ -42,13 +48,58 @@ body {
 .wordmark {
   display: inline-block;
   color: var(--cream);
-  font: 600 1.25rem/1 var(--font-display);
+  font: 700 2rem/1 var(--font-display);
   letter-spacing: -0.01em;
   text-transform: uppercase;
   text-decoration: none;
 }
 .wordmark:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
-.is-loading .wordmark { visibility: hidden; }
+
+/* Running header: only shown past the cover, so it sits on paper and can use plain ink. Sits under the wordmark. */
+.running-head {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 39;
+  background: var(--bg);
+  border-bottom: 1px solid var(--fg);
+  color: var(--fg);
+  font: 500 .75rem/1.2 var(--font-mono);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  transition: translate .5s var(--ease-out), visibility 0s;
+}
+.running-head[data-hidden] { translate: 0 -100%; visibility: hidden; transition: translate .5s var(--ease-out), visibility 0s .5s; }
+.running-head summary {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1.5em;
+  /* Same height as the header, clearing the wordmark on the left. */
+  height: 72px;
+  padding: 0 16px 0 4rem;
+  list-style: none;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+}
+.running-head summary::-webkit-details-marker { display: none; }
+.running-head summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; }
+.running-head__title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.running-head__page { flex: none; color: var(--muted); }
+.running-head nav { padding: 0 16px 20px; }
+.running-head ol { display: grid; gap: .5rem; margin: 0; padding: 0; list-style: none; }
+.running-head nav a {
+  color: inherit;
+  font: 400 1.5rem/1.1 var(--font-display);
+  letter-spacing: 0;
+  text-transform: none;
+  text-decoration: none;
+}
+.running-head nav span { margin-right: .75em; font: 500 .7rem/1 var(--font-mono); letter-spacing: .04em; vertical-align: .3em; }
+.running-head nav a:hover, .running-head nav a:focus-visible, .running-head nav a[aria-current] { font-style: italic; }
+.running-head nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) { .running-head, .running-head[data-hidden] { transition: none; } }
 
 /* Preloader */
 .invisible { visibility: hidden; }
@@ -62,57 +113,690 @@ html:not(.is-loading) .preloader { display: none; }
   z-index: 50;
   display: grid;
   place-items: center;
-  color: var(--cream);
+  color: var(--fg);
+  font: 500 .75rem/1.2 var(--font-mono);
+  letter-spacing: .04em;
+  text-transform: uppercase;
   contain: layout paint style;
 }
-.preloader__panel {
-  position: absolute;
-  inset: 0;
-  background: var(--bg);
-  clip-path: inset(0% 0% 0% 0%);
-}
-.preloader__images {
-  position: absolute;
-  inset: 0;
+.preloader p { margin: 0; }
+.preloader__panel { position: absolute; inset: 0; background: var(--bg); }
+.preloader .mask { display: block; overflow: hidden; }
+.preloader .mask > span { display: block; white-space: nowrap; }
+
+/* Counter and "Ready" share one slot */
+.preloader__top { position: absolute; top: 20px; left: 16px; display: grid; }
+.preloader__top > .mask { grid-area: 1 / 1; }
+.preloader__count { font-variant-numeric: tabular-nums; }
+
+.preloader__gate {
+  position: relative;
   display: grid;
   place-items: center;
+  width: min(64vw, 17rem);
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
 }
-.preloader__images img {
-  grid-area: 1 / 1;
-  width: 30vw;
-  height: auto;
-  aspect-ratio: 9 / 12;
-  object-fit: cover;
+.preloader__gate:disabled { cursor: default; }
+.preloader__gate:focus-visible { outline: 2px solid var(--accent); outline-offset: 8px; }
+.preloader__gate > * { grid-area: 1 / 1; }
+.preloader__mark { font: italic 500 2.75rem/1 var(--font-display); text-transform: none; }
+.preloader__ring { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.preloader__ring circle {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
 }
-.preloader__center { position: relative; }
-.preloader__word {
-  display: flex;
-  overflow: hidden;
-  font: 600 clamp(3rem, 12vw, 9rem)/1 var(--font-display);
-  letter-spacing: -0.01em;
-  mix-blend-mode: difference;
-  transform-origin: 0 0;
-}
-.preloader__word span { display: block; }
-.preloader__count {
+.preloader__ring circle:first-child { opacity: .3; }
+/* The disc and arm are absolute like the ring; positioning the text too keeps it painted in DOM order, over the label. */
+.preloader__gate > :not(svg) { position: relative; }
+.preloader__disc, .preloader__arm { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.preloader__disc circle { fill: none; stroke: currentColor; stroke-width: 1; opacity: .3; }
+.preloader__disc .preloader__label { fill: var(--accent); stroke: none; opacity: 1; }
+.preloader__disc text { fill: currentColor; font: 500 6.5px/1 var(--font-mono); }
+.preloader__arm { pointer-events: none; }
+.preloader__arm g { fill: none; stroke: currentColor; stroke-width: 1.25; stroke-linecap: round; stroke-linejoin: round; }
+.preloader__arm .preloader__needle { stroke-width: 4; }
+
+.preloader__meta {
   position: absolute;
-  top: 200%;
-  left: 80%;
-  overflow: hidden;
-  font: 400 1.5rem/1 var(--font-display);
-  font-variant-numeric: tabular-nums;
+  left: 16px;
+  right: 16px;
+  bottom: 20px;
+  display: flex;
+  align-items: flex-end;
+  gap: 2rem;
 }
-.preloader__count span { display: block; text-align: right; }
+.preloader__meta > :last-child { margin-left: auto; text-align: right; }
+.preloader__defs, .svg-defs { position: absolute; width: 0; height: 0; }
+.preloader__ring, .preloader__disc, .preloader__arm, .preloader__mark, .preloader__blocks { filter: url(#boil); }
+.preloader__blocks { display: flex; justify-content: flex-end; gap: .5em; margin-bottom: .3em; }
+.preloader__blocks svg { width: 1.2em; height: 1.2em; overflow: visible; fill: none; stroke: currentColor; stroke-width: 1.25; stroke-linecap: round; stroke-linejoin: round; }
+.preloader__blocks path { vector-effect: non-scaling-stroke; }
+
+/* Music: chrome type, cream + difference like the hero's eyebrows, so it reads on paper, photo and ink.
+   Phones: bottom right, beside the cover's eyebrow. Desktop: stacked above that eyebrow, on paper clear of the photo. */
+/* Absolute with no positioned ancestor pins it to the first screen, so it stays on the cover and scrolls away with it. */
+.player {
+  position: absolute;
+  right: 16px;
+  bottom: 20px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: .6em;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--cream);
+  mix-blend-mode: difference;
+  font: 500 .75rem/1.2 var(--font-mono);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.player:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.player__title { display: none; }
+.player__title::before { content: "· "; }
+.player__bars { display: flex; align-items: flex-end; gap: 2px; height: .9em; filter: url(#boil-loop); }
+.player__bars span { width: 2px; height: 100%; background: currentColor; transform-origin: bottom; scale: 1 .2; transition: scale .4s var(--ease-out); }
+.player[aria-pressed="true"] .player__bars span { animation: player-bar .7s ease-in-out infinite alternate; }
+.player[aria-pressed="true"] .player__bars span:nth-child(2) { animation-duration: .5s; animation-delay: -.2s; }
+.player[aria-pressed="true"] .player__bars span:nth-child(3) { animation-duration: .9s; animation-delay: -.5s; }
+.player[aria-pressed="true"] .player__bars span:nth-child(4) { animation-duration: .6s; animation-delay: -.1s; }
+@keyframes player-bar { from { scale: 1 .25; } to { scale: 1 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .player[aria-pressed="true"] .player__bars span { animation: none; scale: 1 .7; }
+}
 
 @media (min-width: 768px) {
+  .player { right: auto; left: 32px; bottom: 52px; }
+  .player__title { display: inline; }
   .site-header { padding: 28px 32px; }
-  .preloader__images img { width: 12vw; }
-  .preloader__count { top: -40%; left: 105%; }
+  /* Magazine layout: chapter centred, page number flush right. */
+  .running-head summary { display: grid; grid-template-columns: 1fr auto 1fr; height: 88px; padding: 0 32px; }
+  .running-head__title { grid-column: 2; }
+  .running-head__page { justify-self: end; }
+  .running-head nav { padding: 0 32px 28px; }
+  .preloader__top { top: 28px; left: 32px; }
+  .preloader__meta { left: 32px; right: 32px; bottom: 28px; gap: 6rem; }
 }
 
-.eyebrow { color: var(--muted); text-transform: uppercase; letter-spacing: .1em; font-size: .8rem; }
+/* Hero: photo bottom-anchored over the masthead; the chrome in front uses difference so it reads on paper and on the photo */
+.hero {
+  /* Just under the masthead: its top plus Bodoni's cap height (~.8em of the 19vw size) and a gap. */
+  --below-mast: calc(56px + min(17vw, 18rem));
+  position: relative;
+  height: 100svh;
+  min-height: 32rem;
+  overflow: hidden;
+  /* coverTurn()'s transform isolates the difference-blended chrome inside the hero: it needs paper to blend against. */
+  background: var(--bg);
+}
+.hero__portrait { position: absolute; inset: 0; }
+/* Ink veil, raised by coverTurn() in Intro as chapter 1 slides over the cover. Above .player (40), so the caption darkens too. */
+.hero::after { content: ""; position: absolute; inset: 0; z-index: 41; background: var(--fg); opacity: var(--dim, 0); pointer-events: none; }
+.hero__photo {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  translate: -50% 0;
+  /* Wider than the viewport on phones: the sides crop, the face fills the screen. */
+  height: min(92%, 150vw);
+  max-width: none;
+  width: auto;
+}
+.hero__canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+/* The canvas draws the photo itself once WebGL is up; the <img> stays for layout and fallback. */
+.hero__portrait.is-gl .hero__photo { visibility: hidden; }
+
+/* Magazine cover: masthead across the top behind the head, cover lines down the sides. */
+.hero__name {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 56px;
+  color: var(--fg);
+  font-size: clamp(4rem, 19vw, 20rem);
+  line-height: .8;
+  letter-spacing: -0.04em;
+  text-align: center;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+.hero__issue, .hero__lead, .hero__lines { position: absolute; margin: 0; color: var(--cream); mix-blend-mode: difference; }
+.hero__issue { top: 20px; right: 16px; }
+.hero__lead {
+  right: 16px;
+  top: var(--below-mast);
+  max-width: 11ch;
+  font: italic 400 clamp(1.5rem, 3vw, 2.75rem)/1.05 var(--font-display);
+  text-align: right;
+  text-wrap: balance;
+}
+/* Cover lines face the lead from the left, in the dark above the head. */
+.hero__lines { left: 16px; top: var(--below-mast); }
+.hero__lines ol { display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none; }
+.hero__lines a {
+  display: block;
+  color: inherit;
+  font: 400 1.05rem/1.1 var(--font-display);
+  text-decoration: none;
+}
+.hero__lines span {
+  margin-right: .5em;
+  font: 500 .7rem/1 var(--font-mono);
+  letter-spacing: .04em;
+  font-variant-numeric: tabular-nums;
+}
+.hero__lines a:hover, .hero__lines a:focus-visible { font-style: italic; }
+.hero__lines a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.hero__eyebrow, .hero__hint {
+  position: absolute;
+  bottom: 20px;
+  margin: 0;
+  mix-blend-mode: difference;
+}
+/* Same type as the preloader chrome, in the same slots: the bottom row swaps its text in place. */
+.hero .eyebrow { color: var(--cream); font: 500 .75rem/1.2 var(--font-mono); letter-spacing: .04em; }
+.hero__eyebrow { left: 16px; right: 16px; }
+.hero__hint { right: 16px; display: none; }
+/* Phone cover: the head rises into the masthead, the face stays clear, and the cover lines
+   and lead sit along the foot like a printed cover's. */
+@media (max-width: 767px) {
+  .hero__name { top: 76px; }
+  /* The hair starts ~7% down the photo: size it so the hair lands ~7rem from the top, across the
+     masthead's lower third, on every phone height. The sides crop. */
+  .hero__photo { height: calc((100% - 7rem) * 1.07); }
+  /* Ink fade at the foot: on the mid-grey sweater the difference-blended text is ~2:1 without it. */
+  .hero__portrait::after {
+    content: "";
+    position: absolute;
+    inset: 62% 0 0;
+    background: linear-gradient(transparent, rgb(14 14 14 / .6) 45%);
+    pointer-events: none;
+  }
+  .hero__lead, .hero__lines { top: auto; bottom: 52px; }
+  .hero__lead { max-width: 9ch; font-size: clamp(1.75rem, 8vw, 2.25rem); }
+  .hero__lines ol { gap: 0; }
+  /* 24px+ touch targets. */
+  .hero__lines a { padding: .3rem 0; }
+}
+@media (min-width: 768px) {
+  .hero__name { top: 72px; }
+  .hero__issue { top: 28px; right: 32px; }
+  .hero { --below-mast: calc(72px + min(17vw, 18rem)); }
+  .hero__lead { right: 32px; }
+  .hero__lines { left: 32px; }
+  .hero__lines ol { gap: 1.1rem; }
+  .hero__lines a { font-size: clamp(1.25rem, 1.8vw, 1.75rem); }
+  .hero__lines span { display: block; margin: 0 0 .2em; }
+}
+@media (hover: hover) and (min-width: 768px) {
+  .hero__eyebrow { right: auto; left: 32px; bottom: 28px; }
+  .hero__hint { display: block; right: 32px; bottom: 28px; }
+}
+
+.eyebrow { color: var(--muted); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .1em; font-size: .8rem; }
 h1, h2 { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.02em; text-wrap: balance; }
 h1 { font-size: clamp(2.5rem, 8vw, 6rem); line-height: 1; margin: 0; }
 h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }
-.projects { padding-left: 1.25rem; }
-.cta { color: var(--accent); font-size: clamp(1.5rem, 4vw, 2.5rem); }
+
+.not-found a { color: inherit; }
+/* 404: a record stuck in a groove. It turns, jumps back a few degrees at the scratch, and turns again. */
+.skip { width: min(14rem, 50vw); margin-bottom: 2rem; overflow: visible; }
+.skip__disc { transform-origin: 110px 110px; animation: skip 1.2s linear infinite; }
+.skip__disc circle { fill: var(--fg); }
+.skip__disc .skip__groove { fill: none; stroke: var(--cream); stroke-width: .6; opacity: .25; }
+.skip__disc .skip__label { fill: var(--accent); }
+.skip__scratch { fill: none; stroke: var(--cream); stroke-width: 2; stroke-linecap: round; }
+.skip__arm path { fill: none; stroke: var(--fg); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.skip__arm circle { fill: var(--fg); }
+@keyframes skip { 0% { rotate: 0deg; } 85% { rotate: 70deg; } 86%, 100% { rotate: 0deg; } }
+.skip__echo { color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { .skip__disc { animation: none; } }
+
+/* Chapter 2: a proof edit on the notebook's ruled page, which runs on under the chapter with no seam. --rule-from
+   (set in Intro) lines its rules up with the notebook's. The old question is struck through in the accent pen and
+   the new one is set larger in italic, stepped in under it. */
+.proof {
+  --rule: 2rem;
+  --margin: calc(max(16px, (100% - 64rem) / 2 + 16px) - 1.25rem);
+  position: relative;
+  z-index: 2;
+  display: block;
+  max-width: none;
+  padding: 0;
+}
+/* The sheet carries the chapter; the stub is the strip a torn-out page leaves at the margin. Both are the same ruled
+   paper. Intro cuts the torn edge into them as clip paths (the stub reaching a little under the sheet, so no seam). */
+.proof__sheet, .proof__stub {
+  background:
+    linear-gradient(to right, transparent var(--margin), color-mix(in srgb, var(--accent) 55%, transparent) 0 calc(var(--margin) + 1px), transparent 0),
+    repeating-linear-gradient(to bottom, transparent 0 calc(var(--rule) - 1px), var(--rule-ink) 0 var(--rule)) 0 calc(.3rem - var(--rule-from, 0px)),
+    var(--bg);
+}
+.proof__stub { position: absolute; inset: 0; }
+/* The lift moves the torn page; the shade under it is a static blur whose opacity Intro raises as the page comes away. */
+.proof__lift { position: relative; transform-origin: 0 0; }
+.proof__shade { position: absolute; inset: 2% 0 0 3%; /* left: set by Intro at the torn edge */ background: var(--fg); filter: blur(24px); opacity: 0; }
+.proof__sheet {
+  position: relative;
+  min-height: 100vh;
+  padding: 10vh max(16px, (100% - 64rem) / 2 + 16px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.proof__page { position: relative; margin-top: clamp(2rem, 6vh, 4rem); }
+.proof__old, .proof__new { position: relative; width: fit-content; margin: 0; font-family: var(--font-display); letter-spacing: -0.02em; }
+.proof__old { font-size: clamp(2.75rem, 11vw, 6rem); line-height: 1; }
+.proof__new { margin: .15em 0 0 clamp(1.5rem, 12vw, 10rem); font-size: clamp(3rem, 12vw, 7.5rem); font-style: italic; line-height: 1.05; text-wrap: balance; }
+/* The words rise out of their own line (SplitText masks), so each needs a little room for descenders. */
+.proof__words { display: block; padding-bottom: .08em; }
+.doodle.proof__mark { color: var(--accent); stroke-width: 2.4; }
+.proof__strike { left: -3%; top: 30%; width: 106%; height: .45em; }
+/* At the insert point: left of the first line, its tip on the baseline. */
+.doodle.proof__caret { left: -.6em; top: .5em; width: .45em; height: .45em; stroke-width: 3.5; }
+.proof__stamp { display: block; margin: 1.5rem 0 0 clamp(1.5rem, 12vw, 10rem); color: var(--accent); font: 500 .75rem/1.2 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; }
+
+/* Chapter 3: a record crate. A tracklist of small sleeves by default; from 1024px with a mouse,
+   crate() adds .is-flipping and the sleeves stand in a pinned 3D stack that scrolling flips through. */
+.work { position: relative; margin-top: 1.5rem; }
+.crate__list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--fg); }
+.crate__item { border-bottom: 1px solid var(--fg); }
+.crate summary { display: grid; grid-template-columns: 4.5rem 1fr; gap: 1rem; align-items: center; padding: .75rem 0; list-style: none; cursor: pointer; }
+.crate summary::-webkit-details-marker { display: none; }
+.crate summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.crate__sleeve { position: relative; display: block; aspect-ratio: 1; isolation: isolate; }
+.crate__sleeve img { position: relative; z-index: 1; display: block; width: 100%; height: 100%; object-fit: cover; box-shadow: 0 1px 0 var(--fg); }
+.crate__disc { position: absolute; inset: 2%; display: none; width: 96%; height: 96%; transition: translate .7s var(--ease-out); }
+.crate__disc circle { fill: var(--fg); }
+.crate__disc .crate__groove { fill: none; stroke: var(--cream); stroke-width: .6; opacity: .25; }
+.crate__disc .crate__label { fill: var(--accent); }
+.crate__disc text { fill: var(--fg); font: 500 14px/1 var(--font-mono); }
+.crate__meta { display: grid; grid-template-columns: auto 1fr auto; grid-template-areas: "no title year" "no role role"; column-gap: 1rem; }
+.crate__no, .crate__role, .crate__year { font: 500 .75rem/1.2 var(--font-mono); letter-spacing: .04em; text-transform: uppercase; }
+.crate__no { grid-area: no; font-variant-numeric: tabular-nums; }
+.crate__title { grid-area: title; font: 400 clamp(1.4rem, 3vw, 2.25rem)/1.05 var(--font-display); letter-spacing: -0.01em; }
+.crate__role { grid-area: role; margin-top: .35rem; color: var(--muted); }
+.crate__year { grid-area: year; color: var(--muted); font-variant-numeric: tabular-nums; }
+.crate summary:hover .crate__title, .crate details[open] .crate__title { font-style: italic; }
+.crate__notes { margin: 0; padding: 0 0 1.5rem 5.5rem; }
+.crate__notes dt { color: var(--muted); font: 500 .7rem/1.2 var(--font-mono); letter-spacing: .04em; text-transform: uppercase; }
+.crate__notes dd { margin: .2rem 0 1rem; }
+.crate__caption { display: none; }
+@media (max-width: 767px) {
+  .crate__notes { padding-left: 0; }
+}
+
+/* The flipping crate. Sleeves share one spot; crate() sets their y, z, tilt and fade from the scroll. */
+.crate.is-flipping { --sleeve: min(26rem, 46vh, 30vw); }
+.is-flipping .crate__list { position: relative; height: var(--sleeve); margin-top: 3rem; border: 0; perspective: 1400px; perspective-origin: calc(var(--sleeve) / 2) 50%; transform-style: preserve-3d; }
+.is-flipping .crate__item { position: absolute; top: 0; left: 0; width: var(--sleeve); border: 0; transform-origin: 50% 100%; pointer-events: none; }
+.is-flipping .crate__item[data-current] { pointer-events: auto; }
+.is-flipping summary { display: block; padding: 0; }
+.is-flipping .crate__sleeve img { box-shadow: 0 1.5rem 2.5rem -1.5rem rgb(14 14 14 / .45); }
+.is-flipping .crate__disc { display: block; }
+.is-flipping details[open] .crate__disc { translate: 52% 0; animation: crate-spin 6s linear infinite; }
+@keyframes crate-spin { to { rotate: 360deg; } }
+/* The meta stays for screen readers; the caption below shows it. */
+.is-flipping .crate__meta { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.is-flipping .crate__notes { position: absolute; top: 0; left: calc(var(--sleeve) * 1.62); width: min(22rem, 100vw - var(--sleeve) * 1.62 - 4rem); padding: 0; }
+.is-flipping .crate__notes dd { font-size: 1rem; }
+.is-flipping .crate__caption { display: flex; justify-content: space-between; align-items: end; margin: 2rem 0 0; }
+.crate__now { font: 500 .75rem/1.2 var(--font-mono); letter-spacing: .04em; text-transform: uppercase; }
+.crate__count { font: 400 clamp(3rem, 7vw, 6rem)/.8 var(--font-display); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+
+/* Chapter 1: a junior-high notebook page. Every line box and gap is a multiple of --rule, so the copy sits on the lines. */
+.notebook {
+  --rule: 2rem;
+  max-width: none;
+  padding: calc(var(--rule) * 3) max(16px, (100% - 64rem) / 2 + 16px);
+  background:
+    linear-gradient(to right, transparent calc(max(16px, (100% - 64rem) / 2 + 16px) - 1.25rem), color-mix(in srgb, var(--accent) 55%, transparent) 0 calc(max(16px, (100% - 64rem) / 2 + 16px) - 1.25rem + 1px), transparent 0),
+    repeating-linear-gradient(to bottom, transparent 0 calc(var(--rule) - 1px), var(--rule-ink) 0 var(--rule)) 0 .3rem,
+    var(--bg);
+}
+/* Above the pinned cover it slides over; the page edge casts a soft shadow onto the cover. */
+.notebook { position: relative; z-index: 1; box-shadow: 0 -1rem 2rem -1rem rgb(14 14 14 / .3); }
+.notebook .eyebrow { margin: 0; line-height: var(--rule); }
+.notebook h2 { margin: 0 0 var(--rule); line-height: calc(var(--rule) * 2); }
+.notebook__body { max-width: 34rem; }
+.notebook__body p { margin: 0 0 var(--rule); line-height: var(--rule); }
+.notebook__taped { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--rule) 2rem; margin-top: var(--rule); }
+.taped { position: relative; margin: 0; user-select: none; transition: scale .25s var(--ease-out), box-shadow .25s var(--ease-out); }
+.taped::before { content: ""; position: absolute; top: -.7rem; left: 50%; width: 5rem; height: 1.4rem; margin-left: -2.5rem; background: color-mix(in srgb, var(--cream) 70%, transparent); box-shadow: 0 0 0 1px rgb(14 14 14 / .06); rotate: -4deg; }
+@media (hover: hover) {
+  .taped { touch-action: none; cursor: grab; }
+  .taped.is-lifted { z-index: 2; cursor: grabbing; scale: 1.04; box-shadow: 0 1.5rem 2.5rem -1rem rgb(14 14 14 / .4); }
+}
+.polaroid { width: min(17rem, 100%); padding: .75rem .75rem 0; background: var(--sheet); box-shadow: 0 .75rem 1.5rem -1rem rgb(14 14 14 / .45); rotate: 3deg; }
+.polaroid svg { display: block; width: 100%; height: auto; }
+.polaroid figcaption { padding: .5rem 0 .75rem; font: italic 400 1.25rem/1.2 var(--font-display); text-align: center; }
+.px-sky { fill: var(--fg); }
+.px-ground { fill: var(--accent); }
+.px-coin { fill: var(--coin); }
+.px-hero, .px-star { fill: var(--cream); }
+.sticky { width: min(17rem, 100%); padding: 1.5rem 1.25rem; background: color-mix(in srgb, var(--accent) 22%, var(--bg)); box-shadow: 0 .75rem 1.5rem -1rem rgb(14 14 14 / .45); rotate: -3deg; }
+.sticky::before { left: 1.5rem; margin: 0; rotate: 6deg; }
+.sticky p { margin: 0; font: italic 400 1.6rem/1.15 var(--font-display); text-wrap: balance; }
+@media (min-width: 900px) {
+  .notebook { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: 4rem; align-content: center; }
+  .notebook__head { grid-column: 1; }
+  .notebook__body { grid-column: 1; }
+  .notebook__taped { grid-column: 2; grid-row: 1 / span 2; flex-direction: column; align-items: center; margin: 0; }
+  .sticky { margin: -1rem 0 0 -4rem; }
+}
+
+/* Chapter 4: a wheat-pasted manifesto. Riso sheets with an accent plate; pasteUp() scrubs --plate from off to on register. */
+.manifesto { max-width: 72rem; }
+.manifesto header { margin-bottom: 1rem; }
+.manifesto__lede { max-width: 34rem; margin: 0; }
+.manifesto__wall { position: relative; margin-top: 3rem; }
+.manifesto__sheets { display: grid; gap: 1.25rem; margin: 0; padding: 0; list-style: none; counter-reset: principle; }
+.sheet {
+  --plate: 0;
+  counter-increment: principle;
+  position: relative;
+  padding: 1.5rem 1.5rem 1.75rem;
+  background:
+    linear-gradient(100deg, transparent 38%, rgb(14 14 14 / .05) 41%, transparent 44%),
+    linear-gradient(172deg, transparent 62%, rgb(14 14 14 / .04) 64%, transparent 67%),
+    var(--sheet);
+  box-shadow: 0 1px 0 rgb(14 14 14 / .12), 0 .75rem 1.5rem -1rem rgb(14 14 14 / .35);
+}
+.sheet:nth-child(1) { rotate: -1.2deg; }
+.sheet:nth-child(2) { rotate: .8deg; }
+.sheet:nth-child(3) { rotate: -.4deg; }
+.sheet h3 {
+  margin: 0;
+  font: 500 clamp(2rem, 4.6vw, 3.75rem)/.95 var(--font-display);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-wrap: balance;
+  text-shadow: calc(var(--plate) * 1px) calc(var(--plate) * .4px) 0 color-mix(in srgb, var(--accent) 85%, transparent);
+}
+.sheet h3::before { content: counter(principle, decimal-leading-zero); display: block; margin-bottom: .9rem; color: var(--accent); font: 500 .75rem/1 var(--font-mono); letter-spacing: .04em; text-shadow: none; }
+.sheet p { max-width: 32rem; margin: .9rem 0 0; color: var(--muted); }
+.manifesto__slogan { margin: 4rem 0 0; }
+.manifesto__slogan p { max-width: 20ch; margin: 0; font: italic 400 clamp(2.25rem, 6vw, 5.5rem)/.95 var(--font-display); letter-spacing: -0.02em; text-wrap: balance; }
+@media (min-width: 900px) {
+  .manifesto__sheets { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 0; }
+  .sheet:nth-child(1) { grid-column: 1 / 8; }
+  .sheet:nth-child(2) { grid-column: 5 / 13; margin-top: -1.5rem; }
+  .sheet:nth-child(3) { grid-column: 2 / 9; margin-top: -1rem; }
+}
+
+/* Margin doodles: fine-liner strokes that boil, drawn in by Intro on scroll. */
+.doodle {
+  position: absolute;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  /* In viewBox units, ~1.3px once stretched over a word. No non-scaling-stroke: with pathLength and a
+     stretched viewBox, Chrome then draws only part of the dash. */
+  stroke-width: .7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: url(#boil-loop);
+  pointer-events: none;
+}
+/* Gap of 2: the hidden start sits fully in the gap, not on a zero-length dash a round cap draws as a dot. */
+.doodle path { stroke-dasharray: 1 2; }
+.circled, .underlined { position: relative; white-space: nowrap; }
+.circled .doodle { left: -10%; top: -8%; width: 122%; height: 120%; }
+.underlined .doodle { left: 0; bottom: -.12em; width: 100%; height: .25em; }
+.note {
+  position: absolute;
+  display: none;
+  width: 10rem;
+  color: var(--fg);
+  font: italic 400 1.15rem/1.1 var(--font-display);
+  rotate: -4deg;
+  mix-blend-mode: normal;
+}
+.note > span { display: block; padding-left: 3.5rem; }
+.note .doodle { position: relative; display: block; width: 4.5rem; height: 2.8rem; margin-top: .2rem; stroke-width: 1.5; }
+@media (min-width: 900px) {
+  .note { display: block; }
+  /* Under the sheets, arrow flipped to point up-left at them. */
+  .note--wall { display: flex; flex-direction: column-reverse; right: 0; top: 100%; margin-top: .5rem; }
+  .note--wall .doodle { scale: 1 -1; margin: 0 0 .2rem; }
+  .note--work { right: 0; bottom: 100%; margin-bottom: .25rem; }
+  .note--mail { left: 52%; top: -6rem; }
+}
+@media (prefers-reduced-motion: reduce) { .doodle { filter: none; } }
+
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Back cover: the email set like the masthead, a doodled barcode in the corner. */
+.back-cover { position: relative; max-width: none; }
+.back-cover__mail { position: relative; margin-top: 2rem; }
+.back-cover__email {
+  display: inline-block;
+  color: var(--fg);
+  font: 500 clamp(3rem, 16vw, 15rem)/.85 var(--font-display);
+  letter-spacing: -0.04em;
+  text-decoration: none;
+}
+.back-cover__email span { display: block; }
+.back-cover__email span + span { padding-left: .6em; font-style: italic; }
+.back-cover__email:hover span + span, .back-cover__email:focus-visible span + span { color: var(--accent); }
+.back-cover__email:focus-visible { outline: 2px solid var(--accent); outline-offset: 8px; }
+.back-cover__hint { margin: 2.5rem 0 0; }
+.back-cover__copied {
+  position: absolute;
+  top: -1.5rem;
+  right: 4%;
+  width: clamp(7rem, 14vw, 12rem);
+  overflow: visible;
+  rotate: -6deg;
+  color: var(--accent);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: url(#boil-loop);
+  animation: copied-in .35s var(--ease-out);
+}
+.back-cover__copied text { fill: currentColor; stroke: none; font: italic 500 34px var(--font-display); }
+@keyframes copied-in { from { opacity: 0; scale: .8; } }
+.back-cover__barcode { position: absolute; right: 16px; bottom: 20px; width: 8.5rem; color: var(--fg); }
+.back-cover__barcode svg { display: block; width: 100%; height: 2.5rem; overflow: visible; filter: url(#boil-loop); }
+.back-cover__barcode path { stroke: currentColor; stroke-linecap: round; }
+.back-cover__barcode p { margin: .4rem 0 0; font: 500 .65rem/1 var(--font-mono); letter-spacing: .04em; text-transform: uppercase; text-align: justify; text-align-last: justify; }
+@media (min-width: 768px) {
+  .back-cover { padding-left: 32px; padding-right: 32px; }
+  .back-cover__barcode { right: 32px; bottom: 28px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .back-cover__copied, .back-cover__barcode svg { filter: none; animation: none; }
+}
+
+/* Liner notes */
+.liner {
+  margin: 3rem 0 6rem;
+  max-width: 56rem;
+}
+.liner__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.liner__toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+}
+.liner__toggle:hover .eyebrow {
+  color: var(--fg);
+}
+.liner__disc {
+  position: relative;
+  display: block;
+  width: 6.5rem;
+  height: 6.5rem;
+  perspective: 600px;
+  flex: none;
+}
+.liner__flip {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  transition: transform 0.8s var(--ease-out);
+}
+.liner__toggle[aria-expanded="true"] .liner__flip {
+  transform: rotateY(180deg);
+}
+.liner__face {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.liner__face--a {
+  transform: rotateY(0deg);
+}
+.liner__face--b {
+  transform: rotateY(180deg);
+}
+.liner__face circle {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  opacity: .55;
+}
+.liner__face--a .liner__center {
+  fill: var(--accent);
+  stroke: none;
+  opacity: 1;
+}
+.liner__face--b .liner__center {
+  fill: var(--fg);
+  stroke: none;
+  opacity: 1;
+}
+.liner__face text {
+  font: 500 6.5px/1 var(--font-mono);
+}
+.liner__face--a text {
+  fill: currentColor;
+}
+.liner__face--b text {
+  fill: var(--bg);
+}
+.liner__spin {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform-origin: center;
+  animation: liner-spin 8s linear infinite;
+  animation-play-state: paused;
+}
+body:has(.player[aria-pressed="true"]) .liner__spin {
+  animation-play-state: running;
+}
+@keyframes liner-spin {
+  to { transform: rotate(360deg); }
+}
+.liner__notes {
+  margin-top: 2rem;
+  display: grid;
+  gap: 2.5rem;
+  grid-template-columns: 1fr;
+}
+.liner__notes[hidden] {
+  display: none;
+}
+.liner__heading {
+  margin: 0 0 1rem;
+  font-weight: 500;
+}
+.liner__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .85rem;
+}
+.liner__item {
+  display: grid;
+  grid-template-columns: 1.8rem 1fr;
+  align-items: baseline;
+  gap: .4rem;
+  font: 400 1rem/1.5 var(--font);
+  color: var(--muted);
+}
+.liner__track {
+  font: 500 .75rem/1 var(--font-mono);
+  color: var(--fg);
+  letter-spacing: .04em;
+  font-variant-numeric: tabular-nums;
+}
+.liner__title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--fg);
+}
+@media (min-width: 768px) {
+  .liner__notes {
+    grid-template-columns: 1fr 1fr;
+    gap: 3.5rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .liner__flip {
+    transition: none;
+  }
+  .liner__spin {
+    animation: none;
+  }
+}
+
+/* Riso misregistration: on fast scroll, an accent plate slips off the ink and snaps back (Riso.jsx sets --riso). */
+h2 {
+  text-shadow: calc(var(--riso, 0) * 1px) calc(var(--riso, 0) * .35px) 0 color-mix(in srgb, var(--accent) 80%, transparent);
+}
+
+/* Dog-ear bookmark */
+.dog-ear { position: fixed; top: 0; right: 0; z-index: 41; width: 28px; height: 28px; padding: 0; border: 0; background: none; cursor: pointer; --fold: 10px; }
+.dog-ear:hover, .dog-ear:focus-visible { --fold: 20px; }
+.dog-ear[aria-pressed="true"] { --fold: 28px; }
+/* Phones: 28px keeps the corner clear of the page number below it. */
+@media (min-width: 768px) { .dog-ear { width: 44px; height: 44px; } .dog-ear[aria-pressed="true"] { --fold: 36px; } }
+.dog-ear[hidden] { display: none; }
+.dog-ear::before, .dog-ear::after { content: ""; position: absolute; top: 0; right: 0; width: var(--fold); height: var(--fold); transition: width .35s var(--ease-out), height .35s var(--ease-out); }
+.dog-ear::before { background: var(--fg); clip-path: polygon(0 0, 100% 0, 100% 100%); }
+.dog-ear::after { background: var(--cream); clip-path: polygon(0 0, 100% 100%, 0 100%); filter: drop-shadow(-1px 1px 1px rgb(0 0 0 / .25)); }
+.dog-ear:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; }
+.dog-ear__mark { display: inline-block; width: .6em; height: .6em; margin-left: .4em; background: var(--accent); clip-path: polygon(0 0, 100% 0, 100% 100%); vertical-align: .5em; }
+@media (prefers-reduced-motion: reduce) { .dog-ear::before, .dog-ear::after { transition: none; } }
+
+
