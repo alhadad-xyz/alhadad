@@ -7,6 +7,7 @@ The personal site at https://alhadad.dev. Product intent is in `prd.md`; open wo
 ```bash
 npm run dev -- -p 3123   # port 3000 on this machine is taken by Gotenberg
 npm run build            # static export to out/
+npm run bake             # rebake public/sheet.bin.gz after changing the doodles or hero.webp
 ```
 
 ## Deploy
@@ -28,14 +29,16 @@ Caddy serves `/srv/alhadad-site`, and its config lives in `deploy/Caddyfile`. Ke
 | `app/drips.js` | `drips()`: the strand-y clip-path edge shared by the preloader drain and the chapter 2 pour |
 | `app/Intro.jsx` | GSAP: preloader beats (the record spins, the tonearm swings in, Play drops the needle), the pour, the drain, the hero entrance (`hook()`), chapter reveals and the chapter 4 paste-up (`pasteUp()`) |
 | `app/Player.jsx` | The music caption: `<audio>` for `public/audio/adela-nicole-kidman.m4a`, play/pause, a remembered pause in `localStorage`. `startMusic()` is called from the preloader's Play click, the gesture browsers need before sound |
-| `app/Portrait.jsx` | Mounts the liquid once the photo and fonts are ready, and exports `portraitReady` |
+| `app/Portrait.jsx` | Mounts the liquid once the photo, fonts and baked sheet are ready. Exports `portraitReady`, and `liftCurtain()`, which Intro calls to start the liquid's loop |
 | `app/liquid.js` | WebGL2 fluid simulation, plus the display shader (photo, painted layer, masthead redraw) |
-| `app/doodles.js` | Builds the painted sheet (doodles, distance field). Also exports `HEART` and `SPARK`. |
+| `app/doodles.js` | `paintSheet()` draws the painted sheet (doodles, distance field); `loadSheet()` reads the baked copy at runtime. Also exports `HEART` and `SPARK`. |
+| `scripts/bake-sheet.mjs` | `npm run bake`: runs `paintSheet()` in headless Chrome and writes `public/sheet.bin.gz` |
 | `app/layout.jsx` | Fonts (`--font-bodoni`, `--font-jetbrains`) and metadata |
 | `app/icon.png`, `app/apple-icon.png` | The favicon, rendered from Bodoni "A." with headless Chrome |
 
 ## Things that bite
 
+- **The hero photo lives in three files.** `public/hero.webp`, `public/hero.avif` (`avifenc -q 60` from a PNG of the WebP) and the baked `public/sheet.bin.gz` (its distance field is the photo's silhouette). Replace the photo, regenerate the AVIF, then `npm run bake`.
 - **Shader colours mirror the CSS tokens.** `liquid.js` hard-codes paper `0.949, 0.937, 0.914` (= `#f2efe9`) and ink `0.055`. Change them together with `--bg` and `--fg`.
 - **The masthead is drawn twice.** Once in the DOM (`.hero__name`, behind the canvas) and once in the shader, from a 2D canvas that copies the h1's computed font, size, letter-spacing and position. Keep the h1 to a single line. Style changes carry over on the next resize.
 - **Chrome text depends on `--cream` plus `mix-blend-mode: difference`.** That is what turns it to ink on paper and light on the photo or paint. Don't set those elements to `--fg`.

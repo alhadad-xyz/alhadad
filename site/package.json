@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "bake": "node scripts/bake-sheet.mjs",
     "deploy": "sh deploy/deploy.sh"
   },
   "dependencies": {

@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
-import { portraitReady } from './Portrait';
+import { portraitReady, liftCurtain } from './Portrait';
 import { drips } from './drips';
 import { startMusic } from './Player';
 import { crate } from './Crate';
@@ -22,8 +22,23 @@ export default function Intro() {
 }
 
 let root, preloader;
+// Builds whatever chapter steps are still queued, at once.
+let buildChapters = () => {};
+
+// Runs each step inside the matchMedia context, one idle task apiece, and returns a flush for the rest.
+function later(context, steps) {
+  const idle = (fn) => (window.requestIdleCallback ? requestIdleCallback(fn, { timeout: 500 }) : setTimeout(fn, 50));
+  const next = () => {
+    if (!steps.length) return;
+    context.add(steps.shift());
+    idle(next);
+  };
+  idle(next);
+  return () => { while (steps.length) context.add(steps.shift()); };
+}
 
 function finishLoading() {
+  liftCurtain();
   root.classList.remove("is-loading");
   inertBehind(false);
 }
@@ -43,7 +58,7 @@ function init() {
   if (!seen) inertBehind(true);
   const mm = gsap.matchMedia();
 
-  mm.add("(prefers-reduced-motion: no-preference)", () => {
+  mm.add("(prefers-reduced-motion: no-preference)", (context) => {
     // Seen: layout.jsx already dropped the preloader before first paint, so the cover is
     // on screen; animating it in now would flash it out and back.
     if (seen) {
@@ -53,10 +68,9 @@ function init() {
     }
     // Pins first, in page order: each pushes everything below it down.
     coverTurn();
-    turningPoint();
-    crate();
-    revealChapters();
-    pasteUp();
+    // The chapters below the cover are built one per idle task, so hydration stays a short task (Lighthouse TBT).
+    // The last refresh stands in for ScrollTrigger's own on window load, which may have passed by then.
+    buildChapters = later(context, [turningPoint, crate, revealChapters, pasteUp, () => ScrollTrigger.refresh()]);
   });
 
   mm.add("(prefers-reduced-motion: reduce)", () => {
@@ -168,8 +182,11 @@ function runPreloader() {
     gate.disabled = true;
     blink?.kill();
     startMusic();
+    // The pour feeds the liquid's input, so its loop must be running first.
+    liftCurtain();
     const out = { yPercent: -110, duration: 0.6, ease: "power3.inOut" };
-    gsap.timeline({ onComplete: () => (clearInterval(boil), spin.kill(), finishLoading()) })
+    // The page must scroll right once the curtain is gone, even if idle time never came.
+    gsap.timeline({ onComplete: () => (clearInterval(boil), spin.kill(), buildChapters(), finishLoading()) })
       .to(tonearm, { rotate: 0, duration: 0.3, ease: "power2.in" }, 0)
       .to(spin, { timeScale: 6, duration: 1, ease: "power2.in" }, 0.2)
       .to([ring, disc, armSvg], { scale: 1.6, autoAlpha: 0, duration: 0.9, ease: "expo.out" }, 0.35)

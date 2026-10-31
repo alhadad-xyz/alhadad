@@ -1,7 +1,9 @@
-// The painted version of the hero, baked once:
-//   dist = distance in texels from the photo's silhouette (contour rings are drawn from it)
-//   data = RGBA8 where G = backdrop doodles (graphite, hidden behind the figure)
-//          and B = face doodles (white, drawn over the figure)
+// The painted version of the hero, baked at build time into public/sheet.bin.gz by scripts/bake-sheet.mjs
+// (`npm run bake`; rerun after changing the doodles or hero.webp), because baking it in the page cost ~450 ms:
+//   dist = the distance in texels from the photo's silhouette (contour rings are drawn from it), stored as
+//          int16 steps of 1/32 texel from the texel before: it changes slowly, so the file packs ~6x smaller
+//   ink  = two bytes a texel: backdrop doodles (graphite, hidden behind the figure),
+//          then face doodles (white, drawn over the figure)
 // The sheet is SHEET_RATIO photo-heights wide, centred on the photo, bottom-aligned.
 
 export const SHEET_RATIO = 2.2;
@@ -112,14 +114,27 @@ export async function paintSheet(photo) {
   await pause();
   const dist = await distance(shape);
 
-  const data = new Uint8Array(W * H * 4);
-  for (let i = 0; i < W * H; i++) {
-    dist[i] = Math.min(dist[i], 2048); // stays finite as a half float
-    data[i * 4 + 1] = ink[i];
-    data[i * 4 + 2] = glow[i];
-    data[i * 4 + 3] = 255;
+  const steps = new Int16Array(W * H);
+  const pair = new Uint8Array(W * H * 2);
+  for (let i = 0, last = 0; i < W * H; i++) {
+    const q = Math.round(Math.min(dist[i], 512) * 32); // past 510 the shader draws no rings
+    steps[i] = q - last;
+    last = q;
+    pair[i * 2] = ink[i];
+    pair[i * 2 + 1] = glow[i];
   }
-  return { data, dist, width: W, height: H };
+  return new Blob([steps, pair]);
+}
+
+// Reads the baked sheet back, in the form mountLiquid uploads.
+export async function loadSheet() {
+  const res = await fetch('/sheet.bin.gz');
+  if (!res.ok) throw new Error(`sheet: ${res.status}`);
+  const buf = await new Response(res.body.pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();
+  const steps = new Int16Array(buf, 0, W * H);
+  const dist = new Float32Array(W * H);
+  for (let i = 0, q = 0; i < dist.length; i++) dist[i] = (q += steps[i]) / 32;
+  return { dist, ink: new Uint8Array(buf, W * H * 2), width: W, height: H };
 }
 
 function load(markup) {

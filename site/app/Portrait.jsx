@@ -2,11 +2,16 @@
 
 import { useEffect, useRef } from 'react';
 import { mountLiquid } from './liquid';
-import { paintSheet } from './doodles';
+import { loadSheet } from './doodles';
 
 let markReady;
 // Settles once the liquid is drawing (or has given up), so the preloader can hold for it.
 export const portraitReady = new Promise((r) => (markReady = r));
+
+let markLifted;
+// Intro calls liftCurtain() as the preloader starts to leave; until then the liquid is hidden, so it doesn't run.
+const curtainLifted = new Promise((r) => (markLifted = r));
+export const liftCurtain = () => markLifted();
 
 export default function Portrait() {
   const canvas = useRef(null);
@@ -16,9 +21,9 @@ export default function Portrait() {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return markReady();
     let cleanup, cancelled = false;
     // Fonts too: the liquid redraws the masthead from its live type.
-    Promise.all([img.current.decode(), document.fonts.ready]).then(() => paintSheet(img.current)).then((paint) => {
+    Promise.all([loadSheet(), img.current.decode(), document.fonts.ready]).then(([paint]) => {
       if (cancelled) return;
-      cleanup = mountLiquid(canvas.current, img.current, paint, document.querySelector('.hero__name'));
+      cleanup = mountLiquid(canvas.current, img.current, paint, document.querySelector('.hero__name'), curtainLifted);
       if (cleanup) canvas.current.parentElement.classList.add('is-gl');
       markReady();
     }).catch(markReady);
@@ -30,7 +35,11 @@ export default function Portrait() {
 
   return (
     <div className="hero__portrait">
-      <img ref={img} className="hero__photo" src="/hero.webp" width="1198" height="1200" alt="Portrait of Alhadad" />
+      {/* The cover's LCP: AVIF is ~45% smaller than the WebP fallback. */}
+      <picture>
+        <source srcSet="/hero.avif" type="image/avif" />
+        <img ref={img} className="hero__photo" src="/hero.webp" width="1198" height="1200" alt="Portrait of Alhadad" fetchPriority="high" />
+      </picture>
       <canvas ref={canvas} className="hero__canvas" aria-hidden="true" />
     </div>
   );

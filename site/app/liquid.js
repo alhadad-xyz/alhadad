@@ -71,7 +71,7 @@ void main() {
   q += (vec2(noise(q * 14.0 + frame * 7.1), noise(q * 14.0 + frame * 3.7 + 31.0)) - 0.5) * vec2(0.0024, 0.005);
   vec4 pt = texture(uPaint, q); // rows flipped on upload by UNPACK_FLIP_Y
   vec2 outside = max(vec2(0), abs(q - 0.5) - 0.5);
-  pt.gb *= step(dot(outside, outside), 0.0);
+  pt.rg *= step(dot(outside, outside), 0.0);
   float d = texture(uDist, q).r + length(outside * vec2(textureSize(uDist, 0)));
   float w = d + (noise(q * vec2(40.0, 18.0)) - 0.5) * 7.0;
   float ring = floor(w / 13.0);
@@ -79,7 +79,7 @@ void main() {
              * smoothstep(9.0, 14.0, d) * (1.0 - smoothstep(380.0, 510.0, d)) * step(hash(ring), 0.85);
   // Inverse of the page: ink paper, light rings, cream outline and doodles.
   vec3 back = mix(vec3(0.055), vec3(mix(0.4, 0.88, hash(ring + 7.0))), line);
-  back = mix(back, vec3(0.949, 0.937, 0.914), max(pt.g, smoothstep(2.0, 3.0, d) * (1.0 - smoothstep(4.5, 5.5, d)) * 0.85));
+  back = mix(back, vec3(0.949, 0.937, 0.914), max(pt.r, smoothstep(2.0, 3.0, d) * (1.0 - smoothstep(4.5, 5.5, d)) * 0.85));
   // The masthead sits under this canvas, so paint would bury it: redraw it here, difference-blended
   // like the page's chrome, before the person goes on top.
   back = mix(back, abs(vec3(0.949, 0.937, 0.914) - back), texture(uTitle, vUv).a);
@@ -87,7 +87,7 @@ void main() {
   vec3 under = back * (1.0 - ph.a) + c;
   // Marks on the person switch pen: white on hair, knit and paper, black on skin.
   vec3 pen = vec3(mix(0.08, 0.96, 1.0 - smoothstep(0.45, 0.55, dot(under, vec3(0.333)))));
-  vec4 painted = vec4(mix(under, pen, pt.b), 1.0);
+  vec4 painted = vec4(mix(under, pen, pt.g), 1.0);
   o = mix(ph, painted, m);
 
   float g = fract(sin(dot(vUv * 1000.0 + uTime, vec2(12.9898, 78.233))) * 43758.5453);
@@ -99,7 +99,7 @@ const STEP = 1000 / 60;
 const IDLE_MS = 2000;
 
 // Returns a cleanup function, or null when WebGL2 float targets are missing (the <img> stays).
-export function mountLiquid(canvas, img, paint, title) {
+export function mountLiquid(canvas, img, paint, title, shown) {
   const gl = canvas.getContext('webgl2', { antialias: false });
   if (!gl || !gl.getExtension('EXT_color_buffer_float')) return null;
 
@@ -118,7 +118,7 @@ export function mountLiquid(canvas, img, paint, title) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
-  const sheet = texture(gl, paint.width, paint.height, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, paint.data);
+  const sheet = texture(gl, paint.width, paint.height, gl.RG8, gl.RG, gl.UNSIGNED_BYTE, paint.ink);
   const dist = texture(gl, paint.width, paint.height, gl.R16F, gl.RED, gl.FLOAT, paint.dist);
 
   // Masthead mask in canvas pixels, drawn from the live <h1> so it lines up with the page's copy.
@@ -242,14 +242,24 @@ export function mountLiquid(canvas, img, paint, title) {
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
 
-  // Only simulate while the hero is on screen.
-  const io = new IntersectionObserver(([e]) => {
+  // Only simulate while the hero is on screen and the preloader has lifted: the observer can't see the curtain.
+  let visible = false, live = false;
+  const run = () => {
     cancelAnimationFrame(raf);
-    if (e.isIntersecting) raf = requestAnimationFrame(frame);
+    if (visible && live) raf = requestAnimationFrame(frame);
+  };
+  const io = new IntersectionObserver(([e]) => {
+    visible = e.isIntersecting;
+    run();
   });
   io.observe(canvas);
+  shown.then(() => {
+    live = true;
+    run();
+  });
 
   return () => {
+    visible = false;
     cancelAnimationFrame(raf);
     io.disconnect();
     ro.disconnect();

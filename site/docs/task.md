@@ -78,6 +78,32 @@ These items are small and finish the frame around the content.
     - 2026-10-29, local build, Lighthouse 12 mobile, real GPU: perf 53–67 → 69–91 (noisy), TBT 1.4–4.9 s → 0.17–0.4 s. `paintSheet()` was one ~620 ms task at 4× throttle; it now yields between steps and every 100 rows of the distance passes.
     - LCP was ~3.3 s: the preloader in the HTML hid the hero until JS ran, even on return visits. Now an inline `<head>` script in `layout.jsx` drops `is-loading` before first paint when `intro-seen` is set, and return visits skip the `hook()` entrance. First run gave LCP 2.1 s; not re-measured cleanly (machine load ~230). First visits are unchanged.
     - Swiftshader (software WebGL) runs score far lower (27–47); use a real GPU when measuring.
+    - 2026-10-31 audit, first visit, live site, Lighthouse 12.8 mobile, headless: perf 63 and 72, TBT 1.96 s and 1.02 s, LCP 3.4 s and 3.1 s, CLS 0, 461 KiB transferred. LCP is the hero `<img>` under the curtain, and 48% of it is render delay: the image is in, but the main thread is busy.
+    - Where the main thread goes, from a CPU profile of a sourcemapped build at 4× throttle:
+      - One 452 ms task for hydration plus the effects. `Intro` `init()` builds every chapter's SplitText and ScrollTrigger pins up front (~160 ms plus ~170 ms of forced style and layout). `Crate`, `LinerNotes` and `Taped` add ~85 ms.
+      - `paintSheet()`: ~450 ms in total. `distance()` takes 248 ms, the `getImageData` passes 162 ms, and the SVG decodes ~80 ms. One step is still a 217 ms task.
+      - The `hero.webp` decode is a 123 ms task (1198×1200 on every viewport).
+      - The liquid's rAF loop runs behind the opaque preloader. The IntersectionObserver can't see occlusion. 699 ms of animation frames ran in 7 s.
+      - Paint, layerize and commit: ~2.1 s in 7 s. Sources: the `#boil` re-seed every 125 ms, the liquid canvas, and `#boil-loop` on the always-visible `.player__bars`.
+    - No `Cache-Control` on anything. Hashed `/_next/static/*` files are re-validated on every visit.
+    - Fonts: three preloads (137 KiB) race the hero image. JS is 190 KiB gz; React and the Next runtime are 123 KiB of it.
+    - Plan, in order. Target: perf ≥ 90, TBT < 300 ms, LCP < 2.5 s. Take the median of 5 headed runs on a real GPU.
+      1. [x] **Cache headers** in `deploy/Caddyfile`. `/_next/static/*` gets `public, max-age=31536000, immutable`; everything else gets `no-cache` and keeps its ETag. Not yet applied to the server: needs a backup, `caddy validate` and a reload.
+      2. [x] **Liquid idles behind the curtain.** `mountLiquid` takes a promise, which `liftCurtain()` in `Portrait.jsx` settles. Intro calls it at the Play click, before the pour, and in `finishLoading()`.
+      3. [x] **Defer the below-the-fold timelines.** `init()` builds only the preloader and `coverTurn()` at load. `turningPoint()`, `crate()`, `revealChapters()` and `pasteUp()` follow in page order, then one `ScrollTrigger.refresh()`. First visit: at `arm()`, while the curtain still covers everything. Return visit: `requestIdleCallback`, with a timeout.
+      4. [x] **Bake the paint sheet at build time.** `paintSheet()` is deterministic: a fixed photo, two fixed SVGs and a 1320×600 canvas. Write it once to a PNG in `public/`, and upload that straight to the textures.
+         - The distance field needs up to 2048 at half-float precision. Split it across two 8-bit channels, or check whether 8-bit quantised looks the same.
+         - Turn off premultiply and colour-space conversion on the upload.
+         - Side effect: the "alhadad." scribble becomes Marker Felt on every platform, where today each platform uses its own `cursive` fallback.
+      5. [x] **Hero image.** `fetchPriority="high"` on the `<img>`, plus `public/hero.avif` (`avifenc -q 60`): 52 KB against the WebP's 92 KB, and it looks the same. No phone variant: phones show the photo ~760 CSS px wide at DPR 1.75, which is already more pixels than the 1198 px source.
+      6. [x] **Fonts.** No change needed: all three preloaded faces show on the first screen. The preloader mark is Bodoni italic, the record label is mono and the h1 is Bodoni.
+    - 2026-10-31, done. Notes on how it was built:
+      - Step 3: `later()` in `Intro.jsx` builds each step in its own idle task (`requestIdleCallback`, 500 ms timeout) inside the matchMedia context, then runs one `ScrollTrigger.refresh()`. The Play click's timeline builds anything still queued before the curtain lifts.
+      - Step 4: `npm run bake` (`scripts/bake-sheet.mjs`) runs `paintSheet()` in headless Chrome. It writes `public/sheet.bin.gz`: distances as int16 steps of 1/32 texel from the texel before, then ink and glow bytes, 68 KB gzipped. Half floats would have been 188 KB. `loadSheet()` decodes it; the shader reads ink and glow from `.rg`.
+      - Check, headless Chrome at 1440×900: the pour shows paint, return visits run the liquid, and there are no page errors. Pins (3), page height (9287) and the chapter 2 split (14 words) match the old build.
+      - Measured locally at 4× CPU, first visit, with the machine at load ~40–60 (noisy). Estimated TBT: old build 662, 1763 and 891 ms (median 891); new build 1100, 199, 312, 275 and 289 ms (median 289).
+      - Not re-measured: Lighthouse on the live site, which needs a deploy.
+    - Not planned: dropping React or Next for a static page (a rewrite). `#boil-loop` on the player bars stays, unless a trace shows it in INP.
 12. [x] **Check the favicon at 16px.** The period survives at about 2px; no change needed.
 13. [x] **SEO and sharing:** `app/opengraph-image.jpg` (the cover, shot with reduced motion so the paint is off), `app/robots.js`, `app/sitemap.js`, and a drafted description in `layout.jsx`. Re-shoot the image and rewrite the description once the hero line is real (task 2).
     - An Open Graph image (the cover).
