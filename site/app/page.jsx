@@ -39,17 +39,59 @@ function Note({ children, className = '' }) {
   );
 }
 
-// Chapter 3. shortcut: dummy entries and placeholder images until the real projects land (task 3).
-const PROJECTS = [1, 2, 3, 4, 5].map((n) => ({
-  title: `Placeholder project ${['one', 'two', 'three', 'four', 'five'][n - 1]}`,
-  role: ['Design, front end', 'Front end', 'Product design', 'Design, build', 'Creative direction'][n - 1],
-  year: 2027 - n,
-  img: `/work/0${n}.svg`,
-  alt: `Placeholder image for project ${n}`,
-  problem: 'Placeholder copy: the problem, in one or two sentences.',
-  did: 'Placeholder copy: what you did about it.',
-  result: 'Placeholder copy: the result, ideally with a number.',
-}));
+// Chapter 3. Selected projects
+const PROJECTS = [
+  {
+    title: 'DevDock',
+    role: 'Systems, CLI & Distribution',
+    year: 2026,
+    img: '/work/01.svg',
+    alt: 'DevDock terminal launcher interface',
+    problem: 'Setting up local environments meant writing the same Docker Compose boilerplate, fighting port collisions, and managing multi-service dev processes by hand.',
+    did: 'Engineered a standalone Go CLI with automated stack detection (Next.js, Laravel, Fiber), port conflict scanning, detached PID lifecycle management, and a dedicated Homebrew tap.',
+    result: 'Zero-config local spinup in <3 seconds. Eliminated repetitive compose boilerplate across daily dev workflows.',
+  },
+  {
+    title: 'Valyra',
+    role: 'Fullstack & Smart Contracts',
+    year: 2026,
+    img: '/work/02.svg',
+    alt: 'Valyra decentralized marketplace dashboard',
+    problem: 'Buying and selling micro-SaaS and digital assets requires trusted middlemen, slow escrow settlement, and manual ownership handoffs.',
+    did: 'Architected an autonomous marketplace monorepo combining a Next.js frontend, FastAPI backend, and Solidity smart contracts on Base blockchain for automated smart contract settlements.',
+    result: 'Trustless digital asset transfers with sub-second finality and zero custodial platform risk.',
+  },
+  {
+    title: 'ArbiSecure',
+    role: 'Web3 & Stylus Systems',
+    year: 2026,
+    img: '/work/03.svg',
+    alt: 'ArbiSecure trustless escrow interface',
+    problem: 'Traditional EVM escrow contracts suffer from high gas overhead and restricted computational efficiency during multi-party dispute resolution.',
+    did: 'Built a high-performance escrow platform using Arbitrum Stylus with smart contracts authored in Rust, paired with a clean Next.js client interface.',
+    result: 'Reduced smart contract gas execution costs by ~80% compared to standard EVM byte-code.',
+  },
+  {
+    title: 'e-Arsip',
+    role: 'Backend Engineering',
+    year: 2025,
+    img: '/work/04.svg',
+    alt: 'e-Arsip enterprise document archiver',
+    problem: 'Enterprise physical archive tracking lacked automated classification, retention schedule enforcement, and deterministic audit trails for legal compliance.',
+    did: 'Built a high-concurrency REST API in Go (Echo, GORM, PostgreSQL) with JWT auth, multi-tenant role hierarchies, and automated legal retention lifecycle engines.',
+    result: 'Sub-50ms query latency across thousands of institutional document classifications with 100% audit compliance.',
+  },
+  {
+    title: 'EOffice (PANA IndoArsip)',
+    role: 'Fullstack & Systems Architecture',
+    year: 2026,
+    img: '/work/05.svg',
+    alt: 'EOffice digital workplace platform',
+    problem: 'Legacy government and enterprise correspondence relied on paper signatures, manual disposition routing, and disjointed archive systems.',
+    did: 'Engineered an end-to-end digital correspondence platform featuring in-browser Word-style document generation, multi-tier approval workflows, electronic signatures (TTE), e-Materai, and local AI search.',
+    result: 'Replaced paper correspondence entirely across enterprise clients, cutting approval turnaround from days to minutes.',
+  },
+];
 
 const CHAPTERS = [
   ['origin', 'Origin'],
