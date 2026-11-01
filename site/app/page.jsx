@@ -267,17 +267,17 @@ export default function Home() {
             <p className="eyebrow">Chapter 4 — What I stand for</p>
             <h2 className="reveal">How I <span className="circled">work<Doodle shape={CIRCLE} /></span>.</h2>
           </header>
-          <p className="reveal manifesto__lede">Placeholder copy. One paragraph on how you approach the work, leading into the principles below.</p>
+          <p className="reveal manifesto__lede">Modern engineering often mistakes activity for progress. My approach is subtractive: strip away the vanity layers until only raw performance, resilient infrastructure, and undeniable utility remain.</p>
           <div className="manifesto__wall">
             <ol className="manifesto__sheets">
-              <li className="sheet"><h3>Principle one, set as a headline.</h3><p>Placeholder copy: one sentence on what it means in practice.</p></li>
-              <li className="sheet"><h3>Principle two, set as a headline.</h3><p>Placeholder copy: one sentence on what it means in practice.</p></li>
-              <li className="sheet"><h3>Principle three, set as a headline.</h3><p>Placeholder copy: one sentence on what it means in practice.</p></li>
+              <li className="sheet"><h3>Substance over spectacle.</h3><p>Flashy tech stacks depreciate fast; robust foundations and clear data flows run forever.</p></li>
+              <li className="sheet"><h3>Tight loops, zero drag.</h3><p>Compress the distance between a raw concept and a running binary. Build fast, test hard, verify live.</p></li>
+              <li className="sheet"><h3>Relentless follow-through.</h3><p>Ideas are cheap until battle-tested against real users, high concurrency, and live edge cases.</p></li>
             </ol>
             <Note className="note--wall">in this order</Note>
           </div>
           <blockquote className="manifesto__slogan reveal">
-            <p>“Placeholder pull quote: the belief everything else follows from.”</p>
+            <p>“In an industry full of architecture talk, I build the engines that actually run.”</p>
           </blockquote>
         </section>
 
