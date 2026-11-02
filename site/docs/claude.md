@@ -12,7 +12,7 @@ npm run bake             # rebake public/sheet.bin.gz after changing the doodles
 
 ## Deploy
 
-Deploy only when asked. Run `npm run deploy` from `site/`. `deploy/deploy.sh` builds, lists what the sync would delete (expect only old build hashes), asks for a `y`, then syncs and prints the live Last-Modified.
+Deploy only when asked. Run `npm run deploy` from `site/`. `deploy/deploy.sh` refuses a dirty `site/`, runs `npm ci`, builds, writes `out/version.txt`, runs `npm run smoke`, lists what the sync would delete (expect only old build hashes), and asks for a `y`. It then copies the live tree to `/srv/alhadad-site.prev` (the rollback command is at the top of the script), syncs, and checks `/`, a 404, `version.txt` and the security headers.
 
 Caddy serves `/srv/alhadad-site`, and its config lives in `deploy/Caddyfile`. Keep that file in sync with the `alhadad.dev` block of the server's `/etc/caddy/Caddyfile`; the server file also runs other sites, so back it up, run `caddy validate`, then `sudo systemctl reload caddy`. The SSH alias `alhadad-vps` points at 103.150.92.93 as user `khalid`.
 
