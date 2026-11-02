@@ -38,7 +38,9 @@ Findings from the survey that drive this plan:
 
 ## P1: robustness
 
-5. [ ] **Find the "chapter steps never ran" flake.** Debug the root cause before changing code (`superpowers:systematic-debugging`). Suspects: `later()`'s `requestIdleCallback` queue against the Play click's flush, and `matchMedia` context timing.
+5. [ ] **Find the "chapter steps never ran" flake.**
+   - New lead, 2026-11-02, from the smoke test: in 2 of 10 first-visit runs (at both widths), the pins were built but `is-loading` was still set 20s after the gate click, with no page error. `finishLoading()` runs only in `enter()`'s timeline `onComplete`, so either the click never reached `enter()` or that timeline stalled.
+   - It didn't reproduce in 6 instrumented runs at load average ~33. Retry on a quiet machine, and log `gate.disabled` after the click (true means `enter()` ran) and the rAF rate. Debug the root cause before changing code (`superpowers:systematic-debugging`). Suspects: `later()`'s `requestIdleCallback` queue against the Play click's flush, and `matchMedia` context timing.
    - Repro: loop 20 headless loads and count `ScrollTrigger.getAll().length` (expect 3 pins plus the scrubs).
    - Done when: 0 of 50 loads fail.
 6. [ ] **Mid-page reload position.** Either set `history.scrollRestoration = 'manual'`, save `scrollY` on `pagehide` and restore it after the deferred `ScrollTrigger.refresh()`, or decide it's acceptable and write that in task.md. Investigate first: it may share a cause with step 5.
@@ -47,7 +49,11 @@ Findings from the survey that drive this plan:
 
 ## P2: guardrails
 
-9. [ ] **Smoke test:** `scripts/smoke.mjs`, built on the same headless Chrome launcher as `bake-sheet.mjs`, with no new dependencies.
+9. [x] **Smoke test:** done 2026-11-02, `npm run smoke` (`scripts/smoke.mjs`, written by the Gemini worker and finished in Opus).
+   - Results on the current build: first visit at 1440 (3 pins) and 390 (2 pins), block mode and 404 all pass. Removing the failsafe from `out/index.html` turns block mode into a FAIL, so the check catches a regression.
+   - Timing is for software WebGL: the gate arms 10–20s in, so the test waits up to 40s for it, up to 20s after the click for `is-loading` to clear, and 90s per run.
+   - A full run takes about 1–3 minutes. Under heavy machine load (load average 20–37) expect a timeout now and then.
+   - Original spec: `scripts/smoke.mjs`, built on the same headless Chrome launcher as `bake-sheet.mjs`, with no new dependencies.
    - It serves `out/`, loads `/` at 1440×900 and 390×844 (first visit and with `intro-seen`), and loads `/missing`.
    - It fails on any page error, on a ScrollTrigger count that doesn't match, or on the preloader still showing after the 12s failsafe.
    - Add `"smoke": "node scripts/smoke.mjs"` to `package.json`.
