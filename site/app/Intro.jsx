@@ -49,6 +49,8 @@ function inertBehind(on) {
 }
 
 function init() {
+  // Tells the layout.jsx failsafe that the intro took over.
+  window.__intro = 1;
   root = document.documentElement;
   preloader = document.querySelector(".preloader");
   gsap.registerPlugin(ScrollTrigger, SplitText);
