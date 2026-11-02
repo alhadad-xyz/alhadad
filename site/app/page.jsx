@@ -4,6 +4,7 @@ import RunningHead from './RunningHead';
 import Player from './Player';
 import Riso from './Riso';
 import CopyEmail from './CopyEmail';
+import Elsewhere from './Elsewhere';
 import Crate from './Crate';
 import Taped from './Taped';
 import LinerNotes from './LinerNotes';
@@ -287,6 +288,7 @@ export default function Home() {
           <CopyEmail address="alhadad.xyz@gmail.com">
             <Note className="note--mail">say hi</Note>
           </CopyEmail>
+          <Elsewhere />
           <LinerNotes />
           <div className="back-cover__barcode" aria-hidden="true">
             <svg viewBox={`0 0 ${BARCODE.reduce((a, b) => a + b * 3, 0)} 40`} preserveAspectRatio="none">

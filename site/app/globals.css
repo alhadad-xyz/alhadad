@@ -629,6 +629,91 @@ h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }
   .back-cover__copied, .back-cover__barcode svg { filter: none; animation: none; }
 }
 
+/* Elsewhere */
+.elsewhere { margin-top: 3rem; }
+.elsewhere ul { margin: 0; padding: 0; list-style: none; }
+.elsewhere a {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: .6em 0;
+  border-top: 1px solid currentColor;
+  color: inherit;
+  text-decoration: none;
+  position: relative;
+  isolation: isolate;
+}
+.elsewhere li:last-child { border-bottom: 1px solid currentColor; }
+.elsewhere a::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .5s cubic-bezier(.2, .7, .2, 1);
+  z-index: -1;
+}
+.elsewhere a:hover::before,
+.elsewhere a:focus-visible::before {
+  transform: scaleX(1);
+}
+.elsewhere a:hover .elsewhere__handle,
+.elsewhere a:focus-visible .elsewhere__handle {
+  transform: translateX(.4rem);
+}
+.elsewhere a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.elsewhere__name {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 6vw, 4.5rem);
+  line-height: 1;
+}
+.elsewhere__handle {
+  font-family: var(--font-mono);
+  font-size: .85rem;
+  transition: transform .4s cubic-bezier(.2, .7, .2, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .elsewhere a::before { display: none; }
+  .elsewhere__handle { transition: none; }
+  .elsewhere a:hover,
+  .elsewhere a:focus-visible { text-decoration: underline; }
+  .elsewhere a:hover .elsewhere__handle,
+  .elsewhere a:focus-visible .elsewhere__handle { transform: none; }
+}
+
+.running-head__social {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1rem 0 0;
+  padding: 0 16px 20px;
+  list-style: none;
+  font: 500 .75rem/1.2 var(--font-mono);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.running-head__social a {
+  color: inherit;
+  text-decoration: none;
+}
+.running-head__social a:hover,
+.running-head__social a:focus-visible {
+  color: var(--accent);
+}
+.running-head__social a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+@media (min-width: 768px) {
+  .running-head__social { padding: 0 32px 28px; }
+}
+
 /* Liner notes */
 .liner {
   margin: 3rem 0 6rem;

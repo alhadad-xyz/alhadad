@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { SOCIALS } from './Elsewhere';
 
 const pad = (n) => String(n).padStart(2, '0');
 
@@ -81,6 +82,15 @@ export default function RunningHead({ chapters }) {
             ))}
           </ol>
         </nav>
+        <ul className="running-head__social">
+          {SOCIALS.map((s) => (
+            <li key={s.name}>
+              <a href={s.href} target="_blank" rel="noopener noreferrer">
+                {s.name}
+              </a>
+            </li>
+          ))}
+        </ul>
       </details>
       <button
         type="button"
