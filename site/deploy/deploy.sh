@@ -1,7 +1,8 @@
 #!/bin/sh
 # Build from a clean tree, smoke test, show what the sync would delete, and only push after a yes.
 # The live tree is copied aside first, so a bad deploy rolls back with:
-#   ssh alhadad-vps 'rm -rf /srv/alhadad-site && mv /srv/alhadad-site.prev /srv/alhadad-site'
+#   ssh alhadad-vps 'rsync -a --delete /srv/alhadad-site.prev/ /srv/alhadad-site/'
+# Both folders are owned by khalid inside root-owned /srv, so they are synced in place, never created or moved.
 # Run from site/ via `npm run deploy`.
 set -eu
 host=alhadad-vps
@@ -26,7 +27,7 @@ printf "Deploy %s to %s? [y/N] " "$rev" "$dest"
 read -r answer
 [ "$answer" = y ] || { echo "Cancelled."; exit 1; }
 
-ssh "$host" "rm -rf $dir.prev && cp -a $dir $dir.prev"
+ssh "$host" "rsync -a --delete $dir/ $dir.prev/"
 rsync -a --delete out/ "$dest"
 
 # Post-deploy checks: the page, a real 404, the build that's live, and the security headers.

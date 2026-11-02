@@ -60,7 +60,7 @@ Findings from the survey that drive this plan:
 10. [x] **Guarded deploy** in `deploy/deploy.sh`: written 2026-11-02 and syntax-checked, but not run yet (that would be a deploy). The header check fails until step 2 is on the server.
     - Refuse a dirty tree (`git status --porcelain -- .`).
     - Run `npm ci` instead of trusting `node_modules`, then build, then `npm run smoke`.
-    - Before the sync, copy the live tree aside on the server: `cp -a /srv/alhadad-site /srv/alhadad-site.prev`. Rollback is one command: swap the two directories.
+    - Before the sync, copy the live tree aside on the server: `rsync -a --delete /srv/alhadad-site/ /srv/alhadad-site.prev/`. Rollback is one command: sync it back the other way. Both folders are owned by `khalid`, but `/srv` is root-owned, so they are synced in place, never created or moved.
     - Write the commit hash into `out/version.txt`.
     - After the sync, check that `/` returns 200, `/nope` returns 404, `version.txt` matches the commit, and the security headers are present.
 11. [ ] **CI (optional):** a GitHub Action on push that runs `npm ci && npm run build && npm run smoke`. Skip it if deploys stay local only.
