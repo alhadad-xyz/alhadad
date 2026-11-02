@@ -288,18 +288,25 @@ export default function Home() {
           <CopyEmail address="alhadad.xyz@gmail.com">
             <Note className="note--mail">say hi</Note>
           </CopyEmail>
-          <Elsewhere />
-          <LinerNotes />
-          <div className="back-cover__barcode" aria-hidden="true">
-            <svg viewBox={`0 0 ${BARCODE.reduce((a, b) => a + b * 3, 0)} 40`} preserveAspectRatio="none">
-              {BARCODE.map((w, i, all) => {
-                if (i % 2) return null;
-                const x = all.slice(0, i).reduce((a, b) => a + b * 3, 0) + w * 1.5;
-                return <path key={i} d={`M${x} 2V38`} strokeWidth={w * 2} />;
-              })}
-            </svg>
-            <p>Issue 001 · V-001</p>
+          <div className="sleeve reveal">
+            <LinerNotes />
+            <Elsewhere />
+            <div className="sleeve__strip">
+              <p>℗ &amp; © 2026 Alhadad. All rights reserved.</p>
+              <p>Issue 001 · Autumn 2026 · 33⅓ RPM</p>
+              <div className="back-cover__barcode" aria-hidden="true">
+                <svg viewBox={`0 0 ${BARCODE.reduce((a, b) => a + b * 3, 0)} 40`} preserveAspectRatio="none">
+                  {BARCODE.map((w, i, all) => {
+                    if (i % 2) return null;
+                    const x = all.slice(0, i).reduce((a, b) => a + b * 3, 0) + w * 1.5;
+                    return <path key={i} d={`M${x} 2V38`} strokeWidth={w * 2} />;
+                  })}
+                </svg>
+                <p>Issue 001 · V-001</p>
+              </div>
+            </div>
           </div>
+          <p className="back-cover__name" aria-hidden="true">Alhadad</p>
         </section>
       </main>
 

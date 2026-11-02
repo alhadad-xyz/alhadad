@@ -9,32 +9,41 @@ export const SOCIALS = [
   { name: 'GitHub', handle: '@alhadad-xyz', href: 'https://github.com/alhadad-xyz', shape: 'tab' },
 ];
 
-const ROTATIONS = [-8, 5, -3, 9, -6];
+// Where each sticker sits on the sleeve's right half from 1200px, in % of that area, and its tilt.
+const SPOTS = [
+  { x: 6, y: 4, r: -8 },
+  { x: 52, y: 0, r: 5 },
+  { x: 30, y: 38, r: -3 },
+  { x: 58, y: 50, r: 9 },
+  { x: 10, y: 72, r: -6 },
+];
 
 export default function Elsewhere() {
   if (!SOCIALS.length) return null;
 
   return (
     <div className="elsewhere">
-      <p className="eyebrow">Stick these anywhere</p>
       <ul className="stickers">
-        {SOCIALS.map((s, i) => (
-          <li key={s.name}>
-            <Taped
-              as="a"
-              className={`sticker sticker--${s.shape}`}
-              href={s.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              draggable={false}
-              style={{ '--r': `${ROTATIONS[i % ROTATIONS.length]}deg` }}
-              aria-label={`${s.name}, ${s.handle} (opens in a new tab)`}
-            >
-              <span className="sticker__name">{s.name}</span>
-              <span className="sticker__handle">{s.handle}</span>
-            </Taped>
-          </li>
-        ))}
+        {SOCIALS.map((s, i) => {
+          const { x, y, r } = SPOTS[i % SPOTS.length];
+          return (
+            <li key={s.name} style={{ '--x': `${x}%`, '--y': `${y}%` }}>
+              <Taped
+                as="a"
+                className={`sticker sticker--${s.shape}`}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                draggable={false}
+                style={{ '--r': `${r}deg` }}
+                aria-label={`${s.name}, ${s.handle} (opens in a new tab)`}
+              >
+                <span className="sticker__name">{s.name}</span>
+                <span className="sticker__handle">{s.handle}</span>
+              </Taped>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

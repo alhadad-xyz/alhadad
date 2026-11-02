@@ -38,6 +38,7 @@ These items are small and finish the frame around the content.
    - Refs: [Giulia Gartner copy-email footer](https://www.awwwards.com/inspiration/footer-copy-paste-contact-email-giulia-gartner), [Corentin Bernadou footer](https://www.awwwards.com/inspiration/footer-design-corentin-bernadou), [Hallo Basis big type](https://www.awwwards.com/inspiration/big-typography-contact-page-hallobasis-com).
 5. [x] **Social stickers (back cover):** `app/Elsewhere.jsx` shows Instagram, Threads, X, LinkedIn and GitHub as hype stickers, like the ones on a record's shrink-wrap. They are peeled and dragged with `Taped`; a click that didn't drag opens the profile. The same list feeds a small row at the bottom of the RunningHead menu.
    - Refs: [SavoirFaire stickers](https://www.awwwards.com/inspiration/contact-and-awards-stickers-savoirfaire-c), [200% placing stickers](https://www.awwwards.com/inspiration/placing-stickers-interaction-200-studio).
+6. [x] **The back of the sleeve:** below the email, the back cover is one record-sleeve panel (`.sleeve`). The liner notes are printed on it (Side A and Side B, with no toggle), the stickers are stuck on its right half overlapping its edge (from 1200px; stacked on top below that), and its bottom strip holds the ℗/© line, the issue line and the barcode. "ALHADAD" closes the page at full width under it.
 
 ## Next: chapters
 

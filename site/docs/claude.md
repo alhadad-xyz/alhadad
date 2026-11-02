@@ -24,7 +24,8 @@ Caddy serves `/srv/alhadad-site`, and its config lives in `deploy/Caddyfile`. Ke
 | `app/globals.css` | Tokens on `:root`, the preloader, the hero cover and the chapters |
 | `app/RunningHead.jsx` | Running header past the cover: scroll observer for the current chapter, `<details>` chapter index |
 | `app/CopyEmail.jsx` | Back-cover email: click copies, hand-drawn "copied" boils, `mailto:` fallback |
-| `app/Elsewhere.jsx` | Back-cover social stickers, dragged with `Taped` (a drag cancels the click). `SOCIALS` also feeds the small row at the bottom of the RunningHead menu |
+| `app/LinerNotes.jsx` | The liner notes printed on the back-cover sleeve: a disc label that spins while the music plays, and the Side A / Side B tracklist |
+| `app/Elsewhere.jsx` | Back-cover social stickers stuck on the sleeve (`SPOTS` places them from 1200px), dragged with `Taped` (a drag cancels the click). `SOCIALS` also feeds the small row at the bottom of the RunningHead menu |
 | `app/Crate.jsx` | Chapter 3 record crate: a tracklist of `<details>` sleeves; `crate()` (called from Intro between the chapter 2 pin and the reveals) pins it from 1024px with hover and flips through the sleeves on scroll; opening one slides the record out beside its notes |
 | `app/Taped.jsx` | Chapter 1 notebook: a taped-in item (polaroid, sticky note) that a mouse or pen can peel up and drag. Also used by the back-cover stickers |
 | `app/drips.js` | `drips()`: the strand-y clip-path edge of the preloader drain |

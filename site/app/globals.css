@@ -582,7 +582,7 @@ h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }
 
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
-/* Back cover: the email set like the masthead, a doodled barcode in the corner. */
+/* Back cover: the email set like the masthead, sleeve with liner notes and stickers, name close. */
 .back-cover { position: relative; max-width: none; }
 .back-cover__mail { position: relative; margin-top: 2rem; }
 .back-cover__email {
@@ -615,30 +615,116 @@ h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }
 }
 .back-cover__copied text { fill: currentColor; stroke: none; font: italic 500 34px var(--font-display); }
 @keyframes copied-in { from { opacity: 0; scale: .8; } }
-.back-cover__barcode { position: absolute; right: 16px; bottom: 20px; width: 8.5rem; color: var(--fg); }
+
+.sleeve {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-top: 4rem;
+  padding: 2rem 1.25rem 1.25rem;
+  background:
+    linear-gradient(100deg, transparent 38%, rgb(14 14 14 / .05) 41%, transparent 44%),
+    linear-gradient(172deg, transparent 62%, rgb(14 14 14 / .04) 64%, transparent 67%),
+    var(--sheet);
+  box-shadow: 0 1px 0 rgb(14 14 14 / .12), 0 .75rem 1.5rem -1rem rgb(14 14 14 / .35);
+  rotate: -.6deg;
+}
+.sleeve__strip {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid color-mix(in srgb, var(--fg) 25%, transparent);
+}
+.sleeve__strip p {
+  margin: 0;
+  font: 500 .65rem/1.4 var(--font-mono);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.back-cover__barcode { width: 8.5rem; color: var(--fg); }
 .back-cover__barcode svg { display: block; width: 100%; height: 2.5rem; overflow: visible; filter: url(#boil-loop); }
 .back-cover__barcode path { stroke: currentColor; stroke-linecap: round; }
 .back-cover__barcode p { margin: .4rem 0 0; font: 500 .65rem/1 var(--font-mono); letter-spacing: .04em; text-transform: uppercase; text-align: justify; text-align-last: justify; }
+
+.back-cover__name {
+  margin: 4rem 0 0;
+  font: 400 clamp(4rem, 19vw, 20rem)/.8 var(--font-display);
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--fg);
+}
+
 @media (min-width: 768px) {
   .back-cover { padding-left: 32px; padding-right: 32px; }
-  .back-cover__barcode { right: 32px; bottom: 28px; }
+}
+@media (min-width: 1200px) {
+  .sleeve {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    column-gap: 3rem;
+    padding: 3rem 3rem 1.5rem;
+    aspect-ratio: auto;
+    min-height: 34rem;
+  }
+  .sleeve .liner {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .sleeve .elsewhere {
+    grid-column: 2;
+    grid-row: 1;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .back-cover__copied, .back-cover__barcode svg { filter: none; animation: none; }
 }
 
 /* Elsewhere */
-.elsewhere { margin-top: 3rem; }
+.elsewhere {
+  position: relative;
+  z-index: 1;
+  order: -1;
+  margin: -3.5rem 0 1.5rem;
+}
 .stickers {
   /* Keeps the climbing z-index of picked-up stickers under the fixed header. */
   isolation: isolate;
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem 2rem;
+  gap: 0;
   align-items: center;
   margin: 0;
   padding: 0;
   list-style: none;
+}
+.stickers li {
+  margin: 0 -.75rem -.75rem 0;
+}
+@media (min-width: 1200px) {
+  .elsewhere {
+    order: 0;
+    margin: -5rem -4rem 0 0;
+    position: relative;
+  }
+  .stickers {
+    position: relative;
+    display: block;
+    height: 100%;
+    min-height: 30rem;
+  }
+  .stickers li {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    margin: 0;
+  }
 }
 .sticker {
   display: grid;
@@ -762,87 +848,32 @@ h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }
 
 /* Liner notes */
 .liner {
-  margin: 3rem 0 6rem;
-  max-width: 56rem;
-}
-.liner__toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 1.25rem;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-  text-align: left;
-}
-.liner__toggle:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 6px;
-}
-.liner__toggle:hover .eyebrow {
-  color: var(--fg);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: start;
+  margin: 0;
 }
 .liner__disc {
-  position: relative;
   display: block;
-  width: 6.5rem;
-  height: 6.5rem;
-  perspective: 600px;
+  width: 5.5rem;
+  height: 5.5rem;
   flex: none;
 }
-.liner__flip {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-  -webkit-transform-style: preserve-3d;
-  transition: transform 0.8s var(--ease-out);
-}
-.liner__toggle[aria-expanded="true"] .liner__flip {
-  transform: rotateY(180deg);
-}
-.liner__face {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-.liner__face--a {
-  transform: rotateY(0deg);
-}
-.liner__face--b {
-  transform: rotateY(180deg);
-}
-.liner__face circle {
+.liner__disc circle {
   fill: none;
   stroke: currentColor;
   stroke-width: 1;
   opacity: .55;
 }
-.liner__face--a .liner__center {
+.liner__disc .liner__center {
   fill: var(--accent);
   stroke: none;
   opacity: 1;
 }
-.liner__face--b .liner__center {
-  fill: var(--fg);
-  stroke: none;
-  opacity: 1;
-}
-.liner__face text {
-  font: 500 6.5px/1 var(--font-mono);
-}
-.liner__face--a text {
+.liner__disc text {
   fill: currentColor;
-}
-.liner__face--b text {
-  fill: var(--bg);
+  font: 500 6.5px/1 var(--font-mono);
 }
 .liner__spin {
   display: block;
@@ -860,13 +891,10 @@ body:has(.player[aria-pressed="true"]) .liner__spin {
   to { transform: rotate(360deg); }
 }
 .liner__notes {
-  margin-top: 2rem;
+  margin: 0;
   display: grid;
-  gap: 2.5rem;
+  gap: 2rem;
   grid-template-columns: 1fr;
-}
-.liner__notes[hidden] {
-  display: none;
 }
 .liner__heading {
   margin: 0 0 1rem;
@@ -901,15 +929,15 @@ body:has(.player[aria-pressed="true"]) .liner__spin {
   color: var(--fg);
 }
 @media (min-width: 768px) {
+  .liner {
+    grid-template-columns: auto 1fr;
+  }
   .liner__notes {
     grid-template-columns: 1fr 1fr;
-    gap: 3.5rem;
+    gap: 2.5rem;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .liner__flip {
-    transition: none;
-  }
   .liner__spin {
     animation: none;
   }

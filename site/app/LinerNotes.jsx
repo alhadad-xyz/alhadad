@@ -1,7 +1,3 @@
-'use client';
-
-import { useState } from 'react';
-
 const GROOVES = [74, 66, 58, 50];
 
 const SIDE_A = [
@@ -19,41 +15,17 @@ const SIDE_B = [
 ];
 
 export default function LinerNotes() {
-  const [open, setOpen] = useState(false);
-
   return (
-    <div className="liner reveal">
-      <button
-        type="button"
-        className="liner__toggle"
-        aria-expanded={open}
-        aria-controls="liner-notes"
-        onClick={() => setOpen((prev) => !prev)}
-      >
-        <span className="liner__disc" aria-hidden="true">
-          <span className="liner__flip">
-            <span className="liner__face liner__face--a">
-              <svg className="liner__spin" viewBox="0 0 220 220">
-                {GROOVES.map((r) => <circle key={r} cx="110" cy="110" r={r} />)}
-                <circle className="liner__center" cx="110" cy="110" r="40" />
-                <path id="liner-a" d="M110 77a33 33 0 1 1 0 66a33 33 0 1 1 0-66" fill="none" />
-                <text textLength="207" lengthAdjust="spacing"><textPath href="#liner-a">SIDE A · ALHADAD · ISSUE 001 ·</textPath></text>
-              </svg>
-            </span>
-            <span className="liner__face liner__face--b">
-              <svg className="liner__spin" viewBox="0 0 220 220">
-                {GROOVES.map((r) => <circle key={r} cx="110" cy="110" r={r} />)}
-                <circle className="liner__center" cx="110" cy="110" r="40" />
-                <path id="liner-b" d="M110 77a33 33 0 1 1 0 66a33 33 0 1 1 0-66" fill="none" />
-                <text textLength="207" lengthAdjust="spacing"><textPath href="#liner-b">SIDE B · LINER NOTES · 001 ·</textPath></text>
-              </svg>
-            </span>
-          </span>
-        </span>
-        <span className="eyebrow">Liner notes</span>
-      </button>
-
-      <div id="liner-notes" className="liner__notes" hidden={!open}>
+    <div className="liner">
+      <span className="liner__disc" aria-hidden="true">
+        <svg className="liner__spin" viewBox="0 0 220 220">
+          {GROOVES.map((r) => <circle key={r} cx="110" cy="110" r={r} />)}
+          <circle className="liner__center" cx="110" cy="110" r="40" />
+          <path id="liner-a" d="M110 77a33 33 0 1 1 0 66a33 33 0 1 1 0-66" fill="none" />
+          <text textLength="207" lengthAdjust="spacing"><textPath href="#liner-a">SIDE A · ALHADAD · ISSUE 001 ·</textPath></text>
+        </svg>
+      </span>
+      <div className="liner__notes">
         <div className="liner__side">
           <h3 className="eyebrow liner__heading">Side A</h3>
           <ol className="liner__list">
