@@ -379,9 +379,6 @@ h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }
   padding: 0;
   pointer-events: none;
 }
-.proof__sheet, .proof__stub {
-  pointer-events: auto;
-}
 /* The sheet carries the chapter; the stub is the strip a torn-out page leaves at the margin. Both are the same ruled
    paper. Intro cuts the torn edge into them as clip paths (the stub reaching a little under the sheet, so no seam). */
 .proof__sheet, .proof__stub {
@@ -416,6 +413,7 @@ h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }
 
 /* Chapter 3: a record crate. A tracklist of small sleeves by default; from 1024px with a mouse,
    crate() adds .is-flipping and the sleeves stand in a pinned 3D stack that scrolling flips through. */
+#work { position: relative; z-index: 3; }
 .work { position: relative; margin-top: 1.5rem; }
 .crate__list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--fg); }
 .crate__item { border-bottom: 1px solid var(--fg); }
@@ -446,7 +444,7 @@ h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }
 
 /* The flipping crate. Sleeves share one spot; crate() sets their y, z, tilt and fade from the scroll. */
 .crate.is-flipping { --sleeve: min(26rem, 46vh, 30vw); }
-.is-flipping .crate__list { position: relative; height: var(--sleeve); margin-top: 3rem; border: 0; perspective: 1400px; perspective-origin: calc(var(--sleeve) / 2) 50%; transform-style: preserve-3d; }
+.is-flipping .crate__list { position: relative; height: var(--sleeve); margin-top: 3rem; border: 0; perspective: 1400px; perspective-origin: calc(var(--sleeve) / 2) 50%; transform-style: preserve-3d; pointer-events: none; }
 .is-flipping .crate__item { position: absolute; top: 0; left: 0; width: var(--sleeve); border: 0; transform-origin: 50% 100%; pointer-events: none; }
 .is-flipping .crate__item[data-current] { pointer-events: auto; }
 .is-flipping summary { display: block; padding: 0; }
