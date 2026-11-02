@@ -260,9 +260,20 @@ export async function mountLiquid(canvas, img, paint, title, shown) {
   });
   io.observe(canvas);
   shown.then(() => {
-    live = true;
-    run();
+    if (!gl.isContextLost()) {
+      live = true;
+      run();
+    }
   });
+
+  // GPU reset (iOS backgrounding): stop drawing and let the plain photo show. Not rebuilt on restore; the photo is a fine fallback.
+  const onLost = (e) => {
+    e.preventDefault();
+    live = false;
+    run();
+    canvas.parentElement.classList.remove('is-gl');
+  };
+  canvas.addEventListener('webglcontextlost', onLost);
 
   return () => {
     visible = false;
@@ -270,6 +281,7 @@ export async function mountLiquid(canvas, img, paint, title, shown) {
     io.disconnect();
     ro.disconnect();
     removeEventListener('pointermove', onMove);
+    canvas.removeEventListener('webglcontextlost', onLost);
   };
 }
 
