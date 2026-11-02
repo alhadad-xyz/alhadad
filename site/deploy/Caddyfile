@@ -7,6 +7,16 @@ alhadad.dev {
 	@hashed path /_next/static/*
 	header @hashed Cache-Control "public, max-age=31536000, immutable"
 	header ?Cache-Control "no-cache"
+	# No preload on HSTS yet: the preload list is slow to leave.
+	# shortcut: script-src allows 'unsafe-inline' because Next's export writes per-build inline flight scripts; move to build-time hashes if the site ever takes user input.
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		Cross-Origin-Opener-Policy same-origin
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+		Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+	}
 	root * /srv/alhadad-site
 	try_files {path} {path}.html
 	file_server
