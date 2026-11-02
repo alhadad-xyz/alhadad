@@ -5,11 +5,12 @@ import { gsap } from 'gsap';
 import { react } from './reactive';
 
 let audio;
+let failed = false;
 const VOLUME = 0.2;
 
 // Intro calls this from the preloader's Play click: browsers only allow sound after a gesture.
 export function startMusic() {
-  if (!audio || readPaused()) return;
+  if (!audio || failed || readPaused()) return;
   audio.volume = 0;
   react(audio);
   audio.play().then(() => gsap.to(audio, { volume: VOLUME, duration: 2, ease: 'power1.in' })).catch(() => {});
@@ -19,9 +20,11 @@ export function startMusic() {
 export default function Player() {
   const ref = useRef(null);
   const [playing, setPlaying] = useState(false);
+  const [broken, setBroken] = useState(false);
   useEffect(() => { audio = ref.current; }, []);
 
   const toggle = () => {
+    if (broken) return;
     const a = ref.current;
     gsap.killTweensOf(a);
     a.volume = VOLUME;
@@ -36,12 +39,12 @@ export default function Player() {
 
   return (
     <>
-      <button className="player" type="button" onClick={toggle} aria-pressed={playing} aria-label="Music: ADÉLA, Nicole Kidman">
+      <button className="player" type="button" onClick={toggle} disabled={broken} aria-pressed={playing} aria-label={broken ? 'Music unavailable' : 'Music: ADÉLA, Nicole Kidman'}>
         <span className="player__bars" aria-hidden="true"><span /><span /><span /><span /></span>
-        <span aria-hidden="true">{playing ? 'Now playing' : 'Paused'}</span>
+        <span aria-hidden="true">{broken ? 'No music' : (playing ? 'Now playing' : 'Paused')}</span>
         <span className="player__title" aria-hidden="true">ADÉLA — Nicole Kidman</span>
       </button>
-      <audio ref={ref} src="/audio/adela-nicole-kidman.m4a" loop preload="none" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} />
+      <audio ref={ref} src="/audio/adela-nicole-kidman.m4a" loop preload="none" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} onError={() => { failed = true; setBroken(true); setPlaying(false); }} />
     </>
   );
 }
