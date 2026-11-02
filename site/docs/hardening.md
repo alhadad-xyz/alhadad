@@ -57,7 +57,7 @@ Findings from the survey that drive this plan:
    - It serves `out/`, loads `/` at 1440×900 and 390×844 (first visit and with `intro-seen`), and loads `/missing`.
    - It fails on any page error, on a ScrollTrigger count that doesn't match, or on the preloader still showing after the 12s failsafe.
    - Add `"smoke": "node scripts/smoke.mjs"` to `package.json`.
-10. [ ] **Guarded deploy** in `deploy/deploy.sh`:
+10. [x] **Guarded deploy** in `deploy/deploy.sh`: written 2026-11-02 and syntax-checked, but not run yet (that would be a deploy). The header check fails until step 2 is on the server.
     - Refuse a dirty tree (`git status --porcelain -- .`).
     - Run `npm ci` instead of trusting `node_modules`, then build, then `npm run smoke`.
     - Before the sync, copy the live tree aside on the server: `cp -a /srv/alhadad-site /srv/alhadad-site.prev`. Rollback is one command: swap the two directories.
