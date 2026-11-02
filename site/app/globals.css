@@ -629,59 +629,107 @@ h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }
 
 /* Elsewhere */
 .elsewhere { margin-top: 3rem; }
-.elsewhere ul { margin: 0; padding: 0; list-style: none; }
-.elsewhere a {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 1rem;
-  padding: .6em 0;
-  border-top: 1px solid currentColor;
-  color: inherit;
-  text-decoration: none;
-  position: relative;
+.stickers {
+  /* Keeps the climbing z-index of picked-up stickers under the fixed header. */
   isolation: isolate;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem 2rem;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-.elsewhere li:last-child { border-bottom: 1px solid currentColor; }
-.elsewhere a::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: color-mix(in srgb, var(--accent) 22%, transparent);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform .5s cubic-bezier(.2, .7, .2, 1);
-  z-index: -1;
+.sticker {
+  display: grid;
+  place-content: center;
+  text-align: center;
+  rotate: var(--r);
+  text-decoration: none;
+  color: var(--fg);
+  box-shadow: 0 .3rem .6rem -.3rem rgb(14 14 14 / .35);
+  transition: rotate .4s var(--ease-out), scale .25s var(--ease-out), box-shadow .25s var(--ease-out);
 }
-.elsewhere a:hover::before,
-.elsewhere a:focus-visible::before {
-  transform: scaleX(1);
+.sticker::before { content: none; }
+.sticker__name {
+  font: italic 700 1.6rem/1 var(--font-display);
 }
-.elsewhere a:hover .elsewhere__handle,
-.elsewhere a:focus-visible .elsewhere__handle {
-  transform: translateX(.4rem);
-}
-.elsewhere a:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 4px;
-}
-.elsewhere__name {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 6vw, 4.5rem);
-  line-height: 1;
-}
-.elsewhere__handle {
+.sticker__handle {
   font-family: var(--font-mono);
-  font-size: .85rem;
-  transition: transform .4s cubic-bezier(.2, .7, .2, 1);
+  font-size: .7rem;
+  letter-spacing: .04em;
+  margin-top: .3rem;
+}
+.sticker--burst {
+  width: 10rem;
+  height: 10rem;
+  background: var(--accent);
+  color: var(--bg);
+  clip-path: polygon(
+    50% 0%, 57.8% 10.77%, 69.13% 3.81%, 72.22% 16.74%, 85.36% 14.64%, 83.26% 27.78%,
+    96.19% 30.87%, 89.23% 42.2%, 100% 50%, 89.23% 57.8%, 96.19% 69.13%, 83.26% 72.22%,
+    85.36% 85.36%, 72.22% 83.26%, 69.13% 96.19%, 57.8% 89.23%, 50% 100%, 42.2% 89.23%,
+    30.87% 96.19%, 27.78% 83.26%, 14.64% 85.36%, 16.74% 72.22%, 3.81% 69.13%, 10.77% 57.8%,
+    0% 50%, 10.77% 42.2%, 3.81% 30.87%, 16.74% 27.78%, 14.64% 14.64%, 27.78% 16.74%,
+    30.87% 3.81%, 42.2% 10.77%
+  );
+  box-shadow: none;
+  filter: drop-shadow(0 .3rem .3rem rgb(14 14 14 / .35));
+  transition: rotate .4s var(--ease-out), scale .25s var(--ease-out), filter .25s var(--ease-out);
+}
+.sticker--burst.is-lifted {
+  box-shadow: none;
+  filter: drop-shadow(0 1.2rem 1.2rem rgb(14 14 14 / .4));
+}
+.sticker--circle {
+  width: 8.5rem;
+  height: 8.5rem;
+  border-radius: 50%;
+  background: var(--fg);
+  color: var(--bg);
+  outline: 2px dashed var(--bg);
+  outline-offset: -.5rem;
+}
+.sticker--square {
+  width: 7.5rem;
+  height: 7.5rem;
+  background: var(--bg);
+  border: 3px solid var(--fg);
+  border-radius: .6rem;
+}
+.sticker--square .sticker__name { font-size: 3rem; }
+.sticker--pill {
+  padding: 1rem 1.6rem;
+  border-radius: 999px;
+  background: var(--cream);
+  border: 2px solid var(--fg);
+}
+.sticker--tab {
+  padding: .9rem 1.4rem;
+  background: var(--fg);
+  color: var(--accent);
+  clip-path: polygon(.8rem 0, 100% 0, 100% 100%, .8rem 100%, 0 50%);
+}
+.sticker:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+}
+.sticker--circle:focus-visible {
+  outline: 2px dashed var(--bg);
+  outline-offset: -.5rem;
+  box-shadow: 0 0 0 4px var(--bg), 0 0 0 6px var(--accent);
+}
+@media (hover: hover) {
+  .sticker:hover,
+  .sticker:focus-visible {
+    scale: 1.06;
+    rotate: calc(var(--r) * -1);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .elsewhere a::before { display: none; }
-  .elsewhere__handle { transition: none; }
-  .elsewhere a:hover,
-  .elsewhere a:focus-visible { text-decoration: underline; }
-  .elsewhere a:hover .elsewhere__handle,
-  .elsewhere a:focus-visible .elsewhere__handle { transform: none; }
+  .sticker { transition: none; }
+  .sticker:hover,
+  .sticker:focus-visible { rotate: var(--r); }
 }
 
 .running-head__social {

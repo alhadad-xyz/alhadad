@@ -1,24 +1,38 @@
-// Add Instagram, Threads, X here once the handles are known; the strip and the menu both read this list.
+import Taped from './Taped';
+
+// The back-cover stickers and the RunningHead menu row both read this list.
 export const SOCIALS = [
-  { name: 'GitHub', handle: '@alhadad-xyz', href: 'https://github.com/alhadad-xyz' },
+  { name: 'Instagram', handle: '@alhadad.dev', href: 'https://www.instagram.com/alhadad.dev', shape: 'burst' },
+  { name: 'Threads', handle: '@alhadad.dev', href: 'https://www.threads.com/@alhadad.dev', shape: 'circle' },
+  { name: 'X', handle: '@HadadAl54965', href: 'https://x.com/HadadAl54965', shape: 'square' },
+  { name: 'LinkedIn', handle: 'in/alhadad-dev', href: 'https://www.linkedin.com/in/alhadad-dev/', shape: 'pill' },
+  { name: 'GitHub', handle: '@alhadad-xyz', href: 'https://github.com/alhadad-xyz', shape: 'tab' },
 ];
+
+const ROTATIONS = [-8, 5, -3, 9, -6];
 
 export default function Elsewhere() {
   if (!SOCIALS.length) return null;
 
   return (
     <div className="elsewhere">
-      <p className="eyebrow">Elsewhere — find the author</p>
-      <ul>
-        {SOCIALS.map((s) => (
+      <p className="eyebrow">Stick these anywhere</p>
+      <ul className="stickers">
+        {SOCIALS.map((s, i) => (
           <li key={s.name}>
-            <a href={s.href} target="_blank" rel="noopener noreferrer">
-              <span className="elsewhere__name">{s.name}</span>
-              <span className="elsewhere__handle">
-                {s.handle} <span aria-hidden="true">↗</span>
-              </span>
-              <span className="visually-hidden"> (opens in a new tab)</span>
-            </a>
+            <Taped
+              as="a"
+              className={`sticker sticker--${s.shape}`}
+              href={s.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              draggable={false}
+              style={{ '--r': `${ROTATIONS[i % ROTATIONS.length]}deg` }}
+              aria-label={`${s.name}, ${s.handle} (opens in a new tab)`}
+            >
+              <span className="sticker__name">{s.name}</span>
+              <span className="sticker__handle">{s.handle}</span>
+            </Taped>
           </li>
         ))}
       </ul>

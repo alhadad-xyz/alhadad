@@ -36,8 +36,8 @@ These items are small and finish the frame around the content.
    - Clicking it copies the address, and a hand-drawn "copied ✓" appears that boils like the doodles. Keep the `mailto:` link as a fallback.
    - Add a doodled barcode in the corner with "Issue 001 · V-001", which echoes the preloader.
    - Refs: [Giulia Gartner copy-email footer](https://www.awwwards.com/inspiration/footer-copy-paste-contact-email-giulia-gartner), [Corentin Bernadou footer](https://www.awwwards.com/inspiration/footer-design-corentin-bernadou), [Hallo Basis big type](https://www.awwwards.com/inspiration/big-typography-contact-page-hallobasis-com).
-5. [x] **Elsewhere strip (social links):** `app/Elsewhere.jsx` on the back cover, under the email, plus a small row at the bottom of the RunningHead menu. Each link is a colophon line: Bodoni name, mono handle and a ↗ arrow, with an accent paint wipe on hover.
-   - Only GitHub is filled in for now. Add the Instagram, Threads and X handles to `SOCIALS` in `app/Elsewhere.jsx`.
+5. [x] **Social stickers (back cover):** `app/Elsewhere.jsx` shows Instagram, Threads, X, LinkedIn and GitHub as hype stickers, like the ones on a record's shrink-wrap. They are peeled and dragged with `Taped`; a click that didn't drag opens the profile. The same list feeds a small row at the bottom of the RunningHead menu.
+   - Refs: [SavoirFaire stickers](https://www.awwwards.com/inspiration/contact-and-awards-stickers-savoirfaire-c), [200% placing stickers](https://www.awwwards.com/inspiration/placing-stickers-interaction-200-studio).
 
 ## Next: chapters
 
