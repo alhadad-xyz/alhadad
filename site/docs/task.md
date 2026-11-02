@@ -74,6 +74,8 @@ These items are small and finish the frame around the content.
 
 ## Quality
 
+Hardening (failsafes, security headers, smoke test, guarded deploy) is planned in `hardening.md`, written 2026-11-02.
+
 9. [ ] **Cross-browser:**
    - Safari 16, which lacks `ctx.letterSpacing`: the masthead redrawn in the paint may be misaligned.
    - iOS WebGL float support.
