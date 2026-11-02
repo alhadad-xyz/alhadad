@@ -56,7 +56,6 @@ const REPORTER_SCRIPT = `
       gl: !!document.querySelector('.hero__portrait.is-gl'),
       pins: document.querySelectorAll('.pin-spacer').length,
       title: document.title,
-      dbg: window.__dbg,
     };
     fetch('/__report', { method: 'POST', body: JSON.stringify(body) });
   }
@@ -66,14 +65,17 @@ const REPORTER_SCRIPT = `
     if (mode === 'first') {
       const start = Date.now();
       let gate = null;
-      while (Date.now() - start < 20000) {
+      // Under software WebGL the gate arms 10-20s in, so allow 40s.
+      while (Date.now() - start < 40000) {
         gate = document.querySelector('.preloader__gate:not([disabled])');
         if (gate) break;
         await wait(200);
       }
-      window.__dbg = { gateAt: Date.now() - start, found: !!gate };
       if (gate) gate.click();
-      await wait(5000);
+      // Wait for the intro to hand over instead of a fixed delay; the check below catches a stall.
+      const clicked = Date.now();
+      while (document.documentElement.classList.contains('is-loading') && Date.now() - clicked < 20000) await wait(200);
+      await wait(1000);
       let steps = 0;
       while (window.scrollY + window.innerHeight < document.documentElement.scrollHeight - 2 && steps < 200) {
         window.scrollBy(0, window.innerHeight * 0.7);
@@ -81,7 +83,6 @@ const REPORTER_SCRIPT = `
         await wait(100);
       }
       await wait(1000);
-      if (document.documentElement.classList.contains('is-loading')) { await wait(15000); window.__dbg.later = document.documentElement.classList.contains('is-loading'); window.__dbg.gateDisabled = document.querySelector('.preloader__gate').disabled; window.__dbg.pre = getComputedStyle(document.querySelector('.preloader')).opacity; }
       report(mode);
     } else if (mode === 'block') {
       await wait(14000);
@@ -188,7 +189,7 @@ async function runChrome(run, port) {
 
   let timer;
   const timeoutPromise = new Promise((resolve) => {
-    timer = setTimeout(() => resolve({ timeout: true }), 70000);
+    timer = setTimeout(() => resolve({ timeout: true }), 90000);
   });
 
   const url = `http://127.0.0.1:${port}${run.path}`;
@@ -233,7 +234,7 @@ function check(run, result) {
   const reasons = [];
 
   if (result.timeout) {
-    reasons.push('timeout (45s)');
+    reasons.push('timeout (90s)');
     return { ok: false, reasons, pins: null };
   }
   if (result.error) {
@@ -274,7 +275,6 @@ for (const runConfig of RUNS) {
   const { run, result } = await runChrome(runConfig, port);
   const res = check(run, result);
 
-  if (result.dbg) console.log('  dbg', run.name, JSON.stringify(result.dbg));
   const pinText = run.mode === 'first' ? ` (${res.pins ?? 0} pins)` : '';
   if (res.ok) {
     console.log(`ok    ${run.name}${pinText}`);

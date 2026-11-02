@@ -377,6 +377,10 @@ h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }
   display: block;
   max-width: none;
   padding: 0;
+  pointer-events: none;
+}
+.proof__sheet, .proof__stub {
+  pointer-events: auto;
 }
 /* The sheet carries the chapter; the stub is the strip a torn-out page leaves at the margin. Both are the same ruled
    paper. Intro cuts the torn edge into them as clip paths (the stub reaching a little under the sheet, so no seam). */
