@@ -1,17 +1,17 @@
 const GROOVES = [74, 66, 58, 50];
 
 const SIDE_A = [
-  { track: 'A1', title: 'Type', desc: 'Bodoni Moda for display, JetBrains Mono for chrome.' },
-  { track: 'A2', title: 'Paper and ink', desc: '#f2efe9 and #0e0e0e, one accent, #ff5a1f.' },
-  { track: 'A3', title: 'Liquid portrait', desc: 'a WebGL2 fluid sim pours paint over the photo and reveals the drawn version.' },
-  { track: 'A4', title: 'Line boil', desc: 'the doodles redraw eight times a second, like hand-drawn animation.' },
+  { track: 'A1', title: 'Philosophy', desc: 'Subtractive engineering — cut unnecessary abstractions until only raw utility remains.' },
+  { track: 'A2', title: 'Execution', desc: 'Working binary over architecture diagrams. Prototype early, test under real load.' },
+  { track: 'A3', title: 'Architecture', desc: 'Lean distributed systems, deterministic state machines, and high-concurrency Go services.' },
+  { track: 'A4', title: 'Standards', desc: 'Sub-50ms p95 latencies, zero-dependency CLIs, and strict type safety across boundaries.' },
 ];
 
 const SIDE_B = [
-  { track: 'B1', title: 'The music', desc: 'ADÉLA, “Nicole Kidman”. The kick drum shakes the ink.' },
-  { track: 'B2', title: 'Built with', desc: 'Next.js, React and GSAP, exported as static files.' },
-  { track: 'B3', title: 'Pressed by', desc: 'Caddy on a small VPS.' },
-  { track: 'B4', title: 'Issue 001', desc: 'Autumn 2026. Written, designed and built by Alhadad.' },
+  { track: 'B1', title: 'Primary tools', desc: 'Go, TypeScript, Next.js, Rust/Wasm, PostgreSQL, and custom local AI agents.' },
+  { track: 'B2', title: 'Current focus', desc: 'Autonomous enterprise workflows, local AI tools, and trustless web3 contracts.' },
+  { track: 'B3', title: 'Working model', desc: 'Deep async focus, direct founder-to-code iteration, zero bureaucracy.' },
+  { track: 'B4', title: 'Availability', desc: 'Selected high-impact engineering architecture & venture builds for 2026.' },
 ];
 
 export default function LinerNotes() {
