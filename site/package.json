@@ -9,6 +9,7 @@
     "dev": "next dev",
     "build": "next build",
     "bake": "node scripts/bake-sheet.mjs",
+    "smoke": "node scripts/smoke.mjs",
     "deploy": "sh deploy/deploy.sh"
   },
   "dependencies": {

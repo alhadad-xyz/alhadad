@@ -82,7 +82,7 @@ const PROJECTS = [
     result: 'Sub-50ms query latency across thousands of institutional document classifications with 100% audit compliance.',
   },
   {
-    title: 'EOffice (PANA IndoArsip)',
+    title: 'E-OFFICE',
     role: 'Fullstack & Systems Architecture',
     year: 2026,
     img: '/work/05.svg',
