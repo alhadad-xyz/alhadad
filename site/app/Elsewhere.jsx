@@ -4,7 +4,7 @@ import Taped from './Taped';
 export const SOCIALS = [
   { name: 'Instagram', handle: '@alhadad.dev', href: 'https://www.instagram.com/alhadad.dev', shape: 'burst' },
   { name: 'Threads', handle: '@alhadad.dev', href: 'https://www.threads.com/@alhadad.dev', shape: 'circle' },
-  { name: 'X', handle: '@HadadAl54965', href: 'https://x.com/HadadAl54965', shape: 'square' },
+  { name: 'X', handle: '@alhadad_dev', href: 'https://x.com/alhadad_dev', shape: 'square' },
   { name: 'LinkedIn', handle: 'in/alhadad-dev', href: 'https://www.linkedin.com/in/alhadad-dev/', shape: 'pill' },
   { name: 'GitHub', handle: '@alhadad-xyz', href: 'https://github.com/alhadad-xyz', shape: 'tab' },
 ];
