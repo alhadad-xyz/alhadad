@@ -7,3 +7,6 @@
 [submodule "cork"]
 	path = cork
 	url = https://github.com/alhadad-xyz/cork.git
+[submodule "radar"]
+	path = radar
+	url = https://github.com/alhadad-xyz/radar.git
