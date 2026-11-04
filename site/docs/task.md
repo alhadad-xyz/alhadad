@@ -17,7 +17,7 @@ Last updated: 2026-10-29 (statuses checked against the code and the live site). 
 - [x] `agentRules: false` in `next.config.mjs`, so `next dev` no longer writes `AGENTS.md`. Committed in `4465783`.
 - [x] Deployed to https://alhadad.dev. The latest deploy is 2026-10-30 19:08 GMT (`0877fc1`). It adds the record crate, the notebook origin, the wheat-paste manifesto and the skipping-record 404 (tasks 22 to 25), still with placeholder content.
 
-- [x] Added `radar/` as a submodule (2026-11-04, private repo `alhadad-xyz/radar`). It collects hackathons from 16 platforms into SQLite, refreshes them every 6 hours, and holds a bank of 27 project ideas. It runs locally; the server setup for `radar.alhadad.dev` is still pending. Steps are in `radar/README.md`.
+- [x] Added `radar/` as a submodule (2026-11-04, private repo `alhadad-xyz/radar`). It collects hackathons from 16 platforms into SQLite, refreshes them every 6 hours, and holds a bank of 27 project ideas. It is live at https://radar.alhadad.dev (2026-11-04) as systemd units `radar` and `radar-scrape.timer`, on port 3300. CI deploys every push to `main`.
 
 ## Now
 
