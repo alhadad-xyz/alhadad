@@ -43,14 +43,14 @@ function Note({ children, className = '' }) {
 // Chapter 3. Selected projects
 const PROJECTS = [
   {
-    title: 'DevDock',
-    role: 'Systems, CLI & Distribution',
+    title: 'FAJAR',
+    role: 'Frontend Architecture & Creative Dev',
     year: 2026,
-    img: '/work/01.svg',
-    alt: 'DevDock terminal launcher interface',
-    problem: 'Setting up local environments meant writing the same Docker Compose boilerplate, fighting port collisions, and managing multi-service dev processes by hand.',
-    did: 'Engineered a standalone Go CLI with automated stack detection (Next.js, Laravel, Fiber), port conflict scanning, detached PID lifecycle management, and a dedicated Homebrew tap.',
-    result: 'Zero-config local spinup in <3 seconds. Eliminated repetitive compose boilerplate across daily dev workflows.',
+    img: '/work/fajar.webp',
+    alt: 'FAJAR (PT Fajar Citra Mandiri) B2B digital showroom and catalog interface',
+    problem: 'A premier food packaging distributor (PT Fajar Citra Mandiri) with 26+ years of history relied on static PDF brochures, causing high sales friction, slow quote cycles, and manual SKU inquiries.',
+    did: 'Engineered a bilingual digital showroom and B2B catalog using Astro, Sanity CMS, GSAP physics animations, sub-second client-side SKU filtering across 300+ items, and a structured WhatsApp quote engine.',
+    result: 'Replaced legacy multi-page PDFs with instantaneous catalog search and automated quotation routing directly to sales teams.',
   },
   {
     title: 'Valyra',
