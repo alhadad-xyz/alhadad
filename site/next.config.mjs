@@ -6,4 +6,7 @@ export default {
   reactStrictMode: true,
   // Stops `next dev` writing AGENTS.md into site/; our notes live in docs/claude.md.
   agentRules: false,
+  experimental: {
+    agentUpgrade: 'security',
+  },
 };
