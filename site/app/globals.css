@@ -502,6 +502,45 @@ h2 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; }
 }
 
 /* Chapter 4: a wheat-pasted manifesto. Riso sheets with an accent plate; pasteUp() scrubs --plate from off to on register. */
+/* Interlude: giant words with a taped card set into each, like a spread pasted up across the wall.
+   Stacked by default; giants() adds .is-panning, pins the section and pans a wide canvas of them. */
+.giants { position: relative; z-index: 3; background: var(--bg); overflow: clip; }
+.giants__wrap { padding: 10vh 16px; }
+.giants__title { max-width: 64rem; margin: 0 auto 3rem; }
+.giants__title h2 { max-width: 14ch; margin: 0; font: italic 400 clamp(2.25rem, 6vw, 5.5rem)/.95 var(--font-display); letter-spacing: -.02em; text-wrap: balance; }
+.giants__row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0 2rem; margin-bottom: 2rem; }
+.giants__word { margin: 0; font: 900 clamp(3rem, 15vw, 12rem)/.85 var(--font-display); letter-spacing: -.03em; text-transform: uppercase; }
+.giants__ink { display: inline-flex; align-items: center; white-space: nowrap; }
+.giants__card {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: .78em;
+  aspect-ratio: 1;
+  margin: 0 .06em;
+  border-radius: .05em;
+  background: var(--accent);
+  box-shadow: 0 .04em .08em -.04em rgb(14 14 14 / .45);
+  rotate: var(--tilt, 0deg);
+  translate: var(--pdx, 0px) 0;
+}
+.giants__row:nth-of-type(2) .giants__card { background: var(--coin); }
+.giants__row:nth-of-type(3) .giants__card { background: color-mix(in srgb, #3b6ea5 55%, var(--bg)); }
+/* Kraft tape across the top edge, the same strip as the notebook's. */
+.giants__card::before { content: ""; position: absolute; top: -.06em; left: 50%; width: .42em; height: .12em; margin-left: -.21em; background: color-mix(in srgb, var(--cream) 70%, transparent); box-shadow: 0 0 0 1px rgb(14 14 14 / .06); rotate: -6deg; }
+.giants__card svg { width: 52%; height: 52%; overflow: visible; fill: none; stroke: var(--fg); stroke-width: max(2px, .012em); stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; filter: url(#boil-loop); }
+.giants__card > span { position: absolute; left: .08em; bottom: .07em; font: 500 max(.6rem, .035em)/1 var(--font-mono); letter-spacing: .08em; }
+.giants .giants__note { position: relative; display: block; margin-bottom: .5rem; translate: var(--pdx, 0px) 0; }
+.giants.is-panning .giants__wrap { position: relative; height: 100vh; height: 100svh; padding: 0; overflow: hidden; }
+.giants.is-panning .giants__canvas { position: absolute; top: 0; left: 0; display: flex; align-items: flex-start; width: max-content; padding-bottom: 20vh; }
+.giants.is-panning .giants__title { position: absolute; top: 25vh; left: 4.5vw; width: min(40rem, 80vw); margin: 0; }
+/* Each row starts under the last one's tail, so the pan between them is a short diagonal. */
+.giants.is-panning .giants__row { flex-wrap: nowrap; margin: var(--dy) 0 0 -18vw; }
+.giants.is-panning .giants__row:first-of-type { margin-left: 4.5vw; }
+.giants.is-panning .giants__word { font-size: min(55vh, 42vw); }
+.giants.is-panning .giants__note { width: 14rem; margin-bottom: 1.5rem; font-size: clamp(1.25rem, 1.8vw, 1.75rem); }
+@media (prefers-reduced-motion: reduce) { .giants__card svg { filter: none; } }
+
 .manifesto { max-width: 72rem; }
 .manifesto header { margin-bottom: 1rem; }
 .manifesto__lede { max-width: 34rem; margin: 0; }

@@ -8,6 +8,7 @@ import { portraitReady, liftCurtain } from './Portrait';
 import { drips } from './drips';
 import { startMusic } from './Player';
 import { crate } from './Crate';
+import { giants } from './giants';
 
 // Strict mode mounts effects twice in dev; the intro must run once per page load.
 let started = false;
@@ -72,7 +73,7 @@ function init() {
     coverTurn();
     // The chapters below the cover are built one per idle task, so hydration stays a short task (Lighthouse TBT).
     // No refresh after: steps built before window load get ScrollTrigger's own, and later ones see final layout.
-    buildChapters = later(context, [turningPoint, crate, revealChapters, pasteUp]);
+    buildChapters = later(context, [turningPoint, crate, giants, revealChapters, pasteUp]);
   });
 
   mm.add("(prefers-reduced-motion: reduce)", () => {

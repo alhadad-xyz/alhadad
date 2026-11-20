@@ -21,6 +21,15 @@ const UNDERLINE = { box: '0 0 100 10', paths: ['M2 6C20 3 38 8 55 5s30-2 43 1'] 
 const STRIKE = { box: '0 0 100 20', paths: ['M1 12C18 7 40 13 62 9s30-3 37-2', 'M2 15C26 11 55 16 98 9'] };
 const CARET = { box: '0 0 40 40', paths: ['M4 36L20 6l16 30'] };
 const ARROW = { box: '0 0 80 50', paths: ['M76 4C58 2 30 12 8 42', 'M8 42l1-12M8 42l11-4'] };
+const SPIRAL = 'M260 640C300 600 360 610 362 650 364 690 310 700 300 668 292 642 330 636 334 652';
+
+// Interlude between chapters 3 and 4: giant words a camera pans across while the section pins (giants.js).
+// --dy drops each row below the cover line, so the pan runs down, diagonally down, then diagonally up.
+const GIANTS = [
+  { word: 'Build', note: 'substance over spectacle', dy: '70vh', tilt: 4, glyph: { box: '-16 -16 32 32', d: SPARK } },
+  { word: 'Ship', note: 'tight loops, zero drag', dy: '150vh', tilt: -5, glyph: { box: '250 595 124 115', d: SPIRAL } },
+  { word: 'Last', note: 'relentless follow-through', dy: '55vh', tilt: 3, glyph: { box: '-32 -30 64 52', d: HEART } },
+];
 
 function Doodle({ shape, className = '' }) {
   return (
@@ -163,7 +172,7 @@ export default function Home() {
             <span className="preloader__blocks">
               <svg viewBox="-16 -16 32 32"><path d={SPARK} /></svg>
               <svg viewBox="-32 -30 64 52"><path d={HEART} /></svg>
-              <svg viewBox="250 595 124 115"><path d="M260 640C300 600 360 610 362 650 364 690 310 700 300 668 292 642 330 636 334 652" /></svg>
+              <svg viewBox="250 595 124 115"><path d={SPIRAL} /></svg>
             </span>
             <span className="mask"><span>V-001</span></span>
           </p>
@@ -258,6 +267,34 @@ export default function Home() {
           <div className="work">
             <Crate projects={PROJECTS} />
             <Note className="note--work">flip through, pull one out</Note>
+          </div>
+        </section>
+
+        {/* Not a chapter: an interlude spread. Screen readers get each row as one plain sentence. */}
+        <section className="giants" aria-labelledby="giants-title">
+          <div className="giants__wrap">
+            <div className="giants__canvas">
+              <header className="giants__title">
+                <p className="eyebrow">Interlude — Why I build</p>
+                <h2 id="giants-title">I’m here for the work that runs.</h2>
+              </header>
+              {GIANTS.map(({ word, note, dy, tilt, glyph }, i) => (
+                <div className="giants__row" key={word} style={{ '--dy': dy }}>
+                  <p className="giants__word">
+                    <span className="visually-hidden">To {word.toLowerCase()}: {note}.</span>
+                    <span className="giants__ink" aria-hidden="true">
+                      <span className="giants__part">To</span>
+                      <span className="giants__card" style={{ '--tilt': `${tilt}deg` }}>
+                        <svg viewBox={glyph.box}><path d={glyph.d} /></svg>
+                        <span>No. 0{i + 1}</span>
+                      </span>
+                      <span className="giants__part">{word}</span>
+                    </span>
+                  </p>
+                  <Note className="giants__note">{note}</Note>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
